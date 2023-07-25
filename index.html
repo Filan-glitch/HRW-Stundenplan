@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="de">
+
+<head>
+  <title>HRW Stundenplan (inoffiziell)</title>
+  <meta name="application-name" content="Stundenplan HRW" />
+  <meta name="msapplication-tooltip" content="Stundenplan HRW" />
+  <meta name="apple-mobile-web-app-title" content="Stundenplan HRW" />
+
+  <link rel="icon" type="image/vnd.microsoft.icon" href="images/icon.png" />
+  <link rel="apple-touch-icon" href="images/icon.png" />
+  <meta name="msapplication-TileImage" content="images/icon.png" />
+
+  <meta name="msapplication-starturl" content="https://timetable.janbellenberg.de/" />
+
+  <meta name="theme-color" content="#006d9c" />
+  <meta name="msapplication-TileColor" content="#006d9c">
+  <meta name="msapplication-navbutton-color" content="#006d9c">
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="UTF-8">
+
+  <meta name="description" content="Eine inoffizielle, mobile Anbindung an das Campusnet der Hochschule Ruhr West.">
+  <meta name="keywords" content="HRW Hochschule Ruhr West Stundenplan App Campusnet Portal">
+
+  <meta name="author" content="Jan Bellenberg" />
+  <meta name="publisher" content="Jan Bellenberg" />
+  <meta name="copyright" content="2023 © Jan Bellenberg" />
+
+  <meta name="content-language" content="de" />
+  <meta name="language" content="Deutsch" />
+
+  <meta name="robots" content="index, follow" />
+  <meta name="revisit-after" content="5 days" />
+
+  <link rel="stylesheet" type="text/css" href="/style/style.css">
+
+  <style>
+    #screenshot {
+      margin: 2em auto 0 auto;
+      padding: 0;
+      display: block;
+      box-shadow: 0px 0px 20px #000000;
+      border-radius: 6px;
+      max-height: 80vh;
+      max-width: calc(100vw - 2em);
+      transform: perspective(900px) rotateX(10deg) rotateY(-10deg);
+      transition: 0.5s transform;
+    }
+
+    #screenshot:hover {
+      transform: none;
+      transition: 0.5s transform;
+    }
+
+    #badges {
+      display: flex;
+      justify-content: space-around;
+      align-items: center;
+      margin-top: 2em;
+    }
+
+    #android-badge {
+      display: block;
+      margin: 0 auto;
+      width: 200px;
+      height: 80px;
+    }
+
+    #sourcecode {
+      display: flex;
+      flex-direction: row;
+      border: 1px solid white;
+      background-color: black;
+      padding: 1em;
+      border-radius: 8px;
+    }
+
+    #sourcecode div {
+      padding-left: 1em;
+      color: white;
+      font-size: 1.1em;
+    }
+
+    main {
+      display: flex;
+      justify-content: space-around;
+      align-items: center;
+    }
+
+    @media screen and (max-width: 800px) {
+      body {
+        padding-bottom: 8em;
+      }
+
+      main,
+      footer {
+        display: block;
+      }
+
+      h1 {
+        font-size: 1.5em;
+      }
+
+      #badges {
+        flex: 1;
+        flex-wrap: wrap;
+        align-items: center;
+      }
+
+      #sourcecode {
+        display: inline-flex;
+      }
+
+      #android-badge {
+        margin: 0;
+        display: inline-block;
+        margin: 0 1rem;
+      }
+
+      #screenshot {
+        transform: none;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+
+  <main>
+    <section>
+
+      <h1>HRW Stundenplan</h1>
+      <h2>(inoffiziell)</h2>
+
+      <div id="badges">
+        <a target="_blank"
+          href='https://play.google.com/store/apps/details?id=de.janbellenberg.timetable&pcampaignid=pcampaignidMKT-Other-global-all-co-prtnr-py-PartBadge-Mar2515-1'>
+          <img src="images/google-play-badge.png" alt="Get it on Google Play" id="android-badge" />
+        </a>
+
+        <a href="https://gitlab.janbellenberg.de/janbellenberg/timetable" target="_blank" title="Quellcode">
+          <div id="sourcecode">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 25 24" height="24" width="25"
+              class="tanuki-logo">
+              <path fill="#E24329"
+                d="m24.507 9.5-.034-.09L21.082.562a.896.896 0 0 0-1.694.091l-2.29 7.01H7.825L5.535.653a.898.898 0 0 0-1.694-.09L.451 9.411.416 9.5a6.297 6.297 0 0 0 2.09 7.278l.012.01.03.022 5.16 3.867 2.56 1.935 1.554 1.176a1.051 1.051 0 0 0 1.268 0l1.555-1.176 2.56-1.935 5.197-3.89.014-.01A6.297 6.297 0 0 0 24.507 9.5Z"
+                class="tanuki-shape tanuki"></path>
+              <path fill="#FC6D26"
+                d="m24.507 9.5-.034-.09a11.44 11.44 0 0 0-4.56 2.051l-7.447 5.632 4.742 3.584 5.197-3.89.014-.01A6.297 6.297 0 0 0 24.507 9.5Z"
+                class="tanuki-shape right-cheek"></path>
+              <path fill="#FCA326"
+                d="m7.707 20.677 2.56 1.935 1.555 1.176a1.051 1.051 0 0 0 1.268 0l1.555-1.176 2.56-1.935-4.743-3.584-4.755 3.584Z"
+                class="tanuki-shape chin"></path>
+              <path fill="#FC6D26"
+                d="M5.01 11.461a11.43 11.43 0 0 0-4.56-2.05L.416 9.5a6.297 6.297 0 0 0 2.09 7.278l.012.01.03.022 5.16 3.867 4.745-3.584-7.444-5.632Z"
+                class="tanuki-shape left-cheek"></path>
+            </svg>
+            <div>Quellcode</div>
+          </div>
+        </a>
+      </div>
+    </section>
+
+    <section>
+      <img id="screenshot" src="images/screenshot.webp" alt="Screenshot" />
+    </section>
+  </main>
+
+  <footer role="contentinfo">
+    <div><a href="/impress" role="link" title="Impressum">Impressum</a></div>
+    <div>Copyright &copy Jan Bellenberg & Finn Dilan 2023</div>
+
+    <div><a href="/privacy" role="link" title="Datenschutz">Datenschutz</a></div>
+  </footer>
+
+</body>
+
+</html>

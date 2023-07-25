@@ -1,0 +1,65 @@
+@font-face {
+  font-family: "Lato";
+  src: url("/fonts/Lato-Regular.ttf");
+}
+
+body {
+  font-family: "Lato", "Arial", sans-serif;
+  font-size: 1.1em;
+  margin: 0em;
+  padding: 0 0 5rem 0;
+  overflow-x: hidden;
+  background: #191d24;
+  color: white;
+}
+
+h1 {
+  font-size: 2.5rem;
+  line-height: 2.5rem;
+  font-family: "LatoThin", Arial, sans-serif;
+  font-weight: bold;
+  color: #006d9c;
+  text-align: center;
+  margin: 2rem 0 1rem 0;
+  text-transform: uppercase;
+}
+
+h2 {
+  font-size: 1.563rem;
+  line-height: 1.8rem;
+  font-family: "LatoThin", Arial, sans-serif;
+  font-weight: 100;
+  color: #006d9c;
+  text-align: center;
+  text-decoration: none;
+  display: block;
+}
+
+a {
+  color: #006d9c;
+  text-decoration: none;
+}
+
+a:hover {
+  text-decoration: underline;
+}
+
+/*Inhalt*/
+
+footer {
+  background: #006d9c;
+  padding: 1rem 0;
+  color: white;
+  text-align: center;
+  cursor: default;
+  display: flex;
+  justify-content: space-evenly;
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+}
+
+footer a {
+  color: white;
+}

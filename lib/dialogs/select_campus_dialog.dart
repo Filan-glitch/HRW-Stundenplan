@@ -12,7 +12,7 @@ class SelectCampusDialog extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return SimpleDialog(
-      title: const Text("Campus auswählen"),
+      title: const Text('Campus auswählen'),
       children: [
         SimpleDialogOption(
           onPressed: () {
@@ -25,7 +25,7 @@ class SelectCampusDialog extends StatelessWidget {
             writeCampus();
             Navigator.pop(context);
           },
-          child: const Text("Mülheim"),
+          child: const Text('Mülheim'),
         ),
         SimpleDialogOption(
           onPressed: () {
@@ -38,7 +38,7 @@ class SelectCampusDialog extends StatelessWidget {
             writeCampus();
             Navigator.pop(context);
           },
-          child: const Text("Bottrop"),
+          child: const Text('Bottrop'),
         ),
       ],
     );

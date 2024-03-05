@@ -22,15 +22,15 @@ class LoginPage extends StatefulWidget {
       redux.ActionTypes.startTask,
     ));
 
-    String identityPageContent = (await http
-            .get(Uri.parse("https://dsf.hs-ruhrwest.de/IdentityServer/")))
+    final String identityPageContent = (await http
+            .get(Uri.parse('https://dsf.hs-ruhrwest.de/IdentityServer/')))
         .body;
 
     store.dispatch(redux.Action(
       redux.ActionTypes.stopTask,
     ));
 
-    return identityPageContent.contains("Logout");
+    return identityPageContent.contains('Logout');
   }
 
   static Future<bool> performLogin(
@@ -77,10 +77,10 @@ class _LoginPageState extends State<LoginPage> {
       appBar: AppBar(
         title: const Text('CampusNet Login'),
       ),
-      body: WillPopScope(
-        onWillPop: () async {
+      body: PopScope(
+        canPop: false,
+        onPopInvoked: (bool didPop) async {
           _cancelLogin();
-          return false;
         },
         child: InAppWebView(
           key: _webViewKey,
@@ -99,7 +99,7 @@ class _LoginPageState extends State<LoginPage> {
             );
           },
           onLoadStop: (controller, url) {
-            if (!url.toString().contains("IdentityServer/Account/Login")) {
+            if (!url.toString().contains('IdentityServer/Account/Login')) {
               return;
             }
             _injectCancelJS(controller);
@@ -111,14 +111,14 @@ class _LoginPageState extends State<LoginPage> {
 
   Future<NavigationActionPolicy> _onNavigationRequest(
       InAppWebViewController controller, NavigationAction action) async {
-    String url = action.request.url.toString();
+    final String url = action.request.url.toString();
 
-    if (url.startsWith(BASE_URL) && url.contains("PRGNAME=LOGINCHECK")) {
+    if (url.startsWith(BASE_URL) && url.contains('PRGNAME=LOGINCHECK')) {
       _handleLogin(url);
       return NavigationActionPolicy.CANCEL;
     }
 
-    if (url.contains("Account/Login") &&
+    if (url.contains('Account/Login') &&
         store.state.loginFormState != LoginFormState.inputRequired) {
       store.dispatch(redux.Action(
         redux.ActionTypes.setLoginFormState,
@@ -131,22 +131,22 @@ class _LoginPageState extends State<LoginPage> {
 
   void _handleLogin(String url) {
     String? args, cnsc;
-    Uri link = Uri.parse(url);
+    final Uri link = Uri.parse(url);
     http.get(link).then((response) async {
       if (LoginPage._loginCompleter!.isCompleted) return;
 
       // extract ARGUMENTS
-      String startpageLink = response.headers["refresh"] ?? "";
-      startpageLink = startpageLink.replaceAll("0; URL=", "");
+      String startpageLink = response.headers['refresh'] ?? '';
+      startpageLink = startpageLink.replaceAll('0; URL=', '');
       args =
-          Uri.parse(startpageLink).queryParameters["ARGUMENTS"]?.split(",")[0];
+          Uri.parse(startpageLink).queryParameters['ARGUMENTS']?.split(',')[0];
 
       // extract CNSC
-      if (response.headers["set-cookie"] != null) {
+      if (response.headers['set-cookie'] != null) {
         for (String cookieString
-            in response.headers["set-cookie"]!.split(",")) {
-          if (!cookieString.contains("cnsc")) continue;
-          cnsc = cookieString.split(";")[0].split("=")[1];
+            in response.headers['set-cookie']!.split(',')) {
+          if (!cookieString.contains('cnsc')) continue;
+          cnsc = cookieString.split(';')[0].split('=')[1];
         }
       }
 
@@ -158,7 +158,7 @@ class _LoginPageState extends State<LoginPage> {
       if (args != null && cnsc != null) {
         store.dispatch(redux.Action(
           redux.ActionTypes.setCredentials,
-          payload: {"cnsc": cnsc, "args": args},
+          payload: {'cnsc': cnsc, 'args': args},
         ));
 
         await LoginPage._onLoginSuccess!();
@@ -172,7 +172,7 @@ class _LoginPageState extends State<LoginPage> {
         if (!LoginPage._loginCompleter!.isCompleted) {
           LoginPage._loginCompleter!.complete(false);
         }
-        showToast("Es ist ein Fehler aufgetreten");
+        showToast('Es ist ein Fehler aufgetreten');
       }
     });
   }

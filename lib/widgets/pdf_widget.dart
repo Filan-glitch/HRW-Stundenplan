@@ -29,12 +29,12 @@ class _PdfWidgetState extends State<PdfWidget> {
     getTemporaryDirectory().then(
       (tempDir) async {
         try {
-          http.Response response = await http.get(Uri.parse(widget.url));
+          final http.Response response = await http.get(Uri.parse(widget.url));
           if (response.statusCode != 200) {
             _errorOccurred();
           }
-          String path = '${tempDir.absolute.path}/food.pdf';
-          File pdf = File(path);
+          final String path = '${tempDir.absolute.path}/food.pdf';
+          final File pdf = File(path);
           await pdf.writeAsBytes(response.bodyBytes);
 
           try {
@@ -62,7 +62,7 @@ class _PdfWidgetState extends State<PdfWidget> {
     getTemporaryDirectory().then(
       (tempDir) async {
         if (_filePath != null) {
-          File pdf = File(_filePath!);
+          final File pdf = File(_filePath!);
           if (await pdf.exists()) {
             await pdf.delete();
           }

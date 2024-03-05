@@ -63,7 +63,7 @@ class _GradesOverviewPageState extends State<GradesOverviewPage> {
   Widget build(BuildContext context) {
     return PageWrapper(
       simpleDesign: true,
-      title: "Prüfungsergebnisse",
+      title: 'Prüfungsergebnisse',
       body: StoreConnector<AppState, AppState>(
           converter: (store) => store.state,
           builder: (context, state) {
@@ -85,7 +85,7 @@ class _GradesOverviewPageState extends State<GradesOverviewPage> {
                     return Padding(
                       padding: const EdgeInsets.only(top: 10.0),
                       child: Text(
-                        "Gesamtnote: ${state.gpa.toString()}",
+                        'Gesamtnote: ${state.gpa.toString()}',
                         textAlign: TextAlign.center,
                         style: const TextStyle(
                           fontWeight: FontWeight.bold,
@@ -95,7 +95,7 @@ class _GradesOverviewPageState extends State<GradesOverviewPage> {
                     );
                   }
 
-                  Module module = state.modules[index - 1];
+                  final Module module = state.modules[index - 1];
                   if (module.status == Status.passed &&
                       module.creditsAll == 0) {
                     return Container();

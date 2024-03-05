@@ -10,10 +10,10 @@ class CrashlyticsDialog extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return DialogWrapper(
-      title: "Crash-Daten",
+      title: 'Crash-Daten',
       children: [
         const Text(
-          "Dürfen wir Daten zu Fehlern und Abstürzen an Firebase Crashlytics senden und auswerten?",
+          'Dürfen wir Daten zu Fehlern und Abstürzen an Firebase Crashlytics senden und auswerten?',
         ),
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -26,7 +26,7 @@ class CrashlyticsDialog extends StatelessWidget {
 
                   Navigator.pop(context);
                 },
-                child: const Text("Ja")),
+                child: const Text('Ja')),
             TextButton(
                 onPressed: () {
                   FirebaseCrashlytics.instance
@@ -35,11 +35,11 @@ class CrashlyticsDialog extends StatelessWidget {
 
                   Navigator.pop(context);
                 },
-                child: const Text("Nein")),
+                child: const Text('Nein')),
           ],
         ),
         Text(
-          "Deine Einstellung wird erst nach einem Neustart der App angewendet",
+          'Deine Einstellung wird erst nach einem Neustart der App angewendet',
           style: TextStyle(
             color: Theme.of(context).dividerColor.withOpacity(0.6),
           ),

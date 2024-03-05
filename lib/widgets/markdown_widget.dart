@@ -23,7 +23,7 @@ class MarkdownWidget extends StatelessWidget {
         if (snapshot.connectionState == ConnectionState.done) {
           if (snapshot.data == null) return Container();
 
-          String content = isUrl
+          final String content = isUrl
               ? (snapshot.data as http.Response).body
               : snapshot.data as String;
 

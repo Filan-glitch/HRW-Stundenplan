@@ -37,8 +37,8 @@ class _HomePageState extends State<HomePage> {
   void initState() {
     super.initState();
 
-    DateTime currentWeek = DateTimeCalculator.getFirstDayOfWeek(
-      DateTimeCalculator.clean(DateTime.now()),
+    DateTime currentWeek = getFirstDayOfWeek(
+      cleanDate(DateTime.now()),
     );
 
     if (DateTime.now().weekday < 6) {
@@ -132,7 +132,7 @@ class _HomePageState extends State<HomePage> {
                     Icons.calendar_view_day,
                     color: Theme.of(context).colorScheme.primary,
                   ),
-                  title: const Text("Tagesübersicht"),
+                  title: const Text('Tagesübersicht'),
                   onTap: () {
                     store.dispatch(redux.Action(
                       redux.ActionTypes.setView,
@@ -147,7 +147,7 @@ class _HomePageState extends State<HomePage> {
                     Icons.view_week,
                     color: Theme.of(context).colorScheme.primary,
                   ),
-                  title: const Text("Wochenübersicht"),
+                  title: const Text('Wochenübersicht'),
                   onTap: () {
                     store.dispatch(redux.Action(
                       redux.ActionTypes.setView,
@@ -162,7 +162,7 @@ class _HomePageState extends State<HomePage> {
                     Icons.calendar_month,
                     color: Theme.of(context).colorScheme.primary,
                   ),
-                  title: const Text("Monatsübersicht"),
+                  title: const Text('Monatsübersicht'),
                   onTap: () {
                     store.dispatch(redux.Action(
                       redux.ActionTypes.setView,
@@ -176,7 +176,7 @@ class _HomePageState extends State<HomePage> {
                   Icons.fastfood,
                   color: Theme.of(context).colorScheme.primary,
                 ),
-                title: const Text("Speiseplan"),
+                title: const Text('Speiseplan'),
                 onTap: () {
                   Navigator.pop(context);
 
@@ -193,7 +193,7 @@ class _HomePageState extends State<HomePage> {
                     Icons.assessment,
                     color: Theme.of(context).colorScheme.primary,
                   ),
-                  title: const Text("Prüfungsergebnisse"),
+                  title: const Text('Prüfungsergebnisse'),
                   onTap: () {
                     Navigator.pop(context);
                     Navigator.push(
@@ -207,7 +207,7 @@ class _HomePageState extends State<HomePage> {
                   Icons.settings,
                   color: Theme.of(context).colorScheme.primary,
                 ),
-                title: const Text("Einstellungen"),
+                title: const Text('Einstellungen'),
                 onTap: () {
                   Navigator.pop(context);
                   Navigator.push(
@@ -228,8 +228,8 @@ class _HomePageState extends State<HomePage> {
                     onHome: () {
                       store.dispatch(redux.Action(
                         redux.ActionTypes.setCurrentWeek,
-                        payload: DateTimeCalculator.getFirstDayOfWeek(
-                          DateTimeCalculator.clean(DateTime.now()),
+                        payload: getFirstDayOfWeek(
+                          cleanDate(DateTime.now()),
                         ),
                       ));
 

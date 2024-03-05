@@ -26,11 +26,11 @@ class _MensaPageState extends State<MensaPage> {
   Widget build(BuildContext context) {
     return PageWrapper(
       simpleDesign: true,
-      title: "Mensa",
+      title: 'Mensa',
       body: StoreConnector<AppState, AppState>(
         converter: (store) => store.state,
         builder: (context, state) {
-          String url = "";
+          String url = '';
 
           if (state.campus == Campus.muelheim && _showCurrentWeek) {
             url = MENSA_MUE_CURRENT_URL;
@@ -60,8 +60,8 @@ class _MensaPageState extends State<MensaPage> {
                       Icons.arrow_back_ios,
                     ),
                   ),
-                  if (_showCurrentWeek) const Text("Aktuelle Woche"),
-                  if (!_showCurrentWeek) const Text("Nächste Woche"),
+                  if (_showCurrentWeek) const Text('Aktuelle Woche'),
+                  if (!_showCurrentWeek) const Text('Nächste Woche'),
                   IconButton(
                     onPressed: _showCurrentWeek
                         ? () {

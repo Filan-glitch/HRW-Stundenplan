@@ -28,12 +28,12 @@ class _WelcomePageState extends State<WelcomePage> {
         children: [
           const Column(
             children: [
-              Text("Willkommen!", style: TextStyle(fontSize: 30.0)),
+              Text('Willkommen!', style: TextStyle(fontSize: 30.0)),
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  Text("bei der ", style: TextStyle(fontSize: 20.0)),
-                  Text("inoffiziellen",
+                  Text('bei der ', style: TextStyle(fontSize: 20.0)),
+                  Text('inoffiziellen',
                       style: TextStyle(
                           fontSize: 20.0,
                           fontWeight: FontWeight.bold,
@@ -41,13 +41,13 @@ class _WelcomePageState extends State<WelcomePage> {
                 ],
               ),
               Text(
-                "CampusNet",
+                'CampusNet',
                 style: TextStyle(
                   fontSize: 32.0,
                 ),
               ),
-              Text("Stundenplan App", style: TextStyle(fontSize: 22.0)),
-              Text("des Institut Informatik", style: TextStyle(fontSize: 17.0)),
+              Text('Stundenplan App', style: TextStyle(fontSize: 22.0)),
+              Text('des Institut Informatik', style: TextStyle(fontSize: 17.0)),
             ],
           ),
           ElevatedButton(
@@ -87,7 +87,7 @@ class _WelcomePageState extends State<WelcomePage> {
                   padding: EdgeInsets.all(
                     10.0,
                   ),
-                  child: Text("CampusNet Login"),
+                  child: Text('CampusNet Login'),
                 ),
               ],
             ),
@@ -114,13 +114,13 @@ class _WelcomePageState extends State<WelcomePage> {
                                   .dividerColor
                                   .withOpacity(0.7),
                             ),
-                            text: "Ich akzeptiere die "),
+                            text: 'Ich akzeptiere die '),
                         TextSpan(
                           style: TextStyle(
                             color: Theme.of(context).dividerColor,
                             decoration: TextDecoration.underline,
                           ),
-                          text: "Nutzungsbedingungen",
+                          text: 'Nutzungsbedingungen',
                           recognizer: TapGestureRecognizer()
                             ..onTap = () {
                               launchUrl(
@@ -137,7 +137,7 @@ class _WelcomePageState extends State<WelcomePage> {
                                 .dividerColor
                                 .withOpacity(0.7),
                           ),
-                          text: " akzeptiert.",
+                          text: ' akzeptiert.',
                         ),
                       ]
                     ),
@@ -164,14 +164,14 @@ class _WelcomePageState extends State<WelcomePage> {
                       Icons.admin_panel_settings,
                       color: Theme.of(context).dividerColor.withOpacity(0.7),
                     ),
-                    const Text("  Datenschutz"),
+                    const Text('  Datenschutz'),
                   ],
                 ),
               )
             ],
           ),
           FutureBuilder(
-            future: rootBundle.loadString("pubspec.yaml"),
+            future: rootBundle.loadString('pubspec.yaml'),
             builder: (context, snapshot) {
               if (snapshot.hasData) {
                 return Text(

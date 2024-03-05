@@ -19,7 +19,7 @@ class PageWrapper extends StatefulWidget {
     this.bottomNavigationBar,
     this.actions = const [],
     this.menuActions = const [],
-    this.title = "Stundenplan",
+    this.title = 'Stundenplan',
     this.canGoBack = false,
     this.simpleDesign = false,
     super.key,

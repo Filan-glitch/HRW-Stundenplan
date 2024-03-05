@@ -13,16 +13,16 @@ final List<Future<void> Function()?> _migrations = [
 ];
 
 Future<void> performMigration() async {
-  String pubspec = await rootBundle.loadString("pubspec.yaml");
-  int appVersionCode = int.parse(loadYaml(pubspec)["version"].split("+")[1]);
+  final String pubspec = await rootBundle.loadString('pubspec.yaml');
+  final int appVersionCode = int.parse(loadYaml(pubspec)['version'].split('+')[1]);
 
-  SharedPreferences prefs = await SharedPreferences.getInstance();
-  int previousVersionCode = prefs.getInt("versionCode") ?? 0;
+  final SharedPreferences prefs = await SharedPreferences.getInstance();
+  final int previousVersionCode = prefs.getInt('versionCode') ?? 0;
 
   for (int i = previousVersionCode; i <= appVersionCode; i++) {
-    Future<void> Function()? migration = _migrations[i - 1];
+    final Future<void> Function()? migration = _migrations[i - 1];
     if (migration == null) continue;
     await migration();
   }
-  prefs.setInt("versionCode", appVersionCode);
+  prefs.setInt('versionCode', appVersionCode);
 }

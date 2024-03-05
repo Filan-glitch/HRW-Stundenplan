@@ -14,28 +14,28 @@ class SelectLockDialog extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return SimpleDialog(
-      title: const Text("Biometrie"),
+      title: const Text('Biometrie'),
       children: [
         SimpleDialogOption(
           onPressed: () {
             setBiometricsMode(Biometrics.OFF);
             Navigator.pop(context);
           },
-          child: const Text("Ohne Sperre"),
+          child: const Text('Ohne Sperre'),
         ),
         SimpleDialogOption(
           onPressed: () {
             setBiometricsMode(Biometrics.ONLY_EXAM_RESULTS);
             Navigator.pop(context);
           },
-          child: const Text("Biometrie nur für Prüfungsergebnisse"),
+          child: const Text('Biometrie nur für Prüfungsergebnisse'),
         ),
         SimpleDialogOption(
           onPressed: () {
             setBiometricsMode(Biometrics.ON);
             Navigator.pop(context);
           },
-          child: const Text("Biometrie aktivieren"),
+          child: const Text('Biometrie aktivieren'),
         ),
       ],
     );
@@ -48,7 +48,7 @@ class SelectLockDialog extends StatelessWidget {
     ));
 
     await LocalAuthentication().stopAuthentication();
-    bool success = await LocalAuthentication().authenticate(
+    final bool success = await LocalAuthentication().authenticate(
       localizedReason: 'Bitte App entsperren',
       options: const AuthenticationOptions(
         stickyAuth: true,

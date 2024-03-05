@@ -45,8 +45,8 @@ class AppState {
   }
 
   AppState() {
-    currentWeek = DateTimeCalculator.getFirstDayOfWeek(
-      DateTimeCalculator.clean(DateTime.now()),
+    currentWeek = getFirstDayOfWeek(
+      cleanDate(DateTime.now()),
     );
 
     if (DateTime.now().weekday >= 6) {

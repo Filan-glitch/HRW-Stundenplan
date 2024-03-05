@@ -14,19 +14,19 @@ import 'connection.dart';
 
 Future<void> loadDataFromStorage() async {
   try {
-    Database db = await openDB();
-    DateFormat formatter = DateFormat('dd/MM/yyyy');
-    List<Map<String, dynamic>> result = await db.query('Events');
-    Map<String, List<Event>> events = {};
+    final Database db = await openDB();
+    final DateFormat formatter = DateFormat('dd/MM/yyyy');
+    final List<Map<String, dynamic>> result = await db.query('Events');
+    final Map<String, List<Event>> events = {};
 
     // fill empty weeks
-    DateTime currentMonday = DateTimeCalculator.getFirstDayOfWeek(
-      DateTimeCalculator.clean(DateTime.now()),
+    DateTime currentMonday = getFirstDayOfWeek(
+      cleanDate(DateTime.now()),
     );
 
-    String? mon = await loadDownloadedRange();
+    final String? mon = await loadDownloadedRange();
     if (mon != null) {
-      DateTime lastFetchedWeek = DateTimeCalculator.clean(formatter.parse(mon));
+      final DateTime lastFetchedWeek = cleanDate(formatter.parse(mon));
 
       while (!lastFetchedWeek.isBefore(currentMonday)) {
         events[formatter.format(currentMonday)] = [];
@@ -35,9 +35,9 @@ Future<void> loadDataFromStorage() async {
     }
 
     for (Map<String, dynamic> item in result) {
-      DateTime eventDate = formatter.parse(item['WeekFrom']).add(Duration(days: int.parse(item['Weekday'])));
+      final DateTime eventDate = formatter.parse(item['WeekFrom']).add(Duration(days: int.parse(item['Weekday'])));
 
-      DateTime today = DateTime.now();
+      final DateTime today = DateTime.now();
       // Remove past events
       if (eventDate.year < today.year || eventDate.year == today.year && eventDate.month < today.month) {
         await db.delete(
@@ -48,7 +48,7 @@ Future<void> loadDataFromStorage() async {
         continue;
       }
 
-      Event event = Event.fromDB(item);
+      final Event event = Event.fromDB(item);
 
       // Add event to list
       if (!events.containsKey(event.weekFrom)) {
@@ -62,8 +62,8 @@ Future<void> loadDataFromStorage() async {
         Action(
           ActionTypes.setEvents,
           payload: {
-            "date": date,
-            "events": events[date],
+            'date': date,
+            'events': events[date],
           },
         ),
       );
@@ -83,9 +83,9 @@ Future<void> loadDataFromStorage() async {
 
 Future<void> writeDataToStorage() async {
   try {
-    DateFormat formatter = DateFormat('dd/MM/yyyy');
+    final DateFormat formatter = DateFormat('dd/MM/yyyy');
     DateTime? lastFetchedWeek;
-    Database db = await openDB();
+    final Database db = await openDB();
 
     await db.delete('Events', where: null);
 
@@ -131,23 +131,23 @@ Future<List<Event>> getNextEvents() async {
   late Database db;
   try {
     db = await openDB();
-    List<Map<String, dynamic>> result = await db.query('Events');
+    final List<Map<String, dynamic>> result = await db.query('Events');
 
     if (DateTime.now().weekday >= 6) {
       return [];
     }
 
-    DateFormat formatter = DateFormat('dd/MM/yyyy');
+    final DateFormat formatter = DateFormat('dd/MM/yyyy');
 
-    DateTime now = DateTime.now();
-    int rangeStart = now.hour * 60 + now.minute + 7;
-    int rangeEnd = now.hour * 60 + now.minute + 23;
-    DateTime monday = DateTimeCalculator.getFirstDayOfWeek(DateTime.now());
+    final DateTime now = DateTime.now();
+    final int rangeStart = now.hour * 60 + now.minute + 7;
+    final int rangeEnd = now.hour * 60 + now.minute + 23;
+    final DateTime monday = getFirstDayOfWeek(DateTime.now());
 
     return result
         .map(Event.fromDB)
         .where((element) {
-          DateTime weekFrom = DateTimeCalculator.clean(
+          final DateTime weekFrom = cleanDate(
             formatter.parse(element.weekFrom),
           );
           return weekFrom.isAtSameMomentAs(monday);

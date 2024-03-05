@@ -10,17 +10,17 @@ enum Weekday {
   String get text {
     switch (value) {
       case 0:
-        return "Montag";
+        return 'Montag';
       case 1:
-        return "Dienstag";
+        return 'Dienstag';
       case 2:
-        return "Mittwoch";
+        return 'Mittwoch';
       case 3:
-        return "Donnerstag";
+        return 'Donnerstag';
       case 4:
-        return "Freitag";
+        return 'Freitag';
       default:
-        return "";
+        return '';
     }
   }
 
@@ -32,13 +32,13 @@ enum Weekday {
   }
 
   static Weekday getByText(String text) {
-    if (text.contains("Dienstag")) {
+    if (text.contains('Dienstag')) {
       return Weekday.tuesday;
-    } else if (text.contains("Mittwoch")) {
+    } else if (text.contains('Mittwoch')) {
       return Weekday.wednesday;
-    } else if (text.contains("Donnerstag")) {
+    } else if (text.contains('Donnerstag')) {
       return Weekday.thursday;
-    } else if (text.contains("Freitag")) {
+    } else if (text.contains('Freitag')) {
       return Weekday.friday;
     } else {
       return Weekday.monday;

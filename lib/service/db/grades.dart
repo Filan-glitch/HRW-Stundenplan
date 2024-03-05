@@ -10,10 +10,10 @@ import 'connection.dart';
 
 Future<void> loadGradesFromStorage() async {
   try {
-    Database db = await openDB();
+    final Database db = await openDB();
 
-    List<Map<String, dynamic>> result = await db.query('Grades');
-    List<Module> modules = [];
+    final List<Map<String, dynamic>> result = await db.query('Grades');
+    final List<Module> modules = [];
 
     for (Map<String, dynamic> item in result) {
       modules.add(Module.fromDB(item));
@@ -38,7 +38,7 @@ Future<void> loadGradesFromStorage() async {
 
 Future<void> writeGradesToStorage() async {
   try {
-    Database db = await openDB();
+    final Database db = await openDB();
 
     await db.delete('Grades', where: null);
 

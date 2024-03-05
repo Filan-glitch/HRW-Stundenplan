@@ -343,6 +343,17 @@ class _SettingsPageState extends State<SettingsPage> {
                       },
                     ),
                     ListTile(
+                      leading: const Icon(Icons.warning_amber_rounded),
+                      title: const Text('Haftungsausschluss'),
+                      onTap: () {
+                        launchUrl(
+                          Uri.parse(
+                            DISCLAIMER_URL,
+                          ),
+                        );
+                      },
+                    ),
+                    ListTile(
                       leading: const Icon(Icons.code),
                       title: const Text('Quellcode'),
                       onTap: () {
@@ -361,6 +372,17 @@ class _SettingsPageState extends State<SettingsPage> {
                         launchUrl(
                           Uri.parse(
                             FEEDBACK_URL,
+                          ),
+                        );
+                      },
+                    ),
+                    ListTile(
+                      leading: const Icon(Icons.info),
+                      title: const Text('Impressum'),
+                      onTap: () {
+                        launchUrl(
+                          Uri.parse(
+                            IMPRINT_URL,
                           ),
                         );
                       },

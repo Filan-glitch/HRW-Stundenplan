@@ -29,7 +29,7 @@ class HorizontalSelector<T> extends StatelessWidget {
               Expanded(
                 child: InkWell(
                   borderRadius: BorderRadius.circular(20),
-                  onTap: () => onChanged(item.key),
+                  onTap: () => value != item.key ? onChanged(item.key) : null,
                   child: Container(
                     decoration: BoxDecoration(
                       color: item.key == value

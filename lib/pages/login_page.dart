@@ -84,15 +84,11 @@ class _LoginPageState extends State<LoginPage> {
         },
         child: InAppWebView(
           key: _webViewKey,
-          initialUrlRequest: URLRequest(url: Uri.parse(LOGIN_URL)),
+          initialUrlRequest: URLRequest(url: WebUri(LOGIN_URL)),
           shouldOverrideUrlLoading: _onNavigationRequest,
-          initialOptions: InAppWebViewGroupOptions(
-            crossPlatform: InAppWebViewOptions(
-              useShouldOverrideUrlLoading: true,
-            ),
-            android: AndroidInAppWebViewOptions(
-              useHybridComposition: true,
-            ),
+          initialSettings: InAppWebViewSettings(
+            useShouldOverrideUrlLoading: true,
+            useHybridComposition: true,
           ),
           onWebViewCreated: (controller) {
             controller.addJavaScriptHandler(

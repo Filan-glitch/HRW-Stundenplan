@@ -7,8 +7,8 @@ class DialogWrapper extends StatelessWidget {
     this.title = "Stundenplan",
     this.children,
     this.isSubPage = false,
-    Key? key,
-  }) : super(key: key);
+    super.key,
+  });
 
   final bool isSubPage;
   final String title;

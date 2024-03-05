@@ -13,7 +13,7 @@ import '../widgets/page_wrapper.dart';
 import 'login_page.dart';
 
 class GradesOverviewPage extends StatefulWidget {
-  const GradesOverviewPage({Key? key}) : super(key: key);
+  const GradesOverviewPage({super.key});
 
   @override
   State<GradesOverviewPage> createState() => _GradesOverviewPageState();

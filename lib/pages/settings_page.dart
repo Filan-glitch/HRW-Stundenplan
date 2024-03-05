@@ -165,7 +165,7 @@ class _SettingsPageState extends State<SettingsPage> {
                             flutterLocalNotificationsPlugin
                                 .resolvePlatformSpecificImplementation<
                                     AndroidFlutterLocalNotificationsPlugin>()
-                                ?.requestPermission();
+                                ?.requestNotificationsPermission();
 
                             showToast(
                               "Aufgrund von Batterie-Optimierung werden Benachrichtigungen ggf. nicht immer korrekt angezeigt.",

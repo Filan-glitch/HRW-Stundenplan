@@ -240,7 +240,7 @@ Future<List<Event>> _parseTimetable(
       var texts = allText.split('\n').map((e) => e.trim()).toList();
 
       if (texts.length > 1) {
-        room = texts[1].replaceAll(RegExp("\(\d+\)"), "").trim();
+        room = texts[1].replaceAll(RegExp("(d+)"), "").trim();
       } else {
         room = ""; // Für den Fall, dass das Format unerwartet ist
       }
@@ -248,7 +248,7 @@ Future<List<Event>> _parseTimetable(
       // Variante 2
       room = element
           .querySelectorAll(".timePeriod a")
-          .map((e) => e.text.replaceAll(RegExp("\(\d+\)"), "").trim())
+          .map((e) => e.text.replaceAll(RegExp("(d+)"), "").trim())
           .join(", ");
     }
 

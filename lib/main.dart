@@ -56,7 +56,8 @@ void main() {
       };
     }
 
-    await clearStorageIfUpdated();
+    // Not needed for this update
+    // await clearStorageIfUpdated();
 
     await loadBiometrics();
     if (store.state.biometrics == Biometrics.ON) {

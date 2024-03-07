@@ -16,7 +16,7 @@ Future<void> loadDataFromStorage() async {
   try {
     final Database db = await openDB();
     final DateFormat formatter = DateFormat('dd/MM/yyyy');
-    final List<Map<String, dynamic>> result = await db.query('Events');
+    final List<Map<String, dynamic>> result = await db.query('Events', where: 'DELETE_FLAG = 0');
     final Map<String, List<Event>> events = {};
 
     // fill empty weeks
@@ -35,11 +35,14 @@ Future<void> loadDataFromStorage() async {
     }
 
     for (Map<String, dynamic> item in result) {
-      final DateTime eventDate = formatter.parse(item['WeekFrom']).add(Duration(days: int.parse(item['Weekday'])));
+      final DateTime eventDate = formatter
+          .parse(item['WeekFrom'])
+          .add(Duration(days: int.parse(item['Weekday'])));
 
       final DateTime today = DateTime.now();
       // Remove past events
-      if (eventDate.year < today.year || eventDate.year == today.year && eventDate.month < today.month) {
+      if (eventDate.year < today.year ||
+          eventDate.year == today.year && eventDate.month < today.month) {
         await db.delete(
           'Events',
           where: 'EventID = ?',
@@ -87,7 +90,7 @@ Future<void> writeDataToStorage() async {
     DateTime? lastFetchedWeek;
     final Database db = await openDB();
 
-    await db.delete('Events', where: null);
+    await db.delete('Events', where: 'DELETE_FLAG = 0');
 
     for (String date in store.state.events.keys) {
       if (lastFetchedWeek == null ||
@@ -99,7 +102,7 @@ Future<void> writeDataToStorage() async {
         await db.insert(
           'Events',
           event.toDB(),
-          conflictAlgorithm: ConflictAlgorithm.replace,
+          conflictAlgorithm: ConflictAlgorithm.ignore,
         );
       }
     }
@@ -131,7 +134,7 @@ Future<List<Event>> getNextEvents() async {
   late Database db;
   try {
     db = await openDB();
-    final List<Map<String, dynamic>> result = await db.query('Events');
+    final List<Map<String, dynamic>> result = await db.query('Events', where: 'DELETE_FLAG = 0');
 
     if (DateTime.now().weekday >= 6) {
       return [];

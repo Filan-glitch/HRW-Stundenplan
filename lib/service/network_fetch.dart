@@ -228,9 +228,10 @@ Future<List<Event>> _parseTimetable(
     final String details =
         element.querySelectorAll('.timePeriod').map((e) => e.text).join();
 
-    final List<RegExpMatch> timePeriod = RegExp(r'(\d{2}):(\d{2}) - (\d{2}):(\d{2})')
-        .allMatches(details)
-        .toList();
+    final List<RegExpMatch> timePeriod =
+        RegExp(r'(\d{2}):(\d{2}) - (\d{2}):(\d{2})')
+            .allMatches(details)
+            .toList();
 
     String room;
 

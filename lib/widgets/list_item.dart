@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_redux/flutter_redux.dart';
 
 import '../dialogs/collision_dialog.dart';
+import '../dialogs/event_delete_dialog.dart';
 import '../model/date_time_calculator.dart';
 import '../model/event.dart';
 import '../model/mode.dart';
@@ -45,9 +46,10 @@ class _ListItemState extends State<ListItem> {
             cleanDate(DateTime.now()),
           );
 
-          final bool isCurrentWeek = state.currentWeek.day == currentMonday.day &&
-              state.currentWeek.month == currentMonday.month &&
-              state.currentWeek.year == currentMonday.year;
+          final bool isCurrentWeek =
+              state.currentWeek.day == currentMonday.day &&
+                  state.currentWeek.month == currentMonday.month &&
+                  state.currentWeek.year == currentMonday.year;
 
           final DateTime now = DateTime.now();
           final DateTime start = DateTime(
@@ -85,6 +87,28 @@ class _ListItemState extends State<ListItem> {
                   context: context,
                   builder: (context) => const CollisionDialog(),
                 );
+              }
+            },
+            onLongPress: () async {
+              final EventDeleteDialogResult? result = await showDialog(
+                context: context,
+                builder: (context) => EventDeleteDialog(
+                  event_name: widget.event.title,
+                ),
+              );
+              if (result == null) return;
+              switch (result) {
+                case EventDeleteDialogResult.only_this:
+                  // TODO: Implement delete event
+                  break;
+                case EventDeleteDialogResult.all_at_this_time:
+                  // TODO: Implement delete all events at this time
+                  break;
+                case EventDeleteDialogResult.all:
+                  // TODO: Implement delete all future events
+                  break;
+                case EventDeleteDialogResult.cancel:
+                  break;
               }
             },
             child: Opacity(

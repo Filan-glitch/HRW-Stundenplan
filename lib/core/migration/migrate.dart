@@ -14,7 +14,8 @@ final List<Future<void> Function()?> _migrations = [
 
 Future<void> performMigration() async {
   final String pubspec = await rootBundle.loadString('pubspec.yaml');
-  final int appVersionCode = int.parse(loadYaml(pubspec)['version'].split('+')[1]);
+  final int appVersionCode =
+      int.parse(loadYaml(pubspec)['version'].split('+')[1]);
 
   final SharedPreferences prefs = await SharedPreferences.getInstance();
   final int previousVersionCode = prefs.getInt('versionCode') ?? 0;

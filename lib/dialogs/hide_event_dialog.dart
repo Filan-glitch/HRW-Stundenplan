@@ -1,44 +1,44 @@
 import 'package:flutter/material.dart';
-import 'package:timetable/model/event.dart';
 
 import '../widgets/dialog_wrapper.dart';
 
-enum EventDeleteDialogResult { only_this, all_at_this_time, all, cancel }
+enum HideEventDialogResult { only_this, all_at_this_time, all, cancel }
 
-class EventDeleteDialog extends StatelessWidget {
+class HideEventDialog extends StatelessWidget {
   final String event_name;
-  const EventDeleteDialog({super.key, required this.event_name});
+
+  const HideEventDialog({super.key, required this.event_name});
 
   @override
   Widget build(BuildContext context) {
     return DialogWrapper(
-      title: '$event_name löschen?',
+      title: '$event_name ausblenden?',
       children: [
-        const Text('Welche Veranstaltungen möchtest du löschen?'),
+        const Text('Welche Veranstaltungen möchtest du ausblenden?'),
         Column(
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           children: [
             TextButton(
               onPressed: () {
-                Navigator.pop(context, EventDeleteDialogResult.only_this);
+                Navigator.pop(context, HideEventDialogResult.only_this);
               },
               child: const Text('Nur diese'),
             ),
             TextButton(
               onPressed: () {
-                Navigator.pop(context, EventDeleteDialogResult.all);
+                Navigator.pop(context, HideEventDialogResult.all);
               },
               child: const Text('Alle zu dieser Zeit'),
             ),
             TextButton(
               onPressed: () {
-                Navigator.pop(context, EventDeleteDialogResult.all);
+                Navigator.pop(context, HideEventDialogResult.all);
               },
               child: const Text('Alle'),
             ),
             TextButton(
               onPressed: () {
-                Navigator.pop(context, EventDeleteDialogResult.cancel);
+                Navigator.pop(context, HideEventDialogResult.cancel);
               },
               child: const Text('Abbrechen'),
             ),

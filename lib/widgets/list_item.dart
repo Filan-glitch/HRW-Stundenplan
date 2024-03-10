@@ -5,7 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_redux/flutter_redux.dart';
 
 import '../dialogs/collision_dialog.dart';
-import '../dialogs/event_delete_dialog.dart';
+import '../dialogs/hide_event_dialog.dart';
 import '../model/date_time_calculator.dart';
 import '../model/event.dart';
 import '../model/mode.dart';
@@ -90,24 +90,24 @@ class _ListItemState extends State<ListItem> {
               }
             },
             onLongPress: () async {
-              final EventDeleteDialogResult? result = await showDialog(
+              final HideEventDialogResult? result = await showDialog(
                 context: context,
-                builder: (context) => EventDeleteDialog(
+                builder: (context) => HideEventDialog(
                   event_name: widget.event.title,
                 ),
               );
               if (result == null) return;
               switch (result) {
-                case EventDeleteDialogResult.only_this:
+                case HideEventDialogResult.only_this:
                   // TODO: Implement delete event
                   break;
-                case EventDeleteDialogResult.all_at_this_time:
+                case HideEventDialogResult.all_at_this_time:
                   // TODO: Implement delete all events at this time
                   break;
-                case EventDeleteDialogResult.all:
+                case HideEventDialogResult.all:
                   // TODO: Implement delete all future events
                   break;
-                case EventDeleteDialogResult.cancel:
+                case HideEventDialogResult.cancel:
                   break;
               }
             },

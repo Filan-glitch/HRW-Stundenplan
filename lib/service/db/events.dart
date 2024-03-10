@@ -90,7 +90,7 @@ Future<void> writeDataToStorage() async {
     DateTime? lastFetchedWeek;
     final Database db = await openDB();
 
-    await db.delete('Events', where: 'DELETE_FLAG = 0');
+    await db.delete('Events', where: 'HIDE_FLAG = 0');
 
     for (String date in store.state.events.keys) {
       if (lastFetchedWeek == null ||
@@ -134,7 +134,8 @@ Future<List<Event>> getNextEvents() async {
   late Database db;
   try {
     db = await openDB();
-    final List<Map<String, dynamic>> result = await db.query('Events', where: 'DELETE_FLAG = 0');
+    final List<Map<String, dynamic>> result =
+        await db.query('Events', where: 'HIDE_FLAG = 0');
 
     if (DateTime.now().weekday >= 6) {
       return [];

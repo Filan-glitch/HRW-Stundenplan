@@ -16,7 +16,8 @@ Future<void> loadDataFromStorage() async {
   try {
     final Database db = await openDB();
     final DateFormat formatter = DateFormat('dd/MM/yyyy');
-    final List<Map<String, dynamic>> result = await db.query('Events', where: 'DELETE_FLAG = 0');
+    final List<Map<String, dynamic>> result =
+        await db.query('Events', where: 'HIDE_FLAG = 0');
     final Map<String, List<Event>> events = {};
 
     // fill empty weeks

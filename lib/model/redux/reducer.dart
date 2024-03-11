@@ -96,20 +96,21 @@ AppState appReducer(AppState state, dynamic action) {
       state.events.update(eventToDelete.weekFrom, (value) {
         return value.where((event) => event != eventToDelete).toList();
       });
-      setEventHideFlag(eventToDelete, true);
+      setEventsHideFlag([eventToDelete], true);
       break;
     case ActionTypes.deleteEvents:
       final Event eventToDelete = action.payload;
 
-      state.events.forEach((key, value) async {
-        value
-            .where((event) =>
-                event.title == eventToDelete.title &&
-                event.start == eventToDelete.start &&
-                event.end == eventToDelete.end &&
-                event.day == eventToDelete.day)
-            .forEach((event) async => await setEventHideFlag(event, true));
-      });
+      final List<Event> eventsToDelete = state.events.values
+          .expand((x) => x)
+          .where((event) =>
+              event.title == eventToDelete.title &&
+              event.start == eventToDelete.start &&
+              event.end == eventToDelete.end &&
+              event.day == eventToDelete.day)
+          .toList();
+
+      setEventsHideFlag(eventsToDelete, true);
 
       state.events.updateAll((key, value) {
         return value
@@ -123,17 +124,26 @@ AppState appReducer(AppState state, dynamic action) {
       break;
     case ActionTypes.deleteAllEvents:
       final Event eventToDelete = action.payload;
-      state.events.forEach((key, value) async {
-        value
-            .where((event) => event.title == eventToDelete.title)
-            .forEach((event) async => await setEventHideFlag(event, true));
-      });
+
+      final List<Event> eventsToDelete = state.events.values
+          .expand((x) => x)
+          .where((event) => event.title == eventToDelete.title)
+          .toList();
+
+      setEventsHideFlag(eventsToDelete, true);
 
       state.events.updateAll((key, value) {
         return value
             .where((event) => event.title != eventToDelete.title)
             .toList();
       });
+      break;
+    case ActionTypes.addEvent:
+      final Event eventToAdd = action.payload;
+      state.events.update(eventToAdd.weekFrom, (value) {
+        return value..add(eventToAdd);
+      });
+      state.events[eventToAdd.weekFrom]!.sort();
       break;
     default:
       break;

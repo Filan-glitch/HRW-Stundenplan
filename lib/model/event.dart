@@ -1,3 +1,6 @@
+import 'package:intl/intl.dart';
+
+import 'date_time_calculator.dart';
 import 'mode.dart';
 import 'time.dart';
 import 'weekday.dart';
@@ -74,12 +77,15 @@ class Event implements Comparable<Event> {
 
   @override
   int compareTo(Event other) {
-    return start.compareTo(other.start);
+    return cleanDate(DateFormat('dd/MM/yyyy').parse(weekFrom))
+        .add(Duration(days: day.value))
+        .compareTo(cleanDate(DateFormat('dd/MM/yyyy').parse(other.weekFrom))
+            .add(Duration(days: other.day.value)));
   }
 
   bool isCollidingWith(Event other) {
     return start.compareTo(other.start) <= 0 &&
-            end.compareTo(other.start) > 0 ||
+        end.compareTo(other.start) > 0 ||
         start.compareTo(other.end) < 0 && end.compareTo(other.end) >= 0;
   }
 }

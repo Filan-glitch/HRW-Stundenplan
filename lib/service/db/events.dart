@@ -143,16 +143,26 @@ Future<List<Event>> getNextEvents() async {
   }
 }
 
-Future<void> setEventHideFlag(Event event, bool value) async {
-  late Database db;
+Future<void> setEventsHideFlag(List<Event> events, bool value) async {
+  final Database db = await openDB();
+  await db.transaction((txn) async {
+    for (var event in events) {
+      await txn.update(
+        'Events',
+        {'HIDE_FLAG': value ? 1 : 0},
+        where: 'EventID = ?',
+        whereArgs: [event.eventID],
+      );
+    }
+  });
+  await db.close();
+}
+
+Future<List<Event>> getHiddenEvents() async {
+  final db = await openDB();
   try {
-    db = await openDB();
-    await db.update(
-      'Events',
-      {'HIDE_FLAG': value ? 1 : 0},
-      where: 'EventID = ?',
-      whereArgs: [event.eventID],
-    );
+    final result = await db.query('Events', where: 'HIDE_FLAG = 1');
+    return result.map(Event.fromDB).toList();
   } finally {
     await db.close();
   }

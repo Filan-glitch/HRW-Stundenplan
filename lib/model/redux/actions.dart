@@ -24,6 +24,7 @@ enum ActionTypes {
   deleteEvent,
   deleteEvents,
   deleteAllEvents,
+  addEvent,
 }
 
 /// Representation of a redux action with its [type] and optional [payload].

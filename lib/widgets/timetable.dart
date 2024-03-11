@@ -67,6 +67,7 @@ class TimetableWidget extends StatelessWidget {
               itemCount: events.length,
               padding: const EdgeInsets.all(10),
               itemBuilder: (context, index) {
+                events.sort();
                 // display break widget, if there is a time span longer than 15 minutes
                 if (events.length > index + 1 &&
                     events[index + 1].start.totalMinutes -

@@ -12,7 +12,6 @@ import '../model/mode.dart';
 import '../model/redux/actions.dart' as redux;
 import '../model/redux/app_state.dart';
 import '../model/redux/store.dart';
-import '../widgets/timetable.dart';
 
 class ListItem extends StatefulWidget {
   const ListItem({required this.event, super.key});
@@ -108,8 +107,6 @@ class _ListItemState extends State<ListItem> {
                       payload: widget.event,
                     ),
                   );
-                  checkForCollisions(
-                      store.state.events[widget.event.weekFrom]!);
                   break;
                 case HideEventDialogResult.all_at_this_time:
                   store.dispatch(
@@ -118,8 +115,6 @@ class _ListItemState extends State<ListItem> {
                       payload: widget.event,
                     ),
                   );
-                  checkForCollisions(
-                      store.state.events.values.expand((e) => e).toList());
                   break;
                 case HideEventDialogResult.all:
                   store.dispatch(
@@ -128,8 +123,6 @@ class _ListItemState extends State<ListItem> {
                       payload: widget.event,
                     ),
                   );
-                  checkForCollisions(
-                      store.state.events.values.expand((e) => e).toList());
                   break;
                 case HideEventDialogResult.cancel:
                   break;

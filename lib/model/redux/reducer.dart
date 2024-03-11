@@ -15,6 +15,7 @@ AppState appReducer(AppState state, dynamic action) {
   switch (action.type) {
     case ActionTypes.setEvents:
       state.events[action.payload['date']] = action.payload['events'];
+      checkForCollisions(state.events.values.expand((e) => e).toList());
       break;
     case ActionTypes.clear:
       state
@@ -96,7 +97,10 @@ AppState appReducer(AppState state, dynamic action) {
       state.events.update(eventToDelete.weekFrom, (value) {
         return value.where((event) => event != eventToDelete).toList();
       });
+
       setEventsHideFlag([eventToDelete], true);
+
+      checkForCollisions(state.events.values.expand((e) => e).toList());
       break;
     case ActionTypes.deleteEvents:
       final Event eventToDelete = action.payload;
@@ -121,6 +125,8 @@ AppState appReducer(AppState state, dynamic action) {
                 event.day != eventToDelete.day)
             .toList();
       });
+
+      checkForCollisions(state.events.values.expand((e) => e).toList());
       break;
     case ActionTypes.deleteAllEvents:
       final Event eventToDelete = action.payload;
@@ -137,6 +143,8 @@ AppState appReducer(AppState state, dynamic action) {
             .where((event) => event.title != eventToDelete.title)
             .toList();
       });
+
+      checkForCollisions(state.events.values.expand((e) => e).toList());
       break;
     case ActionTypes.addEvent:
       final Event eventToAdd = action.payload;
@@ -144,6 +152,8 @@ AppState appReducer(AppState state, dynamic action) {
         return value..add(eventToAdd);
       });
       state.events[eventToAdd.weekFrom]!.sort();
+
+      checkForCollisions(state.events.values.expand((e) => e).toList());
       break;
     default:
       break;

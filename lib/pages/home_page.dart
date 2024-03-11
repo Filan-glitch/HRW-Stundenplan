@@ -137,7 +137,7 @@ class _HomePageState extends State<HomePage> {
                 title: const Text('Ausgeblendete Veranstaltungen'),
                 onTap: () async {
                   Navigator.pop(context);
-                  List<Event> events = await getHiddenEvents();
+                  final List<Event> events = await getHiddenEvents();
                   events.sort();
                   Navigator.push(
                     context,

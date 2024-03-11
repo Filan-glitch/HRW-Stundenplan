@@ -84,8 +84,23 @@ class Event implements Comparable<Event> {
   }
 
   bool isCollidingWith(Event other) {
-    return start.compareTo(other.start) <= 0 &&
-        end.compareTo(other.start) > 0 ||
-        start.compareTo(other.end) < 0 && end.compareTo(other.end) >= 0;
+    return this.weekFrom == other.weekFrom &&
+        this.day == other.day &&
+        (start.compareTo(other.start) <= 0 && end.compareTo(other.start) > 0 ||
+            start.compareTo(other.end) < 0 && end.compareTo(other.end) >= 0);
   }
+}
+
+void checkForCollisions(List<Event> events) {
+  events.forEach((element) {
+    element.collision = false;
+  });
+  events.asMap().forEach((i, event1) {
+    events.sublist(i + 1).forEach((event2) {
+      if (event1.isCollidingWith(event2)) {
+        event1.collision = true;
+        event2.collision = true;
+      }
+    });
+  });
 }

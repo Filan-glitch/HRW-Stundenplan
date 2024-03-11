@@ -60,7 +60,6 @@ class TimetableWidget extends StatelessWidget {
                 .where((element) => element.day == weekday)
                 .toList()
               ..sort();
-            checkForCollisions(events);
           }
 
           return ListView.builder(
@@ -92,18 +91,4 @@ class TimetableWidget extends StatelessWidget {
       );
     });
   }
-}
-
-void checkForCollisions(List<Event> events) {
-  events.forEach((element) {
-    element.collision = false;
-  });
-  events.asMap().forEach((i, event1) {
-    events.sublist(i + 1).forEach((event2) {
-      if (event1.isCollidingWith(event2)) {
-        event1.collision = true;
-        event2.collision = true;
-      }
-    });
-  });
 }

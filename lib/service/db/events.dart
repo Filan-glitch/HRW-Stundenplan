@@ -88,36 +88,25 @@ Future<void> loadDataFromStorage() async {
 Future<void> writeDataToStorage() async {
   try {
     final DateFormat formatter = DateFormat('dd/MM/yyyy');
-    DateTime? lastFetchedWeek;
     final Database db = await openDB();
 
     await db.delete('Events', where: 'HIDE_FLAG = 0');
 
-    for (String date in store.state.events.keys) {
-      if (lastFetchedWeek == null ||
-          formatter.parse(date).isAfter(lastFetchedWeek)) {
-        lastFetchedWeek = formatter.parse(date);
-      }
+    final DateTime? lastFetchedWeek = store.state.events.keys
+        .map((date) => formatter.parse(date))
+        .reduce((a, b) => a.isAfter(b) ? a : b);
 
-      for (Event event in store.state.events[date]!) {
-        await db.insert(
-          'Events',
-          event.toDB(),
-          conflictAlgorithm: ConflictAlgorithm.ignore,
-        );
-      }
+    for (Event event in store.state.events.values.expand((x) => x)) {
+      await db.insert('Events', event.toDB(),
+          conflictAlgorithm: ConflictAlgorithm.ignore);
     }
 
     if (lastFetchedWeek != null) {
       await writeDownloadedRange(formatter.format(lastFetchedWeek));
     }
 
-    store.dispatch(
-      Action(
-        ActionTypes.setLastUpdated,
-        payload: DateFormat('dd.MM.yyyy HH:mm').format(DateTime.now()),
-      ),
-    );
+    store.dispatch(Action(ActionTypes.setLastUpdated,
+        payload: formatter.format(DateTime.now())));
     writeLastUpdated();
 
     await db.close();
@@ -132,36 +121,38 @@ Future<void> writeDataToStorage() async {
 }
 
 Future<List<Event>> getNextEvents() async {
+  final db = await openDB();
+  final now = DateTime.now();
+  final rangeStart = now.hour * 60 + now.minute + 7;
+  final rangeEnd = now.hour * 60 + now.minute + 23;
+  final monday = getFirstDayOfWeek(now);
+
+  try {
+    final result = await db.query('Events', where: 'HIDE_FLAG = 0');
+    return result
+        .map(Event.fromDB)
+        .where((event) =>
+            cleanDate(DateFormat('dd/MM/yyyy').parse(event.weekFrom))
+                .isAtSameMomentAs(monday) &&
+            event.day == Weekday.getByValue(now.weekday - 1) &&
+            event.start.totalMinutes >= rangeStart &&
+            event.start.totalMinutes <= rangeEnd)
+        .toList();
+  } finally {
+    await db.close();
+  }
+}
+
+Future<void> setEventHideFlag(Event event, bool value) async {
   late Database db;
   try {
     db = await openDB();
-    final List<Map<String, dynamic>> result =
-        await db.query('Events', where: 'HIDE_FLAG = 0');
-
-    if (DateTime.now().weekday >= 6) {
-      return [];
-    }
-
-    final DateFormat formatter = DateFormat('dd/MM/yyyy');
-
-    final DateTime now = DateTime.now();
-    final int rangeStart = now.hour * 60 + now.minute + 7;
-    final int rangeEnd = now.hour * 60 + now.minute + 23;
-    final DateTime monday = getFirstDayOfWeek(DateTime.now());
-
-    return result
-        .map(Event.fromDB)
-        .where((element) {
-          final DateTime weekFrom = cleanDate(
-            formatter.parse(element.weekFrom),
-          );
-          return weekFrom.isAtSameMomentAs(monday);
-        })
-        .where((element) =>
-            element.day == Weekday.getByValue(DateTime.now().weekday - 1))
-        .where((element) => element.start.totalMinutes >= rangeStart)
-        .where((element) => element.start.totalMinutes <= rangeEnd)
-        .toList();
+    await db.update(
+      'Events',
+      {'HIDE_FLAG': value ? 1 : 0},
+      where: 'EventID = ?',
+      whereArgs: [event.eventID],
+    );
   } finally {
     await db.close();
   }

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart' as ui;
 
+import '../../service/db/events.dart';
 import '../biometrics.dart';
 import '../campus.dart';
 import '../date_time_calculator.dart';
@@ -95,9 +96,21 @@ AppState appReducer(AppState state, dynamic action) {
       state.events.update(eventToDelete.weekFrom, (value) {
         return value.where((event) => event != eventToDelete).toList();
       });
+      setEventHideFlag(eventToDelete, true);
       break;
     case ActionTypes.deleteEvents:
       final Event eventToDelete = action.payload;
+
+      state.events.forEach((key, value) async {
+        value
+            .where((event) =>
+                event.title == eventToDelete.title &&
+                event.start == eventToDelete.start &&
+                event.end == eventToDelete.end &&
+                event.day == eventToDelete.day)
+            .forEach((event) async => await setEventHideFlag(event, true));
+      });
+
       state.events.updateAll((key, value) {
         return value
             .where((event) =>
@@ -110,6 +123,12 @@ AppState appReducer(AppState state, dynamic action) {
       break;
     case ActionTypes.deleteAllEvents:
       final Event eventToDelete = action.payload;
+      state.events.forEach((key, value) async {
+        value
+            .where((event) => event.title == eventToDelete.title)
+            .forEach((event) async => await setEventHideFlag(event, true));
+      });
+
       state.events.updateAll((key, value) {
         return value
             .where((event) => event.title != eventToDelete.title)

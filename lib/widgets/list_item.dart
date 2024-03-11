@@ -110,7 +110,6 @@ class _ListItemState extends State<ListItem> {
                   );
                   checkForCollisions(
                       store.state.events[widget.event.weekFrom]!);
-                  // TODO: Implement setting hide flag in database
                   break;
                 case HideEventDialogResult.all_at_this_time:
                   store.dispatch(
@@ -121,7 +120,6 @@ class _ListItemState extends State<ListItem> {
                   );
                   checkForCollisions(
                       store.state.events.values.expand((e) => e).toList());
-                  // TODO: Implement setting hide flag in database
                   break;
                 case HideEventDialogResult.all:
                   store.dispatch(
@@ -132,7 +130,6 @@ class _ListItemState extends State<ListItem> {
                   );
                   checkForCollisions(
                       store.state.events.values.expand((e) => e).toList());
-                  // TODO: Implement setting hide flag in database
                   break;
                 case HideEventDialogResult.cancel:
                   break;

@@ -26,7 +26,7 @@ class HideEventDialog extends StatelessWidget {
             ),
             TextButton(
               onPressed: () {
-                Navigator.pop(context, HideEventDialogResult.all);
+                Navigator.pop(context, HideEventDialogResult.all_at_this_time);
               },
               child: const Text('Alle zu dieser Zeit'),
             ),

@@ -55,13 +55,12 @@ class TimetableWidget extends StatelessWidget {
             );
           }
 
-          for (int i = 0; i < events.length - 1; i++) {
-            for (int j = i + 1; j < events.length; j++) {
-              if (events.elementAt(i).isCollidingWith(events.elementAt(j))) {
-                events[i].collision = true;
-                events[j].collision = true;
-              }
-            }
+          if (state.events.containsKey(key)) {
+            events = state.events[key]!
+                .where((element) => element.day == weekday)
+                .toList()
+              ..sort();
+            checkForCollisions(events);
           }
 
           return ListView.builder(
@@ -92,4 +91,18 @@ class TimetableWidget extends StatelessWidget {
       );
     });
   }
+}
+
+void checkForCollisions(List<Event> events) {
+  events.forEach((element) {
+    element.collision = false;
+  });
+  events.asMap().forEach((i, event1) {
+    events.sublist(i + 1).forEach((event2) {
+      if (event1.isCollidingWith(event2)) {
+        event1.collision = true;
+        event2.collision = true;
+      }
+    });
+  });
 }

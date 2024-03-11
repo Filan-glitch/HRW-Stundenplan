@@ -9,7 +9,10 @@ import '../dialogs/hide_event_dialog.dart';
 import '../model/date_time_calculator.dart';
 import '../model/event.dart';
 import '../model/mode.dart';
+import '../model/redux/actions.dart' as redux;
 import '../model/redux/app_state.dart';
+import '../model/redux/store.dart';
+import '../widgets/timetable.dart';
 
 class ListItem extends StatefulWidget {
   const ListItem({required this.event, super.key});
@@ -99,13 +102,37 @@ class _ListItemState extends State<ListItem> {
               if (result == null) return;
               switch (result) {
                 case HideEventDialogResult.only_this:
-                  // TODO: Implement delete event
+                  store.dispatch(
+                    redux.Action(
+                      redux.ActionTypes.deleteEvent,
+                      payload: widget.event,
+                    ),
+                  );
+                  checkForCollisions(
+                      store.state.events[widget.event.weekFrom]!);
+                  // TODO: Implement setting hide flag in database
                   break;
                 case HideEventDialogResult.all_at_this_time:
-                  // TODO: Implement delete all events at this time
+                  store.dispatch(
+                    redux.Action(
+                      redux.ActionTypes.deleteEvents,
+                      payload: widget.event,
+                    ),
+                  );
+                  checkForCollisions(
+                      store.state.events.values.expand((e) => e).toList());
+                  // TODO: Implement setting hide flag in database
                   break;
                 case HideEventDialogResult.all:
-                  // TODO: Implement delete all future events
+                  store.dispatch(
+                    redux.Action(
+                      redux.ActionTypes.deleteAllEvents,
+                      payload: widget.event,
+                    ),
+                  );
+                  checkForCollisions(
+                      store.state.events.values.expand((e) => e).toList());
+                  // TODO: Implement setting hide flag in database
                   break;
                 case HideEventDialogResult.cancel:
                   break;

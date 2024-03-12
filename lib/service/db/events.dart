@@ -73,6 +73,22 @@ Future<void> loadDataFromStorage() async {
       );
     }
 
+    //remove past hidden events
+    final List<Event> hiddenEvents = await getHiddenEvents();
+    final DateTime now = DateTime.now();
+    for (Event event in hiddenEvents) {
+      final DateTime eventDate =
+          formatter.parse(event.weekFrom).add(Duration(days: event.day.value));
+      if (eventDate.year < now.year ||
+          eventDate.year == now.year && eventDate.month < now.month) {
+        await db.delete(
+          'Events',
+          where: 'EventID = ?',
+          whereArgs: [event.eventID],
+        );
+      }
+    }
+
     await db.close();
   } catch (e, stackTrace) {
     showToast('Es ist ein Fehler aufgetreten');
@@ -97,8 +113,12 @@ Future<void> writeDataToStorage() async {
         .reduce((a, b) => a.isAfter(b) ? a : b);
 
     for (Event event in store.state.events.values.expand((x) => x)) {
-      await db.insert('Events', event.toDB(),
-          conflictAlgorithm: ConflictAlgorithm.ignore);
+      // Makes a db call, where event gets inserted into the db, but when already exists it gets update all of its columns except the HIDE_FLAG
+      await db.insert(
+        'Events',
+        event.toDB(),
+        conflictAlgorithm: ConflictAlgorithm.replace,
+      );
     }
 
     if (lastFetchedWeek != null) {

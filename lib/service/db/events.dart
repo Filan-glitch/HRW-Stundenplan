@@ -117,8 +117,10 @@ Future<void> writeDataToStorage() async {
       await db.insert(
         'Events',
         event.toDB(),
-        conflictAlgorithm: ConflictAlgorithm.replace,
+        conflictAlgorithm: ConflictAlgorithm.ignore,
       );
+      await db.update('Events', event.toDB(),
+          where: 'EventID = ?', whereArgs: [event.eventID]);
     }
 
     if (lastFetchedWeek != null) {

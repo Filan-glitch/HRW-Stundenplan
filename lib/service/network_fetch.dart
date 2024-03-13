@@ -32,10 +32,13 @@ Future<void> reloadAll() async {
   futures.add(fetchAccountData());
   await Future.wait(futures);
 
+  store.dispatch(Action(ActionTypes.startTask));
   await writeDataToStorage();
   await writeGradesToStorage();
   await writeGPA();
   await writeAccount();
+  await loadDataFromStorage();
+  store.dispatch(Action(ActionTypes.stopTask));
 }
 
 Future<void> loadWeekInterval({DateTime? start, int weeks = 6}) {

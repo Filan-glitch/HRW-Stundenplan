@@ -2,7 +2,7 @@
 
 - Verbesserte Mensa Ansicht
 - Termine ausblenden
-- Mensa PDF Reload fix
+- Kleine Aktualisierungen
 
 # v1.5.2
 

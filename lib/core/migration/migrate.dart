@@ -21,8 +21,8 @@ Future<void> performMigration() async {
   final SharedPreferences prefs = await SharedPreferences.getInstance();
   final int previousVersionCode = prefs.getInt('versionCode') ?? 0;
 
-  for (int i = previousVersionCode; i <= appVersionCode; i++) {
-    final Future<void> Function()? migration = _migrations[i - 1];
+  for (int i = previousVersionCode; i < appVersionCode; i++) {
+    final Future<void> Function()? migration = _migrations[i];
     if (migration == null) continue;
     await migration();
   }

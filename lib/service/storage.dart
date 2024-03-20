@@ -59,7 +59,7 @@ Future<void> loadDesign() async {
 
 Future<void> writeCampus() async {
   final SharedPreferences prefs = await SharedPreferences.getInstance();
-  prefs.setString('campus', store.state.campus.text);
+  prefs.setString('campus', store.state.selectedCampus.text);
 }
 
 Future<void> loadCampus() async {

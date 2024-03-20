@@ -41,6 +41,12 @@ class HorizontalSelector<T> extends StatelessWidget {
                     child: Text(
                       item.value,
                       textAlign: TextAlign.center,
+                      style: TextStyle(
+                        color: item.key == value ||
+                                Theme.of(context).brightness == Brightness.dark
+                            ? Colors.white
+                            : Colors.black,
+                      ),
                     ),
                   ),
                 ),

@@ -1,5 +1,3 @@
-import 'dart:developer';
-
 import 'package:flutter/services.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:yaml/yaml.dart';
@@ -23,10 +21,9 @@ Future<void> performMigration() async {
   final SharedPreferences prefs = await SharedPreferences.getInstance();
   final int previousVersionCode = prefs.getInt('versionCode') ?? 0;
 
-  for (int i = previousVersionCode; i < appVersionCode; i++) {
-    final Future<void> Function()? migration = _migrations[i];
+  for (int i = previousVersionCode; i <= appVersionCode; i++) {
+    final Future<void> Function()? migration = _migrations[i - 1];
     if (migration == null) continue;
-    log('Running migration from $i to ${i + 1}');
     await migration();
   }
   prefs.setInt('versionCode', appVersionCode);

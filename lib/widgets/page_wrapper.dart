@@ -84,6 +84,7 @@ class _PageWrapperState extends State<PageWrapper> with WidgetsBindingObserver {
       mainContent = Scaffold(
         appBar: AppBar(
           title: Text(widget.title),
+          actions: widget.actions,
         ),
         body: Padding(
           padding: EdgeInsets.only(

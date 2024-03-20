@@ -25,6 +25,7 @@ enum ActionTypes {
   hideEventsByTime,
   hideEventsByTitle,
   addEvent,
+  setCanteenData,
 }
 
 /// Representation of a redux action with its [type] and optional [payload].

@@ -53,7 +53,7 @@ AppState appReducer(AppState state, dynamic action) {
       state.gpa = action.payload;
       break;
     case ActionTypes.setCampus:
-      state.campus = action.payload;
+      state.selectedCampus = action.payload;
       break;
     case ActionTypes.setBiometricsType:
       state.biometrics = action.payload;
@@ -91,6 +91,8 @@ AppState appReducer(AppState state, dynamic action) {
     case ActionTypes.addEvent:
       showEvent(action, state);
       break;
+    case ActionTypes.setCanteenData:
+      state.campuses = action.payload;
     default:
       break;
   }
@@ -171,7 +173,7 @@ void clearState(AppState state) {
     ..events = {}
     ..modules = []
     ..gpa = 0
-    ..campus = Campus.muelheim
+    ..selectedCampus = Campus.muelheim
     ..biometrics = Biometrics.OFF
     ..currentView = TimetableView.daily
     ..defaultView = TimetableView.daily

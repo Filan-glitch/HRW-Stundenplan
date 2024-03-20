@@ -57,8 +57,9 @@ class _WelcomePageState extends State<WelcomePage> {
                 child: ElevatedButton(
                   style: ButtonStyle(
                     backgroundColor: MaterialStateProperty.resolveWith<Color?>(
-                          (Set<MaterialState> states) {
-                        if (states.contains(MaterialState.disabled)) return Colors.grey;
+                      (Set<MaterialState> states) {
+                        if (states.contains(MaterialState.disabled))
+                          return Colors.grey;
                         return null;
                       },
                     ),
@@ -71,17 +72,17 @@ class _WelcomePageState extends State<WelcomePage> {
                   ),
                   onPressed: (_isChecked)
                       ? () async {
-                    LoginPage.performLogin(onLoginSuccess: () async {
-                      await loadWeekInterval();
-                      await fetchGradeData().then((_) {
-                        writeGradesToStorage();
-                        writeGPA();
-                      });
-                      await fetchAccountData().then((_) {
-                        writeAccount();
-                      });
-                    });
-                  }
+                          LoginPage.performLogin(onLoginSuccess: () async {
+                            await loadWeekInterval();
+                            await fetchGradeData().then((_) {
+                              writeGradesToStorage();
+                              writeGPA();
+                            });
+                            await fetchAccountData().then((_) {
+                              writeAccount();
+                            });
+                          });
+                        }
                       : null,
                   child: const Row(
                     mainAxisSize: MainAxisSize.min,
@@ -111,89 +112,88 @@ class _WelcomePageState extends State<WelcomePage> {
                     SizedBox(
                       width: MediaQuery.of(context).size.width * 0.75,
                       child: RichText(
-                        text: TextSpan(
-                            children: [
-                              TextSpan(
-                                  style: TextStyle(
-                                    color: Theme.of(context)
-                                        .dividerColor
-                                        .withOpacity(0.7),
+                        text: TextSpan(children: [
+                          TextSpan(
+                              style: TextStyle(
+                                color: Theme.of(context)
+                                    .dividerColor
+                                    .withOpacity(0.7),
+                              ),
+                              text: 'Ich akzeptiere die '),
+                          TextSpan(
+                            style: TextStyle(
+                              color: Theme.of(context).dividerColor,
+                              decoration: TextDecoration.underline,
+                            ),
+                            text: 'Nutzungsbedingungen',
+                            recognizer: TapGestureRecognizer()
+                              ..onTap = () {
+                                launchUrl(
+                                  Uri.parse(
+                                    TERMS_URL,
                                   ),
-                                  text: 'Ich akzeptiere die '),
-                              TextSpan(
-                                style: TextStyle(
-                                  color: Theme.of(context).dividerColor,
-                                  decoration: TextDecoration.underline,
-                                ),
-                                text: 'Nutzungsbedingungen',
-                                recognizer: TapGestureRecognizer()
-                                  ..onTap = () {
-                                    launchUrl(
-                                      Uri.parse(
-                                        TERMS_URL,
-                                      ),
-                                      mode: LaunchMode.externalApplication,
-                                    );
-                                  },
-                              ),
-                              TextSpan(
-                                style: TextStyle(
-                                  color: Theme.of(context)
-                                      .dividerColor
-                                      .withOpacity(0.7),
-                                ),
-                                text: ' und ',
-                              ),
-                              TextSpan(
-                                style: TextStyle(
-                                  color: Theme.of(context).dividerColor,
-                                  decoration: TextDecoration.underline,
-                                ),
-                                text: 'Datenschutzrichtlinie',
-                                recognizer: TapGestureRecognizer()
-                                  ..onTap = () {
-                                    launchUrl(
-                                      Uri.parse(
-                                        PRIVACY_URL,
-                                      ),
-                                      mode: LaunchMode.externalApplication,
-                                    );
-                                  },
-                              ),
-                              TextSpan(
-                                style: TextStyle(
-                                  color: Theme.of(context)
-                                      .dividerColor
-                                      .withOpacity(0.7),
-                                ),
-                                text: ' und nehme eindeutig zur Kenntnis, dass alle Angaben ohne Gewähr sind und der ',
-                              ),
-                              TextSpan(
-                                style: TextStyle(
-                                  color: Theme.of(context).dividerColor,
-                                  decoration: TextDecoration.underline,
-                                ),
-                                text: 'Haftungsausschluss',
-                                recognizer: TapGestureRecognizer()
-                                  ..onTap = () {
-                                    launchUrl(
-                                      Uri.parse(
-                                        DISCLAIMER_URL,
-                                      ),
-                                      mode: LaunchMode.externalApplication,
-                                    );
-                                  },
-                              ),
-                              TextSpan(
-                                style: TextStyle(
-                                  color: Theme.of(context)
-                                      .dividerColor
-                                      .withOpacity(0.7),
-                                ),
-                                text: ' gilt.',
-                              ),
-                            ]
-                        ),
+                                  mode: LaunchMode.externalApplication,
+                                );
+                              },
+                          ),
+                          TextSpan(
+                            style: TextStyle(
+                              color: Theme.of(context)
+                                  .dividerColor
+                                  .withOpacity(0.7),
+                            ),
+                            text: ' und ',
+                          ),
+                          TextSpan(
+                            style: TextStyle(
+                              color: Theme.of(context).dividerColor,
+                              decoration: TextDecoration.underline,
+                            ),
+                            text: 'Datenschutzrichtlinie',
+                            recognizer: TapGestureRecognizer()
+                              ..onTap = () {
+                                launchUrl(
+                                  Uri.parse(
+                                    PRIVACY_URL,
+                                  ),
+                                  mode: LaunchMode.externalApplication,
+                                );
+                              },
+                          ),
+                          TextSpan(
+                            style: TextStyle(
+                              color: Theme.of(context)
+                                  .dividerColor
+                                  .withOpacity(0.7),
+                            ),
+                            text:
+                                ' und nehme eindeutig zur Kenntnis, dass alle Angaben ohne Gewähr sind und der ',
+                          ),
+                          TextSpan(
+                            style: TextStyle(
+                              color: Theme.of(context).dividerColor,
+                              decoration: TextDecoration.underline,
+                            ),
+                            text: 'Haftungsausschluss',
+                            recognizer: TapGestureRecognizer()
+                              ..onTap = () {
+                                launchUrl(
+                                  Uri.parse(
+                                    DISCLAIMER_URL,
+                                  ),
+                                  mode: LaunchMode.externalApplication,
+                                );
+                              },
+                          ),
+                          TextSpan(
+                            style: TextStyle(
+                              color: Theme.of(context)
+                                  .dividerColor
+                                  .withOpacity(0.7),
+                            ),
+                            text: ' gilt.',
+                          ),
+                        ]),
                       ),
                     ),
                   ],

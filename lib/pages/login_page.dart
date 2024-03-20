@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_inappwebview/flutter_inappwebview.dart';
 import 'package:http/http.dart' as http;
@@ -69,7 +70,7 @@ class _LoginPageState extends State<LoginPage> {
     }
   }
 
-  final GlobalKey _webViewKey = GlobalKey();
+  final GlobalKey<State<InAppWebView>> _webViewKey = GlobalKey();
 
   @override
   Widget build(BuildContext context) {
@@ -88,7 +89,10 @@ class _LoginPageState extends State<LoginPage> {
           shouldOverrideUrlLoading: _onNavigationRequest,
           initialSettings: InAppWebViewSettings(
             useShouldOverrideUrlLoading: true,
-            useHybridComposition: true,
+            isInspectable: kDebugMode,
+            forceDark: ForceDark.ON,
+            algorithmicDarkeningAllowed: true,
+            mediaType: 'text/html',
           ),
           onWebViewCreated: (controller) {
             controller.addJavaScriptHandler(

@@ -21,6 +21,10 @@ enum ActionTypes {
   setAccount,
   setLastUpdated,
   setEnableConfirmRefreshDialog,
+  hideEvent,
+  hideEventsByTime,
+  hideEventsByTitle,
+  addEvent,
 }
 
 /// Representation of a redux action with its [type] and optional [payload].

@@ -55,19 +55,18 @@ class TimetableWidget extends StatelessWidget {
             );
           }
 
-          for (int i = 0; i < events.length - 1; i++) {
-            for (int j = i + 1; j < events.length; j++) {
-              if (events.elementAt(i).isCollidingWith(events.elementAt(j))) {
-                events[i].collision = true;
-                events[j].collision = true;
-              }
-            }
+          if (state.events.containsKey(key)) {
+            events = state.events[key]!
+                .where((element) => element.day == weekday)
+                .toList()
+              ..sort();
           }
 
           return ListView.builder(
               itemCount: events.length,
               padding: const EdgeInsets.all(10),
               itemBuilder: (context, index) {
+                events.sort();
                 // display break widget, if there is a time span longer than 15 minutes
                 if (events.length > index + 1 &&
                     events[index + 1].start.totalMinutes -

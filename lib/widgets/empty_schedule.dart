@@ -18,7 +18,7 @@ class EmptyScheduleWidget extends StatelessWidget {
           size: sunSize,
           color: Theme.of(context).dividerColor.withOpacity(0.5),
         ),
-        const Text("Es stehen keine Termine an!"),
+        const Text('Es stehen keine Termine an!'),
       ],
     );
   }

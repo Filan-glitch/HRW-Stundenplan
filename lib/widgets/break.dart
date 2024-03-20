@@ -15,7 +15,7 @@ class BreakWidget extends StatelessWidget {
         Padding(
           padding: const EdgeInsets.symmetric(horizontal: 10.0),
           child: Text(
-            "Pause",
+            'Pause',
             style: TextStyle(
               color: Theme.of(context).dividerColor,
             ),

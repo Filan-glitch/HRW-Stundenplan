@@ -18,11 +18,11 @@ class MonthOverviewWidget extends StatelessWidget {
 
   final void Function(int dayOfWeek) onSelectedDayChanged;
 
-  static const List<String> weekdays = ["Mo", "Di", "Mi", "Do", "Fr"];
+  static const List<String> weekdays = ['Mo', 'Di', 'Mi', 'Do', 'Fr'];
 
   @override
   Widget build(BuildContext context) {
-    DateFormat formatter = DateFormat('dd/MM/yyyy');
+    final DateFormat formatter = DateFormat('dd/MM/yyyy');
 
     return LayoutBuilder(
       builder: (context, constraints) {
@@ -33,13 +33,13 @@ class MonthOverviewWidget extends StatelessWidget {
             child: StoreConnector<AppState, AppState>(
               converter: (store) => store.state,
               builder: (context, state) {
-                DateTime firstDayOfMonth = DateTimeCalculator.getFirstDayOfWeek(
-                  DateTimeCalculator.getFirstDayOfMonth(
-                    DateTimeCalculator.clean(state.currentWeek),
+                final DateTime firstDayOfMonth = getFirstDayOfWeek(
+                  getFirstDayOfMonth(
+                    cleanDate(state.currentWeek),
                   ),
                 );
 
-                List<DateTime> weeks = [
+                final List<DateTime> weeks = [
                   firstDayOfMonth,
                   firstDayOfMonth.add(const Duration(days: 7)),
                   firstDayOfMonth.add(const Duration(days: 14)),
@@ -50,7 +50,7 @@ class MonthOverviewWidget extends StatelessWidget {
                     .where(
                       (element) => element
                           .add(const Duration(days: 7))
-                          .isAfter(DateTimeCalculator.clean(DateTime.now())),
+                          .isAfter(cleanDate(DateTime.now())),
                     )
                     .toList();
 
@@ -69,10 +69,10 @@ class MonthOverviewWidget extends StatelessWidget {
                         });
                         return Container();
                       }
-                      List<Event> eventsInWeek =
+                      final List<Event> eventsInWeek =
                           state.events[formatter.format(week)]!;
-                      bool isSelectedWeek =
-                          DateTimeCalculator.isSameDay(week, state.currentWeek);
+                      final bool isSelectedWeek =
+                          isSameDay(week, state.currentWeek);
 
                       return Expanded(
                         child: Container(
@@ -85,8 +85,8 @@ class MonthOverviewWidget extends StatelessWidget {
                               scrollDirection: Axis.horizontal,
                               itemCount: 5,
                               itemBuilder: (context, i) {
-                                DateTime date = week.add(Duration(days: i));
-                                List<Event> eventsToday = eventsInWeek
+                                final DateTime date = week.add(Duration(days: i));
+                                final List<Event> eventsToday = eventsInWeek
                                     .where((element) =>
                                         element.day == Weekday.values[i])
                                     .toList();
@@ -130,7 +130,7 @@ class MonthOverviewWidget extends StatelessWidget {
                                       child: Column(
                                         children: [
                                           Text(
-                                            "${weekdays[i]}. ${date.day}.${date.month}.",
+                                            '${weekdays[i]}. ${date.day}.${date.month}.',
                                             style: const TextStyle(
                                                 fontWeight: FontWeight.bold),
                                           ),

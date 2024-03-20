@@ -12,7 +12,7 @@ class SelectDefaultViewDialog extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return SimpleDialog(
-      title: const Text("Startansicht auswählen"),
+      title: const Text('Startansicht auswählen'),
       children: TimetableView.values.map((e) {
         return SimpleDialogOption(
           onPressed: () {

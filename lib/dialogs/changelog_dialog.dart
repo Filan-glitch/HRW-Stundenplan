@@ -9,22 +9,22 @@ import '../widgets/markdown_widget.dart';
 class ChangelogDialog extends StatelessWidget {
   ChangelogDialog({super.key}) {
     SharedPreferences.getInstance().then((prefs) async {
-      String pubspec = await rootBundle.loadString("pubspec.yaml");
-      String appVersion = loadYaml(pubspec)["version"].split("+").first;
-      prefs.setString("latestChangelogShownVersion", appVersion);
+      final String pubspec = await rootBundle.loadString('pubspec.yaml');
+      final String appVersion = loadYaml(pubspec)['version'].split('+').first;
+      prefs.setString('latestChangelogShownVersion', appVersion);
     });
   }
 
   @override
   Widget build(BuildContext context) {
     return DialogWrapper(
-      title: "Was ist neu?",
+      title: 'Was ist neu?',
       children: [
         SizedBox(
           height: MediaQuery.of(context).size.height * 0.8,
           width: MediaQuery.of(context).size.width * 0.9,
           child: const MarkdownWidget(
-            source: "CHANGELOG.md",
+            source: 'CHANGELOG.md',
             isUrl: false,
           ),
         )

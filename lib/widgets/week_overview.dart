@@ -28,8 +28,8 @@ class WeekOverview extends StatelessWidget {
         return StoreConnector<AppState, AppState>(
           converter: (store) => store.state,
           builder: (context, state) {
-            DateFormat formatter = DateFormat('dd/MM/yyyy');
-            String key = formatter.format(state.currentWeek);
+            final DateFormat formatter = DateFormat('dd/MM/yyyy');
+            final String key = formatter.format(state.currentWeek);
 
             if (!state.events.containsKey(key)) {
               LoginPage.performLogin(onLoginSuccess: () async {
@@ -55,7 +55,7 @@ class WeekOverview extends StatelessWidget {
                   for (Weekday day in Weekday.values)
                     Builder(
                       builder: (context) {
-                        List<Event> events = state.events[key]!
+                        final List<Event> events = state.events[key]!
                             .where((element) => element.day == day)
                             .toList()
                           ..sort();

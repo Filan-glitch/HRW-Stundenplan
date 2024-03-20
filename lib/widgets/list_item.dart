@@ -41,16 +41,16 @@ class _ListItemState extends State<ListItem> {
     return StoreConnector<AppState, AppState>(
         converter: (store) => store.state,
         builder: (context, state) {
-          DateTime currentMonday = DateTimeCalculator.getFirstDayOfWeek(
-            DateTimeCalculator.clean(DateTime.now()),
+          final DateTime currentMonday = getFirstDayOfWeek(
+            cleanDate(DateTime.now()),
           );
 
-          bool isCurrentWeek = state.currentWeek.day == currentMonday.day &&
+          final bool isCurrentWeek = state.currentWeek.day == currentMonday.day &&
               state.currentWeek.month == currentMonday.month &&
               state.currentWeek.year == currentMonday.year;
 
-          DateTime now = DateTime.now();
-          DateTime start = DateTime(
+          final DateTime now = DateTime.now();
+          final DateTime start = DateTime(
             state.currentWeek.year,
             state.currentWeek.month,
             state.currentWeek.day + widget.event.day.value,
@@ -58,7 +58,7 @@ class _ListItemState extends State<ListItem> {
             widget.event.start.minute,
           );
 
-          DateTime end = DateTime(
+          final DateTime end = DateTime(
             state.currentWeek.year,
             state.currentWeek.month,
             state.currentWeek.day + widget.event.day.value,
@@ -69,12 +69,12 @@ class _ListItemState extends State<ListItem> {
           Widget? timeIndicatorWidget;
           if (now.isBefore(start) && start.difference(now).inMinutes <= 90) {
             timeIndicatorWidget = Text(
-              "Beginnt in ${start.difference(now).inMinutes} Minuten",
+              'Beginnt in ${start.difference(now).inMinutes} Minuten',
             );
           } else if (now.isBefore(end) && now.isAfter(start) ||
               now.isAtSameMomentAs(start)) {
             timeIndicatorWidget = Text(
-              "Läuft noch ${end.difference(now).inMinutes} Minuten",
+              'Läuft noch ${end.difference(now).inMinutes} Minuten',
             );
           }
 

@@ -15,10 +15,10 @@ void callbackDispatcher() {
       if (!Platform.isAndroid) return Future.value(false);
 
       // Initialisiere das FlutterLocalNotificationsPlugin
-      FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
+      final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
           FlutterLocalNotificationsPlugin();
 
-      var initializationSettings = const InitializationSettings(
+      final initializationSettings = const InitializationSettings(
         android: AndroidInitializationSettings('notification_icon'),
         iOS: DarwinInitializationSettings(),
       );
@@ -26,7 +26,7 @@ void callbackDispatcher() {
       await flutterLocalNotificationsPlugin.initialize(initializationSettings);
 
       // Zeige die Benachrichtigung an
-      var platformChannelSpecifics = const NotificationDetails(
+      final platformChannelSpecifics = const NotificationDetails(
         android: AndroidNotificationDetails(
           'TIMETABLE_REMINDER',
           'Terminerinnerung',
@@ -37,7 +37,7 @@ void callbackDispatcher() {
         iOS: DarwinNotificationDetails(),
       );
 
-      List<Event> events = await getNextEvents();
+      final List<Event> events = await getNextEvents();
 
       for (Event event in events) {
         await flutterLocalNotificationsPlugin.show(
@@ -57,13 +57,13 @@ void callbackDispatcher() {
 
 Future<void> registerBackgroundService() {
   return Workmanager().registerPeriodicTask(
-    "TIMETABLE_REMINDER_TASK",
-    "Terminerinnerung",
-    tag: "TIMETABLE_REMINDER_TASK",
+    'TIMETABLE_REMINDER_TASK',
+    'Terminerinnerung',
+    tag: 'TIMETABLE_REMINDER_TASK',
     frequency: const Duration(minutes: 15),
   );
 }
 
 Future<void> unregisterBackgroundService() {
-  return Workmanager().cancelByTag("TIMETABLE_REMINDER_TASK");
+  return Workmanager().cancelByTag('TIMETABLE_REMINDER_TASK');
 }

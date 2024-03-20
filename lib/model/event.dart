@@ -3,7 +3,7 @@ import 'time.dart';
 import 'weekday.dart';
 
 class Event implements Comparable<Event> {
-  String get eventID => "$abbreviation$weekFrom${day.value}${start.toString()}";
+  String get eventID => '$abbreviation$weekFrom${day.value}${start.toString()}';
   String title;
   String abbreviation;
   Time start;
@@ -15,7 +15,7 @@ class Event implements Comparable<Event> {
 
   Mode get mode {
     if (day.value == DateTime.now().weekday - 1) {
-      Time now = Time(DateTime.now().hour, DateTime.now().minute);
+      final Time now = Time(DateTime.now().hour, DateTime.now().minute);
       if (start.compareTo(now) <= 0 && end.compareTo(now) >= 0) {
         return Mode.active;
       } else if (end.compareTo(now) <= 0) {
@@ -29,47 +29,47 @@ class Event implements Comparable<Event> {
   }
 
   Event({
-    this.title = "",
-    this.abbreviation = "",
+    this.title = '',
+    this.abbreviation = '',
     this.start = const Time(0, 0),
     this.end = const Time(0, 0),
-    this.room = "",
+    this.room = '',
     this.day = Weekday.monday,
-    this.weekFrom = "",
+    this.weekFrom = '',
     this.collision,
   });
 
   Event.fromDB(Map<String, dynamic> data)
-      : title = data["Title"] ?? "",
-        abbreviation = data["Abbreviation"] ?? "",
-        room = data["Room"] ?? "",
-        day = Weekday.getByValue(int.parse(data["Weekday"] ?? "0")),
-        weekFrom = data["WeekFrom"] ?? "",
+      : title = data['Title'] ?? '',
+        abbreviation = data['Abbreviation'] ?? '',
+        room = data['Room'] ?? '',
+        day = Weekday.getByValue(int.parse(data['Weekday'] ?? '0')),
+        weekFrom = data['WeekFrom'] ?? '',
         start = Time(
-          int.parse(data["Start"]?.toString().split(":")[0] ?? "0"),
-          int.parse(data["Start"]?.toString().split(":")[1] ?? "0"),
+          int.parse(data['Start']?.toString().split(':')[0] ?? '0'),
+          int.parse(data['Start']?.toString().split(':')[1] ?? '0'),
         ),
         end = Time(
-          int.parse(data["End"]?.toString().split(":")[0] ?? "0"),
-          int.parse(data["End"]?.toString().split(":")[1] ?? "0"),
+          int.parse(data['End']?.toString().split(':')[0] ?? '0'),
+          int.parse(data['End']?.toString().split(':')[1] ?? '0'),
         );
 
   Map<String, dynamic> toDB() {
     return {
-      "EventID": eventID,
-      "Title": title,
-      "Abbreviation": abbreviation,
-      "Room": room,
-      "Weekday": day.value.toString(),
-      "Start": "${start.hour}:${start.minute}",
-      "End": "${end.hour}:${end.minute}",
-      "WeekFrom": weekFrom,
+      'EventID': eventID,
+      'Title': title,
+      'Abbreviation': abbreviation,
+      'Room': room,
+      'Weekday': day.value.toString(),
+      'Start': '${start.hour}:${start.minute}',
+      'End': '${end.hour}:${end.minute}',
+      'WeekFrom': weekFrom,
     };
   }
 
   @override
   String toString() {
-    return "$title in $room von $start bis $end";
+    return '$title in $room von $start bis $end';
   }
 
   @override

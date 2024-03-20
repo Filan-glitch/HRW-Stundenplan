@@ -11,7 +11,7 @@ class SelectDesignDialog extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return SimpleDialog(
-      title: const Text("Design auswählen"),
+      title: const Text('Design auswählen'),
       children: [
         SimpleDialogOption(
           onPressed: () {
@@ -24,7 +24,7 @@ class SelectDesignDialog extends StatelessWidget {
             writeDesign();
             Navigator.pop(context);
           },
-          child: const Text("Hell"),
+          child: const Text('Hell'),
         ),
         SimpleDialogOption(
           onPressed: () {
@@ -37,7 +37,7 @@ class SelectDesignDialog extends StatelessWidget {
             writeDesign();
             Navigator.pop(context);
           },
-          child: const Text("Dunkel"),
+          child: const Text('Dunkel'),
         ),
         SimpleDialogOption(
           onPressed: () {
@@ -50,7 +50,7 @@ class SelectDesignDialog extends StatelessWidget {
             writeDesign();
             Navigator.pop(context);
           },
-          child: const Text("System"),
+          child: const Text('System'),
         ),
       ],
     );

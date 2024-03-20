@@ -7,8 +7,8 @@ import '../../model/constants.dart';
 import 'migrate.dart';
 
 Future<Database> openDB() async {
-  String databasesPath = await getDatabasesPath();
-  String path = join(databasesPath, 'timetable.db');
+  final String databasesPath = await getDatabasesPath();
+  final String path = join(databasesPath, 'timetable.db');
   return openDatabase(
     path,
     version: DB_VERSION,
@@ -23,7 +23,7 @@ Future<Database> openDB() async {
       }
     },
     onUpgrade: (Database db, int oldVersion, int newVersion) async {
-      log("Upgrading database from version $oldVersion to $newVersion");
+      log('Upgrading database from version $oldVersion to $newVersion');
       for (int i = oldVersion; i < newVersion; i++) {
         await db.execute(dbMigrate[i + 1]);
       }

@@ -8,13 +8,13 @@ import '../model/redux/actions.dart';
 import '../model/redux/store.dart';
 
 Future<void> shouldShowChangelogIcon() async {
-  String pubspec = await rootBundle.loadString("pubspec.yaml");
-  String appVersion = loadYaml(pubspec)["version"].split("+")[0];
+  final String pubspec = await rootBundle.loadString('pubspec.yaml');
+  final String appVersion = loadYaml(pubspec)['version'].split('+')[0];
 
-  SharedPreferences prefs = await SharedPreferences.getInstance();
+  final SharedPreferences prefs = await SharedPreferences.getInstance();
   store.dispatch(Action(
     ActionTypes.showChangelog,
-    payload: !prefs.containsKey("latestChangelogShownVersion") ||
-        prefs.getString("latestChangelogShownVersion") != appVersion,
+    payload: !prefs.containsKey('latestChangelogShownVersion') ||
+        prefs.getString('latestChangelogShownVersion') != appVersion,
   ));
 }

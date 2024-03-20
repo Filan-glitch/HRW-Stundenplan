@@ -10,10 +10,10 @@ class CollisionDialog extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return const DialogWrapper(
-      title: "Kollision erkannt!",
+      title: 'Kollision erkannt!',
       children: [
         Text(
-            "Diese Veranstaltung überschneidet sich zeitlich mit einer anderen Veranstaltung!")
+            'Diese Veranstaltung überschneidet sich zeitlich mit einer anderen Veranstaltung!')
       ],
     );
   }

@@ -1,15 +1,19 @@
 import 'package:flutter/material.dart';
+import 'package:collection/collection.dart';
 import 'package:flutter_redux/flutter_redux.dart';
+import 'package:intl/intl.dart';
+import 'package:timetable/dialogs/canteen_details_dialog.dart';
+import 'package:timetable/model/graphql/canteens/canteen.dart';
+import 'package:timetable/widgets/meal_list.dart';
 
 import '../model/campus.dart';
-import '../model/constants.dart';
 import '../model/redux/app_state.dart';
 import '../model/redux/actions.dart' as redux;
 import '../model/redux/store.dart';
+import '../service/graphql/canteens.dart';
 import '../service/storage.dart';
 import '../widgets/horizontal_selector.dart';
 import '../widgets/page_wrapper.dart';
-import '../widgets/pdf_widget.dart';
 
 class MensaPage extends StatefulWidget {
   const MensaPage({super.key});
@@ -19,72 +23,110 @@ class MensaPage extends StatefulWidget {
 }
 
 class _MensaPageState extends State<MensaPage> {
-  bool _showCurrentWeek = true;
-  Key _refreshKey = UniqueKey();
+  int dayID = 0;
+
+  @override
+  void initState() {
+    super.initState();
+    getCanteenData();
+  }
 
   @override
   Widget build(BuildContext context) {
-    return PageWrapper(
-      simpleDesign: true,
-      title: "Mensa",
-      body: StoreConnector<AppState, AppState>(
-        converter: (store) => store.state,
-        builder: (context, state) {
-          String url = "";
+    return StoreConnector<AppState, AppState>(
+      converter: (store) => store.state,
+      builder: (context, state) {
+        final Canteen? canteen = state.campuses
+            .firstWhereOrNull(
+              (campus) =>
+                  campus.name ==
+                  (state.selectedCampus == Campus.muelheim
+                      ? 'Campus Mülheim'
+                      : 'Campus Bottrop'),
+            )
+            ?.canteens
+            ?.first;
 
-          if (state.campus == Campus.muelheim && _showCurrentWeek) {
-            url = MENSA_MUE_CURRENT_URL;
-          } else if (state.campus == Campus.muelheim && !_showCurrentWeek) {
-            url = MENSA_MUE_NEXT_URL;
-          } else if (state.campus == Campus.bottrop && _showCurrentWeek) {
-            url = MENSA_BOT_CURRENT_URL;
-          } else if (state.campus == Campus.bottrop && !_showCurrentWeek) {
-            url = MENSA_BOT_NEXT_URL;
-          }
-          return Column(
-            crossAxisAlignment: CrossAxisAlignment.end,
+        final DateFormat formatter = DateFormat('dd.MM.yyyy');
+
+        return PageWrapper(
+          simpleDesign: true,
+          title: canteen?.name ?? 'Mensa',
+          actions: [
+            if (canteen != null)
+              IconButton(
+                onPressed: () {
+                  showDialog(
+                    context: context,
+                    builder: (context) => CanteenDetailsDialog(canteen),
+                  );
+                },
+                icon: const Icon(
+                  Icons.info,
+                  size: 25,
+                ),
+              ),
+          ],
+          body: Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceAround,
-                children: [
-                  IconButton(
-                    onPressed: _showCurrentWeek
-                        ? null
-                        : () {
+              canteen?.menus == null || canteen!.menus!.isEmpty
+                  ? Container()
+                  : Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceAround,
+                      children: [
+                        IconButton(
+                          onPressed: dayID < 1
+                              ? null
+                              : () {
+                                  setState(() {
+                                    dayID--;
+                                  });
+                                },
+                          icon: const Icon(
+                            Icons.arrow_back_ios,
+                          ),
+                        ),
+                        TextButton(
+                          onPressed: () {
                             setState(() {
-                              _showCurrentWeek = true;
-                              _refreshKey = UniqueKey();
+                              dayID = 0;
                             });
                           },
-                    icon: const Icon(
-                      Icons.arrow_back_ios,
+                          child: Text(
+                            formatter.format(canteen.menus![dayID].isoDate!),
+                          ),
+                        ),
+                        IconButton(
+                          onPressed: dayID > canteen.menus!.length - 2
+                              ? null
+                              : () {
+                                  setState(() {
+                                    dayID++;
+                                  });
+                                },
+                          icon: const Icon(
+                            Icons.arrow_forward_ios,
+                          ),
+                        ),
+                      ],
                     ),
-                  ),
-                  if (_showCurrentWeek) const Text("Aktuelle Woche"),
-                  if (!_showCurrentWeek) const Text("Nächste Woche"),
-                  IconButton(
-                    onPressed: _showCurrentWeek
-                        ? () {
-                            setState(() {
-                              _showCurrentWeek = false;
-                              _refreshKey = UniqueKey();
-                            });
-                          }
-                        : null,
-                    icon: const Icon(
-                      Icons.arrow_forward_ios,
-                    ),
-                  ),
-                ],
-              ),
               Expanded(
-                child: PdfWidget(
-                  key: _refreshKey,
-                  url: url,
-                  onError: () {
-                    Navigator.pop(context);
-                  },
-                ),
+                child: canteen?.menus == null || canteen!.menus!.isEmpty
+                    ? const Center(
+                        child: Padding(
+                          padding: EdgeInsets.all(50.0),
+                          child: Text(
+                            'Für diese Mensa wurden keine Speisen gefunden.',
+                            style: TextStyle(
+                              fontSize: 20,
+                              fontWeight: FontWeight.bold,
+                            ),
+                            textAlign: TextAlign.center,
+                          ),
+                        ),
+                      )
+                    : MealListWidget(canteen.menus![dayID]),
               ),
               HorizontalSelector(
                 items: Campus.values.asMap().map(
@@ -102,15 +144,13 @@ class _MensaPageState extends State<MensaPage> {
                   );
 
                   writeCampus();
-
-                  _refreshKey = UniqueKey();
                 },
-                value: state.campus,
+                value: state.selectedCampus,
               ),
             ],
-          );
-        },
-      ),
+          ),
+        );
+      },
     );
   }
 }

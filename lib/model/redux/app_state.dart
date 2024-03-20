@@ -7,6 +7,7 @@ import '../event.dart';
 import '../login_state.dart';
 import '../module.dart';
 import '../timetable_view.dart';
+import '../graphql/canteens/campus.dart' as canteens;
 
 class AppState {
   ThemeMode activeTheme = ThemeMode.system;
@@ -18,7 +19,7 @@ class AppState {
   bool appLocked = false;
   late DateTime currentWeek;
 
-  Campus campus = Campus.muelheim;
+  Campus selectedCampus = Campus.muelheim;
   Biometrics biometrics = Biometrics.OFF;
   TimetableView currentView = TimetableView.daily;
   TimetableView defaultView = TimetableView.daily;
@@ -33,6 +34,8 @@ class AppState {
   List<Module> modules = [];
   double gpa = 0;
 
+  List<canteens.Campus> campuses = [];
+
   ThemeMode get effectiveTheme {
     if (activeTheme == ThemeMode.system) {
       return WidgetsBinding.instance.platformDispatcher.platformBrightness ==
@@ -45,8 +48,8 @@ class AppState {
   }
 
   AppState() {
-    currentWeek = DateTimeCalculator.getFirstDayOfWeek(
-      DateTimeCalculator.clean(DateTime.now()),
+    currentWeek = getFirstDayOfWeek(
+      cleanDate(DateTime.now()),
     );
 
     if (DateTime.now().weekday >= 6) {

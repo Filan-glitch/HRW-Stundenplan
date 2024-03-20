@@ -52,7 +52,7 @@ class BiometricsPage extends StatelessWidget {
                     ),
                   ),
                   child: const Text(
-                    "App entsperren",
+                    'App entsperren',
                     style: TextStyle(
                       fontSize: 20.0,
                       color: Colors.white,

@@ -103,7 +103,7 @@ class _ListItemState extends State<ListItem> {
                 case HideEventDialogResult.only_this:
                   store.dispatch(
                     redux.Action(
-                      redux.ActionTypes.deleteEvent,
+                      redux.ActionTypes.hideEvent,
                       payload: widget.event,
                     ),
                   );
@@ -111,7 +111,7 @@ class _ListItemState extends State<ListItem> {
                 case HideEventDialogResult.all_at_this_time:
                   store.dispatch(
                     redux.Action(
-                      redux.ActionTypes.deleteEvents,
+                      redux.ActionTypes.hideEventsByTime,
                       payload: widget.event,
                     ),
                   );
@@ -119,7 +119,7 @@ class _ListItemState extends State<ListItem> {
                 case HideEventDialogResult.all:
                   store.dispatch(
                     redux.Action(
-                      redux.ActionTypes.deleteAllEvents,
+                      redux.ActionTypes.hideEventsByTitle,
                       payload: widget.event,
                     ),
                   );

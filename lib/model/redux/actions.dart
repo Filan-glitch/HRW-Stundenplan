@@ -21,9 +21,9 @@ enum ActionTypes {
   setAccount,
   setLastUpdated,
   setEnableConfirmRefreshDialog,
-  deleteEvent,
-  deleteEvents,
-  deleteAllEvents,
+  hideEvent,
+  hideEventsByTime,
+  hideEventsByTitle,
   addEvent,
 }
 

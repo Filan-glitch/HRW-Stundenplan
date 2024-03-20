@@ -12,9 +12,9 @@ class HideEventDialog extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return DialogWrapper(
-      title: '$event_name ausblenden?',
+      title: 'Veranstaltung ausblenden',
       children: [
-        const Text('Welche Veranstaltungen möchtest du ausblenden?'),
+        Text('Welche Veranstaltungen von $event_name möchtest du ausblenden?'),
         Column(
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           children: [
@@ -22,7 +22,7 @@ class HideEventDialog extends StatelessWidget {
               onPressed: () {
                 Navigator.pop(context, HideEventDialogResult.only_this);
               },
-              child: const Text('Nur diese'),
+              child: const Text('Nur diese Veranstaltung'),
             ),
             TextButton(
               onPressed: () {

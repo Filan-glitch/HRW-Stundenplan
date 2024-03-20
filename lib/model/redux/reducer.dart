@@ -18,20 +18,7 @@ AppState appReducer(AppState state, dynamic action) {
       checkForCollisions(state.events.values.expand((e) => e).toList());
       break;
     case ActionTypes.clear:
-      state
-        ..activeTheme = ui.ThemeMode.system
-        ..runningTasks = 0
-        ..cnsc = null
-        ..args = null
-        ..events = {}
-        ..modules = []
-        ..gpa = 0
-        ..campus = Campus.muelheim
-        ..biometrics = Biometrics.OFF
-        ..currentView = TimetableView.daily
-        ..defaultView = TimetableView.daily
-        ..appLocked = false
-        ..account = null;
+      clearState(state);
       break;
     case ActionTypes.setDesign:
       state.activeTheme = action.payload;
@@ -92,71 +79,102 @@ AppState appReducer(AppState state, dynamic action) {
     case ActionTypes.setEnableConfirmRefreshDialog:
       state.enableConfirmRefreshDialog = action.payload;
       break;
-    case ActionTypes.deleteEvent:
-      final Event eventToDelete = action.payload;
-      state.events.update(eventToDelete.weekFrom, (value) {
-        return value.where((event) => event != eventToDelete).toList();
-      });
-
-      setEventsHideFlag([eventToDelete], true);
-
-      checkForCollisions(state.events.values.expand((e) => e).toList());
+    case ActionTypes.hideEvent:
+      hideSingleEvent(action, state);
       break;
-    case ActionTypes.deleteEvents:
-      final Event eventToDelete = action.payload;
-
-      final List<Event> eventsToDelete = state.events.values
-          .expand((x) => x)
-          .where((event) =>
-              event.title == eventToDelete.title &&
-              event.start == eventToDelete.start &&
-              event.end == eventToDelete.end &&
-              event.day == eventToDelete.day)
-          .toList();
-
-      setEventsHideFlag(eventsToDelete, true);
-
-      state.events.updateAll((key, value) {
-        return value
-            .where((event) =>
-                event.title != eventToDelete.title ||
-                event.start != eventToDelete.start ||
-                event.end != eventToDelete.end ||
-                event.day != eventToDelete.day)
-            .toList();
-      });
-
-      checkForCollisions(state.events.values.expand((e) => e).toList());
+    case ActionTypes.hideEventsByTime:
+      hideEventsByTime(action, state);
       break;
-    case ActionTypes.deleteAllEvents:
-      final Event eventToDelete = action.payload;
-
-      final List<Event> eventsToDelete = state.events.values
-          .expand((x) => x)
-          .where((event) => event.title == eventToDelete.title)
-          .toList();
-
-      setEventsHideFlag(eventsToDelete, true);
-
-      state.events.updateAll((key, value) {
-        return value
-            .where((event) => event.title != eventToDelete.title)
-            .toList();
-      });
-
-      checkForCollisions(state.events.values.expand((e) => e).toList());
+    case ActionTypes.hideEventsByTitle:
+      hideEventsByTitle(action, state);
       break;
     case ActionTypes.addEvent:
-      final Event eventToAdd = action.payload;
-      state.events.update(eventToAdd.weekFrom, (value) {
-        return value..add(eventToAdd);
-      });
-      state.events[eventToAdd.weekFrom]!.sort();
-
-      checkForCollisions(state.events.values.expand((e) => e).toList());
+      showEvent(action, state);
       break;
     default:
       break;
   }
   return state;
+}
+
+void showEvent(Action action, AppState state) {
+  final Event eventToAdd = action.payload;
+  state.events.update(eventToAdd.weekFrom, (value) {
+    return value..add(eventToAdd);
+  });
+  state.events[eventToAdd.weekFrom]!.sort();
+
+  checkForCollisions(state.events.values.expand((e) => e).toList());
+}
+
+void hideEventsByTitle(Action action, AppState state) {
+  final Event eventToDelete = action.payload;
+
+  final List<Event> eventsToDelete = state.events.values
+      .expand((x) => x)
+      .where((event) => event.title == eventToDelete.title)
+      .toList();
+
+  setEventsHideFlag(eventsToDelete, true);
+
+  state.events.updateAll((key, value) {
+    return value.where((event) => event.title != eventToDelete.title).toList();
+  });
+
+  checkForCollisions(state.events.values.expand((e) => e).toList());
+}
+
+void hideEventsByTime(Action action, AppState state) {
+  final Event eventToDelete = action.payload;
+
+  final List<Event> eventsToDelete = state.events.values
+      .expand((x) => x)
+      .where((event) =>
+          event.title == eventToDelete.title &&
+          event.start == eventToDelete.start &&
+          event.end == eventToDelete.end &&
+          event.day == eventToDelete.day)
+      .toList();
+
+  setEventsHideFlag(eventsToDelete, true);
+
+  state.events.updateAll((key, value) {
+    return value
+        .where((event) =>
+            event.title != eventToDelete.title ||
+            event.start != eventToDelete.start ||
+            event.end != eventToDelete.end ||
+            event.day != eventToDelete.day)
+        .toList();
+  });
+
+  checkForCollisions(state.events.values.expand((e) => e).toList());
+}
+
+void hideSingleEvent(Action action, AppState state) {
+  final Event eventToDelete = action.payload;
+  state.events.update(eventToDelete.weekFrom, (value) {
+    return value.where((event) => event != eventToDelete).toList();
+  });
+
+  setEventsHideFlag([eventToDelete], true);
+
+  checkForCollisions(state.events.values.expand((e) => e).toList());
+}
+
+void clearState(AppState state) {
+  state
+    ..activeTheme = ui.ThemeMode.system
+    ..runningTasks = 0
+    ..cnsc = null
+    ..args = null
+    ..events = {}
+    ..modules = []
+    ..gpa = 0
+    ..campus = Campus.muelheim
+    ..biometrics = Biometrics.OFF
+    ..currentView = TimetableView.daily
+    ..defaultView = TimetableView.daily
+    ..appLocked = false
+    ..account = null;
 }

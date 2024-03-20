@@ -47,7 +47,7 @@ class _HiddenEventListItemState extends State<HiddenEventListItem> {
             } else {
               store.dispatch(
                 redux.Action(
-                  redux.ActionTypes.deleteEvent,
+                  redux.ActionTypes.hideEvent,
                   payload: widget.event,
                 ),
               );

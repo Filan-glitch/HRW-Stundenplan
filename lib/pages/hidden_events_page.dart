@@ -13,14 +13,18 @@ class HiddenEventsPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return PageWrapper(
       title: 'Ausgeblendet',
-      body: ListView.builder(
-        itemCount: events.length,
-        itemBuilder: (context, index) {
-          return HiddenEventListItem(
-            event: events[index],
-          );
-        },
-      ),
+      body: events.isEmpty
+          ? const Center(
+              child: Text('Keine Veranstaltungen ausgeblendet'),
+            )
+          : ListView.builder(
+              itemCount: events.length,
+              itemBuilder: (context, index) {
+                return HiddenEventListItem(
+                  event: events[index],
+                );
+              },
+            ),
       simpleDesign: true,
     );
   }

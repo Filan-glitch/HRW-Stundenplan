@@ -19,7 +19,7 @@ class PageWrapper extends StatefulWidget {
     this.bottomNavigationBar,
     this.actions = const [],
     this.menuActions = const [],
-    this.title = "Stundenplan",
+    this.title = 'Stundenplan',
     this.canGoBack = false,
     this.simpleDesign = false,
     super.key,
@@ -84,6 +84,7 @@ class _PageWrapperState extends State<PageWrapper> with WidgetsBindingObserver {
       mainContent = Scaffold(
         appBar: AppBar(
           title: Text(widget.title),
+          actions: widget.actions,
         ),
         body: Padding(
           padding: EdgeInsets.only(
@@ -193,7 +194,8 @@ class _PageWrapperState extends State<PageWrapper> with WidgetsBindingObserver {
             ),
             if (state.appLocked && state.biometrics != Biometrics.OFF)
               const BiometricsPage(),
-            if (state.loginFormState != LoginFormState.notShown) LoginPage(),
+            if (state.loginFormState != LoginFormState.notShown)
+              const LoginPage(),
             if (state.loading ||
                 !state.dataLoaded ||
                 state.loginFormState == LoginFormState.background &&

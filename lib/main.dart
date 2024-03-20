@@ -39,7 +39,7 @@ void main() {
     if (!kDebugMode) {
       FlutterError.onError = (errorDetails) {
         try {
-          showToast("Unbekannter Fehler");
+          showToast('Unbekannter Fehler');
         } catch (e) {
           log(e.toString());
         }
@@ -47,7 +47,7 @@ void main() {
       };
       PlatformDispatcher.instance.onError = (error, stack) {
         try {
-          showToast("Unbekannter Fehler");
+          showToast('Unbekannter Fehler');
         } catch (e) {
           log(e.toString());
         }
@@ -172,7 +172,7 @@ class MyApp extends StatelessWidget {
             theme: lightTheme,
             darkTheme: darkTheme,
             themeMode: state.activeTheme,
-            supportedLocales: const [Locale("de", "DE")],
+            supportedLocales: const [Locale('de', 'DE')],
             navigatorKey: navigatorKey,
             localizationsDelegates: const [
               GlobalCupertinoLocalizations.delegate,

@@ -48,7 +48,7 @@ class _SettingsPageState extends State<SettingsPage> {
         builder: (context, state) {
           return PageWrapper(
             simpleDesign: true,
-            title: "Einstellungen",
+            title: 'Einstellungen',
             body: SizedBox(
               width: double.infinity,
               child: SingleChildScrollView(
@@ -60,12 +60,12 @@ class _SettingsPageState extends State<SettingsPage> {
                       child: SizedBox(
                         height: 75.0,
                         child: Image.asset(
-                          "assets/images/icon.png",
+                          'assets/images/icon.png',
                         ),
                       ),
                     ),
                     FutureBuilder(
-                      future: rootBundle.loadString("pubspec.yaml"),
+                      future: rootBundle.loadString('pubspec.yaml'),
                       builder: (context, snapshot) {
                         if (snapshot.hasData) {
                           return Text(
@@ -85,7 +85,7 @@ class _SettingsPageState extends State<SettingsPage> {
                     const Padding(
                       padding: EdgeInsets.only(top: 10.0, bottom: 20.0),
                       child: Text(
-                        "Jan Bellenberg\nFinn Dilan",
+                        'Jan Bellenberg\nFinn Dilan',
                         style: TextStyle(fontSize: 15.0),
                         textAlign: TextAlign.center,
                       ),
@@ -103,7 +103,7 @@ class _SettingsPageState extends State<SettingsPage> {
                         leading: const Icon(
                           Icons.sync_outlined,
                         ),
-                        title: const Text("Daten aktualisieren"),
+                        title: const Text('Daten aktualisieren'),
                         onTap: () {
                           _isLoading = false;
                           LoginPage.performLogin(onLoginSuccess: _loadData);
@@ -121,10 +121,10 @@ class _SettingsPageState extends State<SettingsPage> {
                             : Icons.lightbulb,
                       ),
                       title: state.activeTheme == ThemeMode.system
-                          ? const Text("Design: System")
+                          ? const Text('Design: System')
                           : state.effectiveTheme == ThemeMode.dark
-                              ? const Text("Design: Dunkel")
-                              : const Text("Design: Hell"),
+                              ? const Text('Design: Dunkel')
+                              : const Text('Design: Hell'),
                       onTap: () {
                         showDialog(
                           context: context,
@@ -135,7 +135,7 @@ class _SettingsPageState extends State<SettingsPage> {
                     ListTile(
                       leading: const Icon(Icons.view_comfortable_rounded),
                       title: Text(
-                        "Startansicht: ${state.defaultView.text}",
+                        'Startansicht: ${state.defaultView.text}',
                       ),
                       onTap: () {
                         showDialog(
@@ -150,25 +150,25 @@ class _SettingsPageState extends State<SettingsPage> {
                           Icons.notifications_active,
                         ),
                         title: state.notificationsEnabled
-                            ? const Text("Benachrichtigungen: aktiviert")
-                            : const Text("Benachrichtigungen: deaktiviert"),
+                            ? const Text('Benachrichtigungen: aktiviert')
+                            : const Text('Benachrichtigungen: deaktiviert'),
                         onTap: () {
-                          bool newValue = !state.notificationsEnabled;
+                          final bool newValue = !state.notificationsEnabled;
 
                           if (newValue) {
                             registerBackgroundService();
 
                             // request permission
-                            FlutterLocalNotificationsPlugin
+                            final FlutterLocalNotificationsPlugin
                                 flutterLocalNotificationsPlugin =
                                 FlutterLocalNotificationsPlugin();
                             flutterLocalNotificationsPlugin
                                 .resolvePlatformSpecificImplementation<
                                     AndroidFlutterLocalNotificationsPlugin>()
-                                ?.requestPermission();
+                                ?.requestNotificationsPermission();
 
                             showToast(
-                              "Aufgrund von Batterie-Optimierung werden Benachrichtigungen ggf. nicht immer korrekt angezeigt.",
+                              'Aufgrund von Batterie-Optimierung werden Benachrichtigungen ggf. nicht immer korrekt angezeigt.',
                               duration: const Duration(seconds: 5),
                             );
                           } else {
@@ -193,7 +193,7 @@ class _SettingsPageState extends State<SettingsPage> {
                             return ListTile(
                               leading: const Icon(Icons.battery_alert),
                               title:
-                                  const Text("Akku-Optimierung deaktivieren"),
+                                  const Text('Akku-Optimierung deaktivieren'),
                               onTap: () {
                                 DisableBatteryOptimization
                                     .showDisableBatteryOptimizationSettings();
@@ -214,11 +214,11 @@ class _SettingsPageState extends State<SettingsPage> {
                           AsyncSnapshot<dynamic> snapshot) {
                         if (snapshot.connectionState == ConnectionState.done) {
                           if (snapshot.hasError) {
-                            return Text("Fehler: ${snapshot.error}");
+                            return Text('Fehler: ${snapshot.error}');
                           } else {
-                            bool canCheckBiometrics = snapshot.data[0];
-                            bool isDeviceSupported = snapshot.data[1];
-                            List<BiometricType> availableBiometrics =
+                            final bool canCheckBiometrics = snapshot.data[0];
+                            final bool isDeviceSupported = snapshot.data[1];
+                            final List<BiometricType> availableBiometrics =
                                 snapshot.data[2];
                             if (canCheckBiometrics &&
                                 isDeviceSupported &&
@@ -228,15 +228,15 @@ class _SettingsPageState extends State<SettingsPage> {
                                 title: Row(
                                   children: [
                                     const Text(
-                                      "Biometrie: ",
+                                      'Biometrie: ',
                                     ),
                                     if (state.biometrics == Biometrics.OFF)
-                                      const Text("Nicht aktiv"),
+                                      const Text('Nicht aktiv'),
                                     if (state.biometrics == Biometrics.ON)
-                                      const Text("Aktiv"),
+                                      const Text('Aktiv'),
                                     if (state.biometrics ==
                                         Biometrics.ONLY_EXAM_RESULTS)
-                                      const Text("Nur Prüfungsergebnisse"),
+                                      const Text('Nur Prüfungsergebnisse'),
                                   ],
                                 ),
                                 onTap: () {
@@ -260,7 +260,7 @@ class _SettingsPageState extends State<SettingsPage> {
                       leading: const Icon(
                         Icons.bug_report,
                       ),
-                      title: const Text("Crashlytics-Zustimmung"),
+                      title: const Text('Crashlytics-Zustimmung'),
                       onTap: () {
                         showDialog(
                           context: context,
@@ -291,7 +291,7 @@ class _SettingsPageState extends State<SettingsPage> {
                     ),
                     ListTile(
                       leading: const Icon(Icons.badge),
-                      title: const Text("Offizielles CampusNet"),
+                      title: const Text('Offizielles CampusNet'),
                       onTap: () {
                         launchUrl(
                           Uri.parse(
@@ -303,7 +303,7 @@ class _SettingsPageState extends State<SettingsPage> {
                     ),
                     ListTile(
                       leading: const Icon(Icons.update),
-                      title: const Text("Was ist neu?"),
+                      title: const Text('Was ist neu?'),
                       onTap: () {
                         showDialog(
                           context: context,
@@ -313,14 +313,14 @@ class _SettingsPageState extends State<SettingsPage> {
                     ),
                     ListTile(
                       leading: const Icon(Icons.account_balance),
-                      title: const Text("Lizenzen"),
+                      title: const Text('Lizenzen'),
                       onTap: () {
                         showLicensePage(context: context);
                       },
                     ),
                     ListTile(
                       leading: const Icon(Icons.error),
-                      title: const Text("Nutzungsbedingungen"),
+                      title: const Text('Nutzungsbedingungen'),
                       onTap: () {
                         launchUrl(
                           Uri.parse(
@@ -332,7 +332,7 @@ class _SettingsPageState extends State<SettingsPage> {
                     ),
                     ListTile(
                       leading: const Icon(Icons.admin_panel_settings),
-                      title: const Text("Datenschutz"),
+                      title: const Text('Datenschutz'),
                       onTap: () {
                         launchUrl(
                           Uri.parse(
@@ -343,8 +343,19 @@ class _SettingsPageState extends State<SettingsPage> {
                       },
                     ),
                     ListTile(
+                      leading: const Icon(Icons.warning_amber_rounded),
+                      title: const Text('Haftungsausschluss'),
+                      onTap: () {
+                        launchUrl(
+                          Uri.parse(
+                            DISCLAIMER_URL,
+                          ),
+                        );
+                      },
+                    ),
+                    ListTile(
                       leading: const Icon(Icons.code),
-                      title: const Text("Quellcode"),
+                      title: const Text('Quellcode'),
                       onTap: () {
                         launchUrl(
                           Uri.parse(
@@ -356,11 +367,22 @@ class _SettingsPageState extends State<SettingsPage> {
                     ),
                     ListTile(
                       leading: const Icon(Icons.feedback),
-                      title: const Text("Feedback"),
+                      title: const Text('Feedback'),
                       onTap: () {
                         launchUrl(
                           Uri.parse(
                             FEEDBACK_URL,
+                          ),
+                        );
+                      },
+                    ),
+                    ListTile(
+                      leading: const Icon(Icons.info),
+                      title: const Text('Impressum'),
+                      onTap: () {
+                        launchUrl(
+                          Uri.parse(
+                            IMPRINT_URL,
                           ),
                         );
                       },
@@ -374,7 +396,7 @@ class _SettingsPageState extends State<SettingsPage> {
                     ListTile(
                       leading: Icon(Icons.logout,
                           color: Colors.red.withOpacity(0.7)),
-                      title: const Text("Abmelden"),
+                      title: const Text('Abmelden'),
                       onTap: () {
                         Navigator.pop(context);
                         clearStorage();
@@ -392,11 +414,11 @@ class _SettingsPageState extends State<SettingsPage> {
   Future<void> _loadData() async {
     if (_isLoading) return;
     _isLoading = true;
-    DateFormat formatter = DateFormat('dd/MM/yyyy');
+    final DateFormat formatter = DateFormat('dd/MM/yyyy');
 
     await m.acquire();
     try {
-      List<Future> futures = store.state.events.keys
+      final List<Future> futures = store.state.events.keys
           .map((week) => fetchTimetableData(formatter.parse(week)))
           .toList();
       futures.add(fetchGradeData());

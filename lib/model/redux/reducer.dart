@@ -11,7 +11,7 @@ AppState appReducer(AppState state, dynamic action) {
   if (action is! Action) return state;
 
   if (action.type == ActionTypes.setEvents) {
-    state.events[action.payload["date"]] = action.payload["events"];
+    state.events[action.payload['date']] = action.payload['events'];
   } else if (action.type == ActionTypes.clear) {
     state.activeTheme = ui.ThemeMode.system;
     state.runningTasks = 0;
@@ -20,7 +20,7 @@ AppState appReducer(AppState state, dynamic action) {
     state.events = {};
     state.modules = [];
     state.gpa = 0;
-    state.campus = Campus.muelheim;
+    state.selectedCampus = Campus.muelheim;
     state.biometrics = Biometrics.OFF;
     state.currentView = TimetableView.daily;
     state.defaultView = TimetableView.daily;
@@ -29,8 +29,8 @@ AppState appReducer(AppState state, dynamic action) {
   } else if (action.type == ActionTypes.setDesign) {
     state.activeTheme = action.payload;
   } else if (action.type == ActionTypes.setCredentials) {
-    state.args = action.payload["args"];
-    state.cnsc = action.payload["cnsc"];
+    state.args = action.payload['args'];
+    state.cnsc = action.payload['cnsc'];
   } else if (action.type == ActionTypes.startTask) {
     state.runningTasks++;
   } else if (action.type == ActionTypes.stopTask) {
@@ -42,13 +42,13 @@ AppState appReducer(AppState state, dynamic action) {
   } else if (action.type == ActionTypes.setLoginFormState) {
     state.loginFormState = action.payload;
   } else if (action.type == ActionTypes.setCurrentWeek) {
-    state.currentWeek = DateTimeCalculator.clean(action.payload);
+    state.currentWeek = cleanDate(action.payload);
   } else if (action.type == ActionTypes.setGrades) {
     state.modules = action.payload;
   } else if (action.type == ActionTypes.setGPA) {
     state.gpa = action.payload;
   } else if (action.type == ActionTypes.setCampus) {
-    state.campus = action.payload;
+    state.selectedCampus = action.payload;
   } else if (action.type == ActionTypes.setBiometricsType) {
     state.biometrics = action.payload;
   } else if (action.type == ActionTypes.setLockState) {
@@ -65,6 +65,8 @@ AppState appReducer(AppState state, dynamic action) {
     state.lastUpdated = action.payload;
   } else if (action.type == ActionTypes.setEnableConfirmRefreshDialog) {
     state.enableConfirmRefreshDialog = action.payload;
+  } else if (action.type == ActionTypes.setCanteenData) {
+    state.campuses = action.payload;
   }
   return state;
 }

@@ -27,8 +27,8 @@ class TimetableWidget extends StatelessWidget {
       return StoreConnector<AppState, AppState>(
         converter: (store) => store.state,
         builder: (context, state) {
-          DateFormat formatter = DateFormat('dd/MM/yyyy');
-          String key = formatter.format(state.currentWeek);
+          final DateFormat formatter = DateFormat('dd/MM/yyyy');
+          final String key = formatter.format(state.currentWeek);
           List<Event> events = [];
 
           if (state.events.containsKey(key)) {

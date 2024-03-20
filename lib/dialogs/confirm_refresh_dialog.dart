@@ -15,10 +15,10 @@ class ConfirmRefreshDialog extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return DialogWrapper(
-      title: "Daten aktualisieren",
+      title: 'Daten aktualisieren',
       children: [
         const Text(
-          "Sollen die Daten aktualisiert werden?",
+          'Sollen die Daten aktualisiert werden?',
         ),
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -28,11 +28,11 @@ class ConfirmRefreshDialog extends StatelessWidget {
                 LoginPage.performLogin(onLoginSuccess: reloadAll);
                 Navigator.pop(context);
               },
-              child: const Text("Ja"),
+              child: const Text('Ja'),
             ),
             TextButton(
               onPressed: () => Navigator.pop(context),
-              child: const Text("Nein"),
+              child: const Text('Nein'),
             ),
           ],
         ),
@@ -40,7 +40,7 @@ class ConfirmRefreshDialog extends StatelessWidget {
           builder: (context, state) {
             return CheckboxListTile(
               title: const Text(
-                "Nicht erneut fragen",
+                'Nicht erneut fragen',
                 style: TextStyle(
                   fontSize: 14,
                 ),

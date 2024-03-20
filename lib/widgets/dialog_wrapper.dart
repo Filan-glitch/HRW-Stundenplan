@@ -4,11 +4,11 @@ import 'package:flutter/material.dart';
 
 class DialogWrapper extends StatelessWidget {
   const DialogWrapper({
-    this.title = "Stundenplan",
+    this.title = 'Stundenplan',
     this.children,
     this.isSubPage = false,
-    Key? key,
-  }) : super(key: key);
+    super.key,
+  });
 
   final bool isSubPage;
   final String title;

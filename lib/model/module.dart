@@ -7,8 +7,8 @@ class Module implements Comparable<Module> {
   Status status;
 
   Module({
-    this.identifier = "",
-    this.title = "",
+    this.identifier = '',
+    this.title = '',
     this.grade = 0,
     this.creditsAll = 0,
     this.creditsCharged = 0,
@@ -16,21 +16,21 @@ class Module implements Comparable<Module> {
   });
 
   Module.fromDB(Map<String, dynamic> item)
-      : identifier = item['Identifier'] ?? "",
-        title = item['Title'] ?? "",
+      : identifier = item['Identifier'] ?? '',
+        title = item['Title'] ?? '',
         grade = item['Grade'] ?? 0,
         creditsAll = item['Credits_All'] ?? 0,
         creditsCharged = item['Credits_Charged'] ?? 0,
-        status = Status.getByText(item["Status"] ?? "Offen");
+        status = Status.getByText(item['Status'] ?? 'Offen');
 
   Map<String, dynamic> toDB() {
     return {
-      "Identifier": identifier,
-      "Title": title,
-      "Grade": grade,
-      "Credits_All": creditsAll,
-      "Credits_Charged": creditsCharged,
-      "Status": status.text
+      'Identifier': identifier,
+      'Title': title,
+      'Grade': grade,
+      'Credits_All': creditsAll,
+      'Credits_Charged': creditsCharged,
+      'Status': status.text
     };
   }
 
@@ -41,17 +41,17 @@ class Module implements Comparable<Module> {
 }
 
 enum Status {
-  passed("Bestanden"),
-  failed("Durchgefallen"),
-  open("Offen");
+  passed('Bestanden'),
+  failed('Durchgefallen'),
+  open('Offen');
 
   const Status(this.text);
   final String text;
 
   static Status getByText(String text) {
-    if (text.contains("Bestanden")) {
+    if (text.contains('Bestanden')) {
       return Status.passed;
-    } else if (text.contains("Durchgefallen")) {
+    } else if (text.contains('Durchgefallen')) {
       return Status.failed;
     } else {
       return Status.open;

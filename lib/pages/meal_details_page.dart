@@ -20,6 +20,7 @@ class MealDetailsPage extends StatelessWidget {
           title: meal.category ?? 'Details',
           body: SizedBox(
             height: MediaQuery.of(context).size.height,
+            width: MediaQuery.of(context).size.width,
             child: Stack(
               children: [
                 Hero(
@@ -30,7 +31,7 @@ class MealDetailsPage extends StatelessWidget {
                         ? null
                         : Image.network(
                             meal.pictureUrl!,
-                            height: MediaQuery.of(context).size.width,
+                            width: MediaQuery.of(context).size.width,
                             errorBuilder: (context, error, stackTrace) =>
                                 Container(),
                           ),

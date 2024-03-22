@@ -1,10 +1,12 @@
 import 'package:advanced_in_app_review/advanced_in_app_review.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_redux/flutter_redux.dart';
+import 'package:timetable/service/db/events.dart';
 
 import '../dialogs/changelog_dialog.dart';
 import '../dialogs/confirm_refresh_dialog.dart';
 import '../model/date_time_calculator.dart';
+import '../model/event.dart';
 import '../model/redux/actions.dart' as redux;
 import '../model/redux/app_state.dart';
 import '../model/redux/store.dart';
@@ -18,6 +20,7 @@ import '../widgets/week_overview.dart';
 import '../widgets/week_selector.dart';
 import '../widgets/weekday_selector.dart';
 import 'grades_overview_page.dart';
+import 'hidden_events_page.dart';
 import 'login_page.dart';
 import 'mensa_page.dart';
 import 'settings_page.dart';
@@ -125,6 +128,24 @@ class _HomePageState extends State<HomePage> {
                   "Zuletzt aktualisiert: ${state.lastUpdated ?? "Nie"}",
                   style: const TextStyle(fontSize: 12.0),
                 ),
+              ),
+              ListTile(
+                leading: Icon(
+                  Icons.event_busy,
+                  color: Theme.of(context).colorScheme.primary,
+                ),
+                title: const Text('Ausgeblendete Veranstaltungen'),
+                onTap: () async {
+                  Navigator.pop(context);
+                  final List<Event> events = await getHiddenEvents();
+                  events.sort();
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => HiddenEventsPage(events: events),
+                    ),
+                  );
+                },
               ),
               if (state.currentView != TimetableView.daily)
                 ListTile(

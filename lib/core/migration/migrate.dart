@@ -5,22 +5,24 @@ import 'package:yaml/yaml.dart';
 import 'v152.dart' as v152;
 
 final List<Future<void> Function()?> _migrations = [
-  null, // version code 1
-  null, // version code 2
-  null, // version code 3
-  null, // version code 4
-  v152.migrate, // version code 5
+  null, // migration to version code 1 from previous
+  null, // migration to version code 2 from previous
+  null, // migration to version code 3 from previous
+  null, // migration to version code 4 from previous
+  v152.migrate, // migration to version code 5 from previous
+  null, // migration to version code 6 from previous
 ];
 
 Future<void> performMigration() async {
   final String pubspec = await rootBundle.loadString('pubspec.yaml');
-  final int appVersionCode = int.parse(loadYaml(pubspec)['version'].split('+')[1]);
+  final int appVersionCode =
+      int.parse(loadYaml(pubspec)['version'].split('+')[1]);
 
   final SharedPreferences prefs = await SharedPreferences.getInstance();
   final int previousVersionCode = prefs.getInt('versionCode') ?? 0;
 
-  for (int i = previousVersionCode; i <= appVersionCode; i++) {
-    final Future<void> Function()? migration = _migrations[i - 1];
+  for (int i = previousVersionCode; i < appVersionCode; i++) {
+    final Future<void> Function()? migration = _migrations[i];
     if (migration == null) continue;
     await migration();
   }

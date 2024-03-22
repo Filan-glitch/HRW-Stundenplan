@@ -1,4 +1,11 @@
+# v1.5.5
+
+- Verbesserte Mensa Ansicht
+- Termine ausblenden
+- Kleine Aktualisierungen
+
 # v1.5.2
+
 - Nutzungsbedingungen aktualisiert
 - Datenbank fix
 

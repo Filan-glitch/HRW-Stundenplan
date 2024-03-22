@@ -5,10 +5,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter_redux/flutter_redux.dart';
 
 import '../dialogs/collision_dialog.dart';
+import '../dialogs/hide_event_dialog.dart';
 import '../model/date_time_calculator.dart';
 import '../model/event.dart';
 import '../model/mode.dart';
+import '../model/redux/actions.dart' as redux;
 import '../model/redux/app_state.dart';
+import '../model/redux/store.dart';
 
 class ListItem extends StatefulWidget {
   const ListItem({required this.event, super.key});
@@ -45,9 +48,10 @@ class _ListItemState extends State<ListItem> {
             cleanDate(DateTime.now()),
           );
 
-          final bool isCurrentWeek = state.currentWeek.day == currentMonday.day &&
-              state.currentWeek.month == currentMonday.month &&
-              state.currentWeek.year == currentMonday.year;
+          final bool isCurrentWeek =
+              state.currentWeek.day == currentMonday.day &&
+                  state.currentWeek.month == currentMonday.month &&
+                  state.currentWeek.year == currentMonday.year;
 
           final DateTime now = DateTime.now();
           final DateTime start = DateTime(
@@ -85,6 +89,43 @@ class _ListItemState extends State<ListItem> {
                   context: context,
                   builder: (context) => const CollisionDialog(),
                 );
+              }
+            },
+            onLongPress: () async {
+              final HideEventDialogResult? result = await showDialog(
+                context: context,
+                builder: (context) => HideEventDialog(
+                  event_name: widget.event.title,
+                ),
+              );
+              if (result == null) return;
+              switch (result) {
+                case HideEventDialogResult.only_this:
+                  store.dispatch(
+                    redux.Action(
+                      redux.ActionTypes.hideEvent,
+                      payload: widget.event,
+                    ),
+                  );
+                  break;
+                case HideEventDialogResult.all_at_this_time:
+                  store.dispatch(
+                    redux.Action(
+                      redux.ActionTypes.hideEventsByTime,
+                      payload: widget.event,
+                    ),
+                  );
+                  break;
+                case HideEventDialogResult.all:
+                  store.dispatch(
+                    redux.Action(
+                      redux.ActionTypes.hideEventsByTitle,
+                      payload: widget.event,
+                    ),
+                  );
+                  break;
+                case HideEventDialogResult.cancel:
+                  break;
               }
             },
             child: Opacity(

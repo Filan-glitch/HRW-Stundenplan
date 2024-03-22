@@ -25,7 +25,7 @@ Future<Database> openDB() async {
     onUpgrade: (Database db, int oldVersion, int newVersion) async {
       log('Upgrading database from version $oldVersion to $newVersion');
       for (int i = oldVersion; i < newVersion; i++) {
-        await db.execute(dbMigrate[i + 1]);
+        await db.execute(dbMigrate[i - 1]);
       }
     },
   );

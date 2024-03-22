@@ -431,6 +431,7 @@ class _SettingsPageState extends State<SettingsPage> {
       await writeGradesToStorage();
       await writeGPA();
       await writeAccount();
+      await loadDataFromStorage();
     } finally {
       m.release();
     }

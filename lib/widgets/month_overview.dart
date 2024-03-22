@@ -85,7 +85,8 @@ class MonthOverviewWidget extends StatelessWidget {
                               scrollDirection: Axis.horizontal,
                               itemCount: 5,
                               itemBuilder: (context, i) {
-                                final DateTime date = week.add(Duration(days: i));
+                                final DateTime date =
+                                    week.add(Duration(days: i));
                                 final List<Event> eventsToday = eventsInWeek
                                     .where((element) =>
                                         element.day == Weekday.values[i])

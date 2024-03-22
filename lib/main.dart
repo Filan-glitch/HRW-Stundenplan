@@ -10,6 +10,7 @@ import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_redux/flutter_redux.dart';
 import 'package:local_auth/local_auth.dart';
 import 'package:oktoast/oktoast.dart';
+import 'package:timetable/core/migration/migrate.dart';
 import 'package:workmanager/workmanager.dart';
 
 import 'dialogs/crashlytics_dialog.dart';
@@ -56,7 +57,7 @@ void main() {
       };
     }
 
-    await clearStorageIfUpdated();
+    await performMigration();
 
     await loadBiometrics();
     if (store.state.biometrics == Biometrics.ON) {

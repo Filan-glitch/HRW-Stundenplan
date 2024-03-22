@@ -126,7 +126,7 @@ class _MensaPageState extends State<MensaPage> {
                           ),
                         ),
                       )
-                    : MealListWidget(canteen.menus![dayID]),
+                    : MealListWidget(canteen.menus![dayID], key: UniqueKey()),
               ),
               HorizontalSelector(
                 items: Campus.values.asMap().map(

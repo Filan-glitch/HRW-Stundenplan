@@ -185,23 +185,24 @@ class _PageWrapperState extends State<PageWrapper> with WidgetsBindingObserver {
     return StoreConnector<AppState, AppState>(
       converter: (store) => store.state,
       builder: (context, state) {
-        return Stack(
-          children: [
-            OKToast(
-              child: state.args == null || state.cnsc == null
-                  ? const WelcomePage()
-                  : mainContent,
-            ),
-            if (state.appLocked && state.biometrics != Biometrics.OFF)
-              const BiometricsPage(),
-            if (state.loginFormState != LoginFormState.notShown)
-              const LoginPage(),
-            if (state.loading ||
-                !state.dataLoaded ||
-                state.loginFormState == LoginFormState.background &&
-                    state.loginFormState != LoginFormState.inputRequired)
-              const LoadingPage(),
-          ],
+        return OKToast(
+          child: Stack(
+            children: [
+              if (state.args == null || state.cnsc == null)
+                const WelcomePage()
+              else
+                mainContent,
+              if (state.appLocked && state.biometrics != Biometrics.OFF)
+                const BiometricsPage(),
+              if (state.loginFormState != LoginFormState.notShown)
+                const LoginPage(),
+              if (state.loading ||
+                  !state.dataLoaded ||
+                  state.loginFormState == LoginFormState.background &&
+                      state.loginFormState != LoginFormState.inputRequired)
+                const LoadingPage(),
+            ],
+          ),
         );
       },
     );

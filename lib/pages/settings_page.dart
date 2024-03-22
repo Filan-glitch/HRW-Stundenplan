@@ -350,6 +350,7 @@ class _SettingsPageState extends State<SettingsPage> {
                           Uri.parse(
                             DISCLAIMER_URL,
                           ),
+                          mode: LaunchMode.externalApplication,
                         );
                       },
                     ),
@@ -384,6 +385,7 @@ class _SettingsPageState extends State<SettingsPage> {
                           Uri.parse(
                             IMPRINT_URL,
                           ),
+                          mode: LaunchMode.externalApplication,
                         );
                       },
                     ),

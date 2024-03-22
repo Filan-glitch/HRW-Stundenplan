@@ -12,6 +12,14 @@ class MainDishWidget extends StatelessWidget {
   final double width;
   final Meal meal;
 
+  Widget _emptyImageBuilder(BuildContext context) {
+    return Container(
+      height: width * 0.8,
+      width: width * 0.8,
+      color: Colors.grey,
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
@@ -36,22 +44,19 @@ class MainDishWidget extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: <Widget>[
-            Center(
-              child: Hero(
-                tag: meal.id!,
-                child: ClipRRect(
-                  borderRadius: BorderRadius.circular(15.0),
-                  child: Container(
-                    height: width * 0.8,
-                    width: width * 0.8,
-                    color: Colors.grey,
+            SizedBox(
+              height: width * 0.8,
+              child: Center(
+                child: Hero(
+                  tag: meal.id!,
+                  child: ClipRRect(
+                    borderRadius: BorderRadius.circular(15.0),
                     child: meal.pictureUrl == null
-                        ? null
+                        ? _emptyImageBuilder(context)
                         : Image.network(
                             meal.pictureUrl!,
-                            height: width * 0.8,
                             errorBuilder: (context, error, stackTrace) =>
-                                Container(),
+                                _emptyImageBuilder(context),
                           ),
                   ),
                 ),

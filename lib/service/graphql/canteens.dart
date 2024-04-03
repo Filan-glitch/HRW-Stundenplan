@@ -8,7 +8,7 @@ import 'package:timetable/model/redux/store.dart';
 
 Future<void> getCanteenData() async {
   // TODO: maybe add local caching later?
-  late final http.Response response;
+  final http.Response response;
   try {
     store.dispatch(Action(ActionTypes.startTask));
 
@@ -41,6 +41,7 @@ Future<void> getCanteenData() async {
     store.dispatch(Action(ActionTypes.stopTask));
     showToast('Der Speiseplan konnten nicht geladen werden');
     store.dispatch(Action(ActionTypes.setCanteenData, payload: <Campus>[]));
+    return;
   }
 
   store.dispatch(Action(ActionTypes.stopTask));

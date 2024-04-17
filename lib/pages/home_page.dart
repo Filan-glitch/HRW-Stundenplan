@@ -1,12 +1,11 @@
 import 'package:advanced_in_app_review/advanced_in_app_review.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_redux/flutter_redux.dart';
-import 'package:timetable/service/db/events.dart';
+import 'package:timetable/pages/edit_event_page.dart';
 
 import '../dialogs/changelog_dialog.dart';
 import '../dialogs/confirm_refresh_dialog.dart';
 import '../model/date_time_calculator.dart';
-import '../model/event.dart';
 import '../model/redux/actions.dart' as redux;
 import '../model/redux/app_state.dart';
 import '../model/redux/store.dart';
@@ -120,6 +119,17 @@ class _HomePageState extends State<HomePage> {
                     ),
                   ),
                 ),
+              IconButton(
+                onPressed: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => const EditEventPage(event: null),
+                    ),
+                  );
+                },
+                icon: const Icon(Icons.add),
+              ),
             ],
             menuActions: [
               Padding(
@@ -137,12 +147,10 @@ class _HomePageState extends State<HomePage> {
                 title: const Text('Ausgeblendete Veranstaltungen'),
                 onTap: () async {
                   Navigator.pop(context);
-                  final List<Event> events = await getHiddenEvents();
-                  events.sort();
                   Navigator.push(
                     context,
                     MaterialPageRoute(
-                      builder: (context) => HiddenEventsPage(events: events),
+                      builder: (context) => const HiddenEventsPage(),
                     ),
                   );
                 },
@@ -292,7 +300,11 @@ class _HomePageState extends State<HomePage> {
                             builder: (context) => const ConfirmRefreshDialog(),
                           );
                         } else {
-                          LoginPage.performLogin(onLoginSuccess: reloadAll);
+                          LoginPage.performLogin(
+                            onLoginSuccess: () async => await reloadAll(
+                              store.state.keepEditedOnReload,
+                            ),
+                          );
                         }
                       },
                     ),

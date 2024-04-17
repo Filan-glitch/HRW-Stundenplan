@@ -15,79 +15,38 @@ import 'connection.dart';
 Future<void> loadDataFromStorage() async {
   try {
     final Database db = await openDB();
-    final DateFormat formatter = DateFormat('dd/MM/yyyy');
-    final List<Map<String, dynamic>> result =
-        await db.query('Events', where: 'HIDE_FLAG = 0');
-    final Map<String, List<Event>> events = {};
+    final List<Map<String, dynamic>> dbResult = await db.query('Events');
 
-    // fill empty weeks
-    DateTime currentMonday = getFirstDayOfWeek(
-      cleanDate(DateTime.now()),
-    );
+    final List<Event> events = [];
+    final DateTime firstDayOfCurrentWeek = getFirstDayOfWeek(DateTime.now());
 
-    final String? mon = await loadDownloadedRange();
-    if (mon != null) {
-      final DateTime lastFetchedWeek = cleanDate(formatter.parse(mon));
+    for (Map<String, dynamic> raw in dbResult) {
+      final Event event = Event.fromDB(raw);
 
-      while (!lastFetchedWeek.isBefore(currentMonday)) {
-        events[formatter.format(currentMonday)] = [];
-        currentMonday = currentMonday.add(const Duration(days: 7));
-      }
-    }
-
-    for (Map<String, dynamic> item in result) {
-      final DateTime eventDate = formatter
-          .parse(item['WeekFrom'])
-          .add(Duration(days: int.parse(item['Weekday'])));
-
-      final DateTime today = DateTime.now();
-      // Remove past events
-      if (eventDate.year < today.year ||
-          eventDate.year == today.year && eventDate.month < today.month) {
-        await db.delete(
-          'Events',
-          where: 'EventID = ?',
-          whereArgs: [item['EventID']],
-        );
-        continue;
+      // check if difference between weekFrom and current week is more then 14 days
+      bool shouldDelete = true;
+      if (event.weekFrom == null)
+        shouldDelete = true;
+      else {
+        shouldDelete =
+            event.weekFrom!.difference(firstDayOfCurrentWeek).inDays < -14;
       }
 
-      final Event event = Event.fromDB(item);
-
-      // Add event to list
-      if (!events.containsKey(event.weekFrom)) {
-        events[item['WeekFrom']] = [];
-      }
-      events[event.weekFrom]!.add(event);
-    }
-
-    for (String date in events.keys) {
-      store.dispatch(
-        Action(
-          ActionTypes.setEvents,
-          payload: {
-            'date': date,
-            'events': events[date],
-          },
-        ),
-      );
-    }
-
-    //remove past hidden events
-    final List<Event> hiddenEvents = await getHiddenEvents();
-    final DateTime now = DateTime.now();
-    for (Event event in hiddenEvents) {
-      final DateTime eventDate =
-          formatter.parse(event.weekFrom).add(Duration(days: event.day.value));
-      if (eventDate.year < now.year ||
-          eventDate.year == now.year && eventDate.month < now.month) {
+      if (shouldDelete) {
         await db.delete(
           'Events',
           where: 'EventID = ?',
           whereArgs: [event.eventID],
         );
+      } else {
+        events.add(event);
       }
     }
+
+    store.dispatch(Action(
+      ActionTypes.setEvents,
+      payload: events,
+    ));
 
     await db.close();
   } catch (e, stackTrace) {
@@ -106,29 +65,29 @@ Future<void> writeDataToStorage() async {
     final DateFormat formatter = DateFormat('dd/MM/yyyy');
     final Database db = await openDB();
 
-    await db.delete('Events', where: 'HIDE_FLAG = 0');
+    // clean db
+    await db.delete('Events');
 
-    final DateTime? lastFetchedWeek = store.state.events.keys
-        .map((date) => formatter.parse(date))
-        .reduce((a, b) => a.isAfter(b) ? a : b);
+    // write items to db
+    final List<dynamic> dbEntries =
+        store.state.events.map((e) => e.toDB()).toList();
 
-    for (Event event in store.state.events.values.expand((x) => x)) {
-      // Makes a db call, where event gets inserted into the db, but when already exists it gets update all of its columns except the HIDE_FLAG
-      await db.insert(
-        'Events',
-        event.toDB(),
-        conflictAlgorithm: ConflictAlgorithm.ignore,
-      );
-      await db.update('Events', event.toDB(),
-          where: 'EventID = ?', whereArgs: [event.eventID]);
+    try {
+      for (var e in dbEntries) {
+        await db.insert(
+          'Events',
+          e,
+          // conflictAlgorithm: ConflictAlgorithm.replace,
+        );
+      }
+    } catch (e) {
+      print(e);
     }
 
-    if (lastFetchedWeek != null) {
-      await writeDownloadedRange(formatter.format(lastFetchedWeek));
-    }
-
-    store.dispatch(Action(ActionTypes.setLastUpdated,
-        payload: formatter.format(DateTime.now())));
+    store.dispatch(Action(
+      ActionTypes.setLastUpdated,
+      payload: formatter.format(DateTime.now()),
+    ));
     writeLastUpdated();
 
     await db.close();
@@ -153,38 +112,14 @@ Future<List<Event>> getNextEvents() async {
     final result = await db.query('Events', where: 'HIDE_FLAG = 0');
     return result
         .map(Event.fromDB)
+        .where((event) => event.weekFrom != null)
         .where((event) =>
-            cleanDate(DateFormat('dd/MM/yyyy').parse(event.weekFrom))
-                .isAtSameMomentAs(monday) &&
+            event.weekFrom!.isAtSameMomentAs(monday) &&
             event.day == Weekday.getByValue(now.weekday - 1) &&
             event.start.totalMinutes >= rangeStart &&
             event.start.totalMinutes <= rangeEnd)
-        .toList();
-  } finally {
-    await db.close();
-  }
-}
-
-Future<void> setEventsHideFlag(List<Event> events, bool value) async {
-  final Database db = await openDB();
-  await db.transaction((txn) async {
-    for (var event in events) {
-      await txn.update(
-        'Events',
-        {'HIDE_FLAG': value ? 1 : 0},
-        where: 'EventID = ?',
-        whereArgs: [event.eventID],
-      );
-    }
-  });
-  await db.close();
-}
-
-Future<List<Event>> getHiddenEvents() async {
-  final db = await openDB();
-  try {
-    final result = await db.query('Events', where: 'HIDE_FLAG = 1');
-    return result.map(Event.fromDB).toList();
+        .toList()
+      ..sort((a, b) => a.start.totalMinutes - b.start.totalMinutes);
   } finally {
     await db.close();
   }

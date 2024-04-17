@@ -1,13 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_redux/flutter_redux.dart';
-import 'package:intl/intl.dart';
 
 import '../model/event.dart';
 import '../model/redux/app_state.dart';
 import '../model/redux/store.dart';
 import '../model/weekday.dart';
 import '../pages/login_page.dart';
-import '../service/db/events.dart';
 import '../service/network_fetch.dart';
 import 'break.dart';
 import 'empty_schedule.dart';
@@ -27,22 +25,30 @@ class TimetableWidget extends StatelessWidget {
       return StoreConnector<AppState, AppState>(
         converter: (store) => store.state,
         builder: (context, state) {
-          final DateFormat formatter = DateFormat('dd/MM/yyyy');
-          final String key = formatter.format(state.currentWeek);
-          List<Event> events = [];
-
-          if (state.events.containsKey(key)) {
-            events = state.events[key]!
-                .where((element) => element.day == weekday)
-                .toList()
-              ..sort();
-          } else {
+          late final List<Event> events;
+          if (state.downloadedUntil == null ||
+              state.currentWeek.isAfter(state.downloadedUntil!)) {
             LoginPage.performLogin(onLoginSuccess: () async {
               await loadWeekInterval(
                 start: store.state.currentWeek,
               );
-              await writeDataToStorage();
             });
+
+            events = [];
+          } else {
+            events = state.events
+                .where((element) =>
+                    element.weekFrom?.isAtSameMomentAs(state.currentWeek) ??
+                    false)
+                .where((element) => element.day == weekday)
+                .where((element) => !element.hidden)
+                .toList();
+
+            events.sort(
+              (a, b) => a.start.totalMinutes.compareTo(b.start.totalMinutes),
+            );
+
+            checkForCollisions(events);
           }
 
           if (events.isEmpty) {
@@ -53,13 +59,6 @@ class TimetableWidget extends StatelessWidget {
                 child: const EmptyScheduleWidget(),
               ),
             );
-          }
-
-          if (state.events.containsKey(key)) {
-            events = state.events[key]!
-                .where((element) => element.day == weekday)
-                .toList()
-              ..sort();
           }
 
           return ListView.builder(

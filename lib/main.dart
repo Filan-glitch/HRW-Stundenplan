@@ -87,6 +87,8 @@ void main() {
       loadAccount(),
       loadLastUpdated(),
       loadEnableConfirmRefreshDialog(),
+      loadKeepEditedOnReload(),
+      loadDownloadedRange(),
     ]).then((value) {
       store.dispatch(redux.Action(redux.ActionTypes.setupCompleted));
 

@@ -74,40 +74,42 @@ class _LoginPageState extends State<LoginPage> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('CampusNet Login'),
-      ),
-      body: PopScope(
-        canPop: false,
-        onPopInvoked: (bool didPop) async {
-          _cancelLogin();
-        },
-        child: InAppWebView(
-          key: _webViewKey,
-          initialUrlRequest: URLRequest(url: WebUri(LOGIN_URL)),
-          shouldOverrideUrlLoading: _onNavigationRequest,
-          initialSettings: InAppWebViewSettings(
-            useShouldOverrideUrlLoading: true,
-            isInspectable: kDebugMode,
-            forceDark: ForceDark.ON,
-            algorithmicDarkeningAllowed: true,
-            mediaType: 'text/html',
+    return OKToast(
+      child: Scaffold(
+        appBar: AppBar(
+          title: const Text('CampusNet Login'),
+        ),
+        body: PopScope(
+          canPop: false,
+          onPopInvoked: (bool didPop) async {
+            _cancelLogin();
+          },
+          child: InAppWebView(
+            key: _webViewKey,
+            initialUrlRequest: URLRequest(url: WebUri(LOGIN_URL)),
+            shouldOverrideUrlLoading: _onNavigationRequest,
+            initialSettings: InAppWebViewSettings(
+              useShouldOverrideUrlLoading: true,
+              isInspectable: kDebugMode,
+              forceDark: ForceDark.ON,
+              algorithmicDarkeningAllowed: true,
+              mediaType: 'text/html',
+            ),
+            onWebViewCreated: (controller) {
+              controller.addJavaScriptHandler(
+                handlerName: 'cancel',
+                callback: (args) {
+                  _cancelLogin();
+                },
+              );
+            },
+            onLoadStop: (controller, url) {
+              if (!url.toString().contains('IdentityServer/Account/Login')) {
+                return;
+              }
+              _injectCancelJS(controller);
+            },
           ),
-          onWebViewCreated: (controller) {
-            controller.addJavaScriptHandler(
-              handlerName: 'cancel',
-              callback: (args) {
-                _cancelLogin();
-              },
-            );
-          },
-          onLoadStop: (controller, url) {
-            if (!url.toString().contains('IdentityServer/Account/Login')) {
-              return;
-            }
-            _injectCancelJS(controller);
-          },
         ),
       ),
     );

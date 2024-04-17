@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_redux/flutter_redux.dart';
-import 'package:intl/intl.dart';
 
 import '../model/date_time_calculator.dart';
 import '../model/event.dart';
@@ -10,7 +9,6 @@ import '../model/redux/store.dart';
 import '../model/timetable_view.dart';
 import '../model/weekday.dart';
 import '../pages/login_page.dart';
-import '../service/db/events.dart';
 import '../service/network_fetch.dart';
 
 class MonthOverviewWidget extends StatelessWidget {
@@ -22,8 +20,6 @@ class MonthOverviewWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final DateFormat formatter = DateFormat('dd/MM/yyyy');
-
     return LayoutBuilder(
       builder: (context, constraints) {
         return SingleChildScrollView(
@@ -47,6 +43,7 @@ class MonthOverviewWidget extends StatelessWidget {
                   firstDayOfMonth.add(const Duration(days: 28)),
                   firstDayOfMonth.add(const Duration(days: 35)),
                 ]
+                    // filter week in the past
                     .where(
                       (element) => element
                           .add(const Duration(days: 7))
@@ -54,23 +51,32 @@ class MonthOverviewWidget extends StatelessWidget {
                     )
                     .toList();
 
+                if (state.downloadedUntil == null) {
+                  return Container();
+                }
+
+                for (DateTime week in weeks) {
+                  if (week.isAfter(state.downloadedUntil!)) {
+                    LoginPage.performLogin(onLoginSuccess: () async {
+                      await loadWeekInterval(
+                        start:
+                            state.downloadedUntil?.add(const Duration(days: 7)),
+                      );
+                    });
+                    return Container();
+                  }
+                }
+
                 return Container(
                   //color: Theme.of(context).dividerColor.withOpacity(0.5),
                   margin: const EdgeInsets.only(top: 10.0),
                   child: Column(
                     children: weeks.map<Widget>((week) {
-                      if (!state.events.containsKey(formatter.format(week))) {
-                        LoginPage.performLogin(onLoginSuccess: () async {
-                          await loadWeekInterval(
-                            start: state.currentWeek,
-                            weeks: 6,
-                          );
-                          await writeDataToStorage();
-                        });
-                        return Container();
-                      }
-                      final List<Event> eventsInWeek =
-                          state.events[formatter.format(week)]!;
+                      final List<Event> eventsInWeek = state.events
+                          .where((element) =>
+                              element.weekFrom?.isAtSameMomentAs(week) ?? false)
+                          .toList();
+
                       final bool isSelectedWeek =
                           isSameDay(week, state.currentWeek);
 
@@ -90,7 +96,14 @@ class MonthOverviewWidget extends StatelessWidget {
                                 final List<Event> eventsToday = eventsInWeek
                                     .where((element) =>
                                         element.day == Weekday.values[i])
+                                    .where((element) => !element.hidden)
                                     .toList();
+
+                                eventsToday.sort(
+                                  (a, b) => a.start.totalMinutes
+                                      .compareTo(b.start.totalMinutes),
+                                );
+                                checkForCollisions(eventsToday);
                                 return Container(
                                   constraints: BoxConstraints(
                                     minWidth:

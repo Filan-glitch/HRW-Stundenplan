@@ -1,3 +1,7 @@
+# v2.0.0
+
+- Termin Editor
+
 # v1.5.5
 
 - Verbesserte Mensa Ansicht

@@ -5,18 +5,53 @@ import 'mode.dart';
 import 'time.dart';
 import 'weekday.dart';
 
+final DateFormat dayFormat = DateFormat('dd/MM/yyyy');
+
+enum EventMode {
+  fromDB,
+  edited,
+  customEvent;
+
+  int get dbValue {
+    switch (this) {
+      case EventMode.fromDB:
+        return 0;
+      case EventMode.edited:
+        return 1;
+      case EventMode.customEvent:
+        return 2;
+    }
+  }
+
+  static EventMode getByValue(int value) {
+    switch (value) {
+      case 0:
+        return EventMode.fromDB;
+      case 1:
+        return EventMode.edited;
+      case 2:
+        return EventMode.customEvent;
+      default:
+        return EventMode.customEvent;
+    }
+  }
+}
+
 class Event implements Comparable<Event> {
-  String get eventID => '$abbreviation$weekFrom${day.value}${start.toString()}';
+  String get eventID =>
+      '$abbreviation#${weekFrom == null ? '' : dayFormat.format(weekFrom!)}#${day.value}#${start.toString()}';
   String title;
   String abbreviation;
   Time start;
   Time end;
   String room;
   Weekday day;
-  String weekFrom;
+  DateTime? weekFrom;
+  EventMode mode;
   bool? collision;
+  bool hidden;
 
-  Mode get mode {
+  Mode get state {
     if (day.value == DateTime.now().weekday - 1) {
       final Time now = Time(DateTime.now().hour, DateTime.now().minute);
       if (start.compareTo(now) <= 0 && end.compareTo(now) >= 0) {
@@ -38,8 +73,10 @@ class Event implements Comparable<Event> {
     this.end = const Time(0, 0),
     this.room = '',
     this.day = Weekday.monday,
-    this.weekFrom = '',
+    this.weekFrom,
+    this.mode = EventMode.customEvent,
     this.collision,
+    this.hidden = false,
   });
 
   Event.fromDB(Map<String, dynamic> data)
@@ -47,7 +84,9 @@ class Event implements Comparable<Event> {
         abbreviation = data['Abbreviation'] ?? '',
         room = data['Room'] ?? '',
         day = Weekday.getByValue(int.parse(data['Weekday'] ?? '0')),
-        weekFrom = data['WeekFrom'] ?? '',
+        weekFrom = data['WeekFrom'] == null
+            ? null
+            : cleanDate(dayFormat.parse(data['WeekFrom'])),
         start = Time(
           int.parse(data['Start']?.toString().split(':')[0] ?? '0'),
           int.parse(data['Start']?.toString().split(':')[1] ?? '0'),
@@ -55,7 +94,11 @@ class Event implements Comparable<Event> {
         end = Time(
           int.parse(data['End']?.toString().split(':')[0] ?? '0'),
           int.parse(data['End']?.toString().split(':')[1] ?? '0'),
-        );
+        ),
+        mode = EventMode.getByValue(
+          data['MODE'] ?? -1,
+        ),
+        hidden = data['HIDE_FLAG'] == 1;
 
   Map<String, dynamic> toDB() {
     return {
@@ -66,7 +109,8 @@ class Event implements Comparable<Event> {
       'Weekday': day.value.toString(),
       'Start': '${start.hour}:${start.minute}',
       'End': '${end.hour}:${end.minute}',
-      'WeekFrom': weekFrom,
+      'WeekFrom': weekFrom == null ? null : dayFormat.format(weekFrom!),
+      'MODE': mode.dbValue,
     };
   }
 
@@ -77,10 +121,12 @@ class Event implements Comparable<Event> {
 
   @override
   int compareTo(Event other) {
-    return cleanDate(DateFormat('dd/MM/yyyy').parse(weekFrom))
-        .add(Duration(days: day.value))
-        .compareTo(cleanDate(DateFormat('dd/MM/yyyy').parse(other.weekFrom))
-            .add(Duration(days: other.day.value)));
+    if (weekFrom == null || other.weekFrom == null) {
+      return 0;
+    }
+
+    return cleanDate(weekFrom!).add(Duration(days: day.value)).compareTo(
+        cleanDate(other.weekFrom!).add(Duration(days: other.day.value)));
   }
 
   bool isCollidingWith(Event other) {

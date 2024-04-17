@@ -13,6 +13,7 @@ class AppState {
   ThemeMode activeTheme = ThemeMode.system;
   bool dataLoaded = false;
   int runningTasks = 0;
+
   bool get loading => runningTasks > 0;
   bool showChangelog = false;
   LoginFormState loginFormState = LoginFormState.notShown;
@@ -25,11 +26,13 @@ class AppState {
   TimetableView defaultView = TimetableView.daily;
   bool notificationsEnabled = false;
   bool enableConfirmRefreshDialog = true;
+  bool keepEditedOnReload = true;
   String? lastUpdated;
 
   String? account;
   String? cnsc, args;
-  Map<String, List<Event>> events = {};
+  List<Event> events = [];
+  DateTime? downloadedUntil;
 
   List<Module> modules = [];
   double gpa = 0;

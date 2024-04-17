@@ -75,7 +75,11 @@ class _GradesOverviewPageState extends State<GradesOverviewPage> {
                     builder: (context) => const ConfirmRefreshDialog(),
                   );
                 } else {
-                  LoginPage.performLogin(onLoginSuccess: reloadAll);
+                  LoginPage.performLogin(
+                    onLoginSuccess: () async => await reloadAll(
+                      store.state.keepEditedOnReload,
+                    ),
+                  );
                 }
               },
               child: ListView.builder(

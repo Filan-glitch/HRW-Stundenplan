@@ -1,13 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_redux/flutter_redux.dart';
-import 'package:intl/intl.dart';
 
 import '../model/event.dart';
 import '../model/redux/app_state.dart';
 import '../model/redux/store.dart';
 import '../model/weekday.dart';
 import '../pages/login_page.dart';
-import '../service/db/events.dart';
 import '../service/network_fetch.dart';
 import 'break.dart';
 import 'empty_schedule.dart';
@@ -28,15 +26,12 @@ class WeekOverview extends StatelessWidget {
         return StoreConnector<AppState, AppState>(
           converter: (store) => store.state,
           builder: (context, state) {
-            final DateFormat formatter = DateFormat('dd/MM/yyyy');
-            final String key = formatter.format(state.currentWeek);
-
-            if (!state.events.containsKey(key)) {
+            if (state.downloadedUntil == null ||
+                state.currentWeek.isAfter(state.downloadedUntil!)) {
               LoginPage.performLogin(onLoginSuccess: () async {
                 await loadWeekInterval(
                   start: store.state.currentWeek,
                 );
-                await writeDataToStorage();
               });
 
               return SingleChildScrollView(
@@ -48,6 +43,12 @@ class WeekOverview extends StatelessWidget {
               );
             }
 
+            final List<Event> eventsInWeek = state.events
+                .where((element) =>
+                    element.weekFrom?.isAtSameMomentAs(state.currentWeek) ??
+                    false)
+                .toList();
+
             return SingleChildScrollView(
               physics: const ScrollPhysics(),
               child: Column(
@@ -55,10 +56,16 @@ class WeekOverview extends StatelessWidget {
                   for (Weekday day in Weekday.values)
                     Builder(
                       builder: (context) {
-                        final List<Event> events = state.events[key]!
+                        final List<Event> events = eventsInWeek
                             .where((element) => element.day == day)
-                            .toList()
-                          ..sort();
+                            .where((element) => !element.hidden)
+                            .toList();
+
+                        events.sort(
+                          (a, b) => a.start.totalMinutes
+                              .compareTo(b.start.totalMinutes),
+                        );
+                        checkForCollisions(events);
 
                         return Padding(
                           padding: const EdgeInsets.symmetric(

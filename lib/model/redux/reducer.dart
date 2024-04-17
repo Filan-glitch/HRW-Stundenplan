@@ -1,21 +1,23 @@
 import 'package:flutter/material.dart' as ui;
 
-import '../../service/db/events.dart';
 import '../biometrics.dart';
 import '../campus.dart';
 import '../date_time_calculator.dart';
-import '../event.dart';
 import '../timetable_view.dart';
 import 'actions.dart';
 import 'app_state.dart';
+
+// TODO: validate runtime type of payload
 
 AppState appReducer(AppState state, dynamic action) {
   if (action is! Action) return state;
 
   switch (action.type) {
     case ActionTypes.setEvents:
-      state.events[action.payload['date']] = action.payload['events'];
-      checkForCollisions(state.events.values.expand((e) => e).toList());
+      state.events = action.payload;
+      break;
+    case ActionTypes.setDownloadedUntil:
+      state.downloadedUntil = action.payload;
       break;
     case ActionTypes.clear:
       clearState(state);
@@ -79,17 +81,8 @@ AppState appReducer(AppState state, dynamic action) {
     case ActionTypes.setEnableConfirmRefreshDialog:
       state.enableConfirmRefreshDialog = action.payload;
       break;
-    case ActionTypes.hideEvent:
-      hideSingleEvent(action, state);
-      break;
-    case ActionTypes.hideEventsByTime:
-      hideEventsByTime(action, state);
-      break;
-    case ActionTypes.hideEventsByTitle:
-      hideEventsByTitle(action, state);
-      break;
-    case ActionTypes.addEvent:
-      showEvent(action, state);
+    case ActionTypes.setKeepEditedOnReload:
+      state.keepEditedOnReload = action.payload;
       break;
     case ActionTypes.setCanteenData:
       state.campuses = action.payload;
@@ -99,78 +92,14 @@ AppState appReducer(AppState state, dynamic action) {
   return state;
 }
 
-void showEvent(Action action, AppState state) {
-  final Event eventToAdd = action.payload;
-  state.events.update(eventToAdd.weekFrom, (value) {
-    return value..add(eventToAdd);
-  });
-  state.events[eventToAdd.weekFrom]!.sort();
-
-  checkForCollisions(state.events.values.expand((e) => e).toList());
-}
-
-void hideEventsByTitle(Action action, AppState state) {
-  final Event eventToDelete = action.payload;
-
-  final List<Event> eventsToDelete = state.events.values
-      .expand((x) => x)
-      .where((event) => event.title == eventToDelete.title)
-      .toList();
-
-  setEventsHideFlag(eventsToDelete, true);
-
-  state.events.updateAll((key, value) {
-    return value.where((event) => event.title != eventToDelete.title).toList();
-  });
-
-  checkForCollisions(state.events.values.expand((e) => e).toList());
-}
-
-void hideEventsByTime(Action action, AppState state) {
-  final Event eventToDelete = action.payload;
-
-  final List<Event> eventsToDelete = state.events.values
-      .expand((x) => x)
-      .where((event) =>
-          event.title == eventToDelete.title &&
-          event.start == eventToDelete.start &&
-          event.end == eventToDelete.end &&
-          event.day == eventToDelete.day)
-      .toList();
-
-  setEventsHideFlag(eventsToDelete, true);
-
-  state.events.updateAll((key, value) {
-    return value
-        .where((event) =>
-            event.title != eventToDelete.title ||
-            event.start != eventToDelete.start ||
-            event.end != eventToDelete.end ||
-            event.day != eventToDelete.day)
-        .toList();
-  });
-
-  checkForCollisions(state.events.values.expand((e) => e).toList());
-}
-
-void hideSingleEvent(Action action, AppState state) {
-  final Event eventToDelete = action.payload;
-  state.events.update(eventToDelete.weekFrom, (value) {
-    return value.where((event) => event != eventToDelete).toList();
-  });
-
-  setEventsHideFlag([eventToDelete], true);
-
-  checkForCollisions(state.events.values.expand((e) => e).toList());
-}
-
 void clearState(AppState state) {
   state
     ..activeTheme = ui.ThemeMode.system
     ..runningTasks = 0
     ..cnsc = null
     ..args = null
-    ..events = {}
+    ..events = []
+    ..downloadedUntil = null
     ..modules = []
     ..gpa = 0
     ..selectedCampus = Campus.muelheim

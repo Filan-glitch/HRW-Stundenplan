@@ -3,6 +3,7 @@ import 'package:flutter_inappwebview/flutter_inappwebview.dart';
 import 'package:path/path.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:sqflite/sqflite.dart';
+import 'package:timetable/model/event.dart';
 
 import '../model/biometrics.dart';
 import '../model/campus.dart';
@@ -101,14 +102,26 @@ Future<void> loadGPA() async {
   }
 }
 
-Future<void> writeDownloadedRange(String monday) async {
+Future<void> writeDownloadedRange() async {
   final SharedPreferences prefs = await SharedPreferences.getInstance();
-  prefs.setString('downloadedRange', monday);
+  if (store.state.downloadedUntil == null) {
+    prefs.remove('downloadedRange');
+  } else {
+    prefs.setString(
+        'downloadedRange', dayFormat.format(store.state.downloadedUntil!));
+  }
 }
 
-Future<String?> loadDownloadedRange() async {
+Future<void> loadDownloadedRange() async {
   final SharedPreferences prefs = await SharedPreferences.getInstance();
-  return prefs.getString('downloadedRange');
+  store.dispatch(
+    Action(
+      ActionTypes.setDownloadedUntil,
+      payload: prefs.containsKey('downloadedRange')
+          ? dayFormat.parse(prefs.getString('downloadedRange')!)
+          : null,
+    ),
+  );
 }
 
 Future<void> writeBiometrics() async {
@@ -199,6 +212,23 @@ Future<void> loadEnableConfirmRefreshDialog() async {
       Action(
         ActionTypes.setEnableConfirmRefreshDialog,
         payload: prefs.getBool('enableConfirmRefreshDialog'),
+      ),
+    );
+  }
+}
+
+Future<void> writeKeepEditedOnReload() async {
+  final SharedPreferences prefs = await SharedPreferences.getInstance();
+  prefs.setBool('keepEditedOnReload', store.state.keepEditedOnReload);
+}
+
+Future<void> loadKeepEditedOnReload() async {
+  final SharedPreferences prefs = await SharedPreferences.getInstance();
+  if (prefs.containsKey('keepEditedOnReload')) {
+    store.dispatch(
+      Action(
+        ActionTypes.setKeepEditedOnReload,
+        payload: prefs.getBool('keepEditedOnReload'),
       ),
     );
   }

@@ -79,6 +79,8 @@ class _PageWrapperState extends State<PageWrapper> with WidgetsBindingObserver {
 
   @override
   Widget build(BuildContext context) {
+    // final Widget _body = widget.body;
+    final Widget _body = OKToast(child: widget.body);
     Widget mainContent;
     if (widget.simpleDesign) {
       mainContent = Scaffold(
@@ -90,7 +92,7 @@ class _PageWrapperState extends State<PageWrapper> with WidgetsBindingObserver {
           padding: EdgeInsets.only(
             bottom: MediaQuery.of(context).viewPadding.bottom,
           ),
-          child: widget.body,
+          child: _body,
         ),
       );
     } else {
@@ -172,7 +174,7 @@ class _PageWrapperState extends State<PageWrapper> with WidgetsBindingObserver {
                             topRight: Radius.circular(30.0),
                           ),
                         ),
-                        child: widget.body,
+                        child: _body,
                       ),
                     ),
                   ],
@@ -185,24 +187,22 @@ class _PageWrapperState extends State<PageWrapper> with WidgetsBindingObserver {
     return StoreConnector<AppState, AppState>(
       converter: (store) => store.state,
       builder: (context, state) {
-        return OKToast(
-          child: Stack(
-            children: [
-              if (state.args == null || state.cnsc == null)
-                const WelcomePage()
-              else
-                mainContent,
-              if (state.appLocked && state.biometrics != Biometrics.OFF)
-                const BiometricsPage(),
-              if (state.loginFormState != LoginFormState.notShown)
-                const LoginPage(),
-              if (state.loading ||
-                  !state.dataLoaded ||
-                  state.loginFormState == LoginFormState.background &&
-                      state.loginFormState != LoginFormState.inputRequired)
-                const LoadingPage(),
-            ],
-          ),
+        return Stack(
+          children: [
+            if (state.args == null || state.cnsc == null)
+              const WelcomePage()
+            else
+              mainContent,
+            if (state.appLocked && state.biometrics != Biometrics.OFF)
+              const BiometricsPage(),
+            if (state.loginFormState != LoginFormState.notShown)
+              const LoginPage(),
+            if (state.loading ||
+                !state.dataLoaded ||
+                state.loginFormState == LoginFormState.background &&
+                    state.loginFormState != LoginFormState.inputRequired)
+              const LoadingPage(),
+          ],
         );
       },
     );

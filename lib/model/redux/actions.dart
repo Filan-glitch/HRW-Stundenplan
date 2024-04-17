@@ -21,11 +21,9 @@ enum ActionTypes {
   setAccount,
   setLastUpdated,
   setEnableConfirmRefreshDialog,
-  hideEvent,
-  hideEventsByTime,
-  hideEventsByTitle,
-  addEvent,
+  setKeepEditedOnReload,
   setCanteenData,
+  setDownloadedUntil,
 }
 
 /// Representation of a redux action with its [type] and optional [payload].

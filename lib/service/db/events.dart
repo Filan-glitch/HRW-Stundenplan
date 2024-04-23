@@ -1,6 +1,5 @@
 import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 import 'package:flutter/foundation.dart';
-import 'package:intl/intl.dart';
 import 'package:oktoast/oktoast.dart';
 import 'package:sqflite/sqflite.dart';
 
@@ -62,7 +61,6 @@ Future<void> loadDataFromStorage() async {
 
 Future<void> writeDataToStorage() async {
   try {
-    final DateFormat formatter = DateFormat('dd/MM/yyyy');
     final Database db = await openDB();
 
     // clean db
@@ -86,7 +84,7 @@ Future<void> writeDataToStorage() async {
 
     store.dispatch(Action(
       ActionTypes.setLastUpdated,
-      payload: formatter.format(DateTime.now()),
+      payload: DateTime.now(),
     ));
     writeLastUpdated();
 

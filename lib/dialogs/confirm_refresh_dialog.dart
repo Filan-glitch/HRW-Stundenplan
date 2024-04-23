@@ -72,7 +72,7 @@ class ConfirmRefreshDialog extends StatelessWidget {
                 store.dispatch(
                   redux.Action(
                     redux.ActionTypes.setKeepEditedOnReload,
-                    payload: value == false ? true : false,
+                    payload: value == false ? false : true,
                   ),
                 );
                 writeKeepEditedOnReload();

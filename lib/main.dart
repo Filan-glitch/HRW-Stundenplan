@@ -8,7 +8,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_redux/flutter_redux.dart';
-import 'package:local_auth/local_auth.dart';
 import 'package:oktoast/oktoast.dart';
 import 'package:timetable/core/migration/migrate.dart';
 import 'package:workmanager/workmanager.dart';
@@ -147,28 +146,6 @@ class MyApp extends StatelessWidget {
             DeviceOrientation.portraitUp,
             DeviceOrientation.portraitDown,
           ]);
-
-          if (state.appLocked && state.biometrics == Biometrics.ON) {
-            Future.wait([LocalAuthentication().stopAuthentication()]);
-            LocalAuthentication()
-                .authenticate(
-              localizedReason: 'Bitte App entsperren',
-              options: const AuthenticationOptions(
-                stickyAuth: true,
-                sensitiveTransaction: false,
-                biometricOnly: true,
-                useErrorDialogs: false,
-              ),
-            )
-                .then((success) {
-              if (success) {
-                store.dispatch(redux.Action(
-                  redux.ActionTypes.setLockState,
-                  payload: false,
-                ));
-              }
-            });
-          }
 
           return MaterialApp(
             title: 'Stundenplan',

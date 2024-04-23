@@ -194,7 +194,7 @@ class _PageWrapperState extends State<PageWrapper> with WidgetsBindingObserver {
             else
               mainContent,
             if (state.appLocked && state.biometrics != Biometrics.OFF)
-              const BiometricsPage(),
+              BiometricsPage(),
             if (state.loginFormState != LoginFormState.notShown)
               const LoginPage(),
             if (state.loading ||

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:local_auth/local_auth.dart';
+import 'package:oktoast/oktoast.dart';
 
 import '../model/biometrics.dart';
 import '../model/redux/actions.dart' as redux;
@@ -47,24 +48,36 @@ class SelectLockDialog extends StatelessWidget {
       payload: false,
     ));
 
-    await LocalAuthentication().stopAuthentication();
-    final bool success = await LocalAuthentication().authenticate(
-      localizedReason: 'Bitte App entsperren',
-      options: const AuthenticationOptions(
-        stickyAuth: true,
-        sensitiveTransaction: false,
-        biometricOnly: true,
-        useErrorDialogs: false,
-      ),
-    );
+    try {
+      if (!await LocalAuthentication().canCheckBiometrics ||
+          !await LocalAuthentication().isDeviceSupported()) {
+        return;
+      }
 
-    if (!success) return;
+      await LocalAuthentication().stopAuthentication();
+      final bool success = await LocalAuthentication().authenticate(
+        localizedReason: 'Bitte App entsperren',
+        options: const AuthenticationOptions(
+          stickyAuth: true,
+          sensitiveTransaction: false,
+          biometricOnly: true,
+          useErrorDialogs: false,
+        ),
+      );
 
-    store.dispatch(redux.Action(
-      redux.ActionTypes.setBiometricsType,
-      payload: type,
-    ));
+      if (!success) return;
 
-    writeBiometrics();
+      store.dispatch(redux.Action(
+        redux.ActionTypes.setBiometricsType,
+        payload: type,
+      ));
+
+      writeBiometrics();
+    } catch (e) {
+      showToast(
+        'Biometrische Authentifizierung fehlgeschlagen',
+        position: ToastPosition.bottom,
+      );
+    }
   }
 }

@@ -6,7 +6,43 @@ import '../model/redux/actions.dart' as redux;
 import '../model/redux/store.dart';
 
 class BiometricsPage extends StatelessWidget {
-  const BiometricsPage({super.key});
+  BiometricsPage({super.key}) {
+    _startAuthentication();
+  }
+
+  void _startAuthentication() async {
+    try {
+      if (!await LocalAuthentication().canCheckBiometrics ||
+          !await LocalAuthentication().isDeviceSupported()) {
+        return;
+      }
+
+      await LocalAuthentication().stopAuthentication();
+      await LocalAuthentication()
+          .authenticate(
+        localizedReason: 'Bitte App entsperren',
+        options: const AuthenticationOptions(
+          stickyAuth: true,
+          sensitiveTransaction: false,
+          biometricOnly: true,
+          useErrorDialogs: false,
+        ),
+      )
+          .then((success) {
+        if (success) {
+          store.dispatch(redux.Action(
+            redux.ActionTypes.setLockState,
+            payload: false,
+          ));
+        }
+      });
+    } catch (e) {
+      showToast(
+        'Biometrische Authentifizierung fehlgeschlagen',
+        position: ToastPosition.bottom,
+      );
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -27,27 +63,7 @@ class BiometricsPage extends StatelessWidget {
               Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 25.0),
                   child: TextButton(
-                    onPressed: () async {
-                      await LocalAuthentication().stopAuthentication();
-                      LocalAuthentication()
-                          .authenticate(
-                        localizedReason: 'Bitte App entsperren',
-                        options: const AuthenticationOptions(
-                          stickyAuth: true,
-                          sensitiveTransaction: false,
-                          biometricOnly: true,
-                          useErrorDialogs: false,
-                        ),
-                      )
-                          .then((success) {
-                        if (success) {
-                          store.dispatch(redux.Action(
-                            redux.ActionTypes.setLockState,
-                            payload: false,
-                          ));
-                        }
-                      });
-                    },
+                    onPressed: _startAuthentication,
                     style: ButtonStyle(
                       backgroundColor: MaterialStateProperty.all(
                         Theme.of(context).colorScheme.primary,

@@ -27,7 +27,7 @@ class AppState {
   bool notificationsEnabled = false;
   bool enableConfirmRefreshDialog = true;
   bool keepEditedOnReload = true;
-  String? lastUpdated;
+  DateTime? lastUpdated;
 
   String? account;
   String? cnsc, args;

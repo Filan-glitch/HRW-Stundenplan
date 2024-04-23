@@ -237,7 +237,7 @@ Future<void> loadKeepEditedOnReload() async {
 Future<void> writeLastUpdated() async {
   final SharedPreferences prefs = await SharedPreferences.getInstance();
   if (store.state.lastUpdated == null) return;
-  prefs.setString('lastUpdated', store.state.lastUpdated!);
+  prefs.setString('lastUpdated', dayFormat.format(store.state.lastUpdated!));
 }
 
 Future<void> loadLastUpdated() async {
@@ -246,7 +246,7 @@ Future<void> loadLastUpdated() async {
     store.dispatch(
       Action(
         ActionTypes.setLastUpdated,
-        payload: prefs.getString('lastUpdated'),
+        payload: dayFormat.parse(prefs.getString('lastUpdated')!),
       ),
     );
   }

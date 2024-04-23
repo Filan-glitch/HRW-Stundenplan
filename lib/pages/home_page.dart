@@ -1,6 +1,7 @@
 import 'package:advanced_in_app_review/advanced_in_app_review.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_redux/flutter_redux.dart';
+import 'package:intl/intl.dart';
 import 'package:timetable/pages/edit_event_page.dart';
 
 import '../dialogs/changelog_dialog.dart';
@@ -87,6 +88,7 @@ class _HomePageState extends State<HomePage> {
             );
           }
 
+          final DateFormat lastUpdatedFormat = DateFormat('dd.MM.yyyy');
           return PageWrapper(
             bottomNavigationBar: state.currentView == TimetableView.daily
                 ? WeekdaySelectorWidget(
@@ -135,7 +137,7 @@ class _HomePageState extends State<HomePage> {
               Padding(
                 padding: const EdgeInsets.only(top: 5.0),
                 child: Text(
-                  "Zuletzt aktualisiert: ${state.lastUpdated ?? "Nie"}",
+                  "Zuletzt aktualisiert: ${state.lastUpdated == null ? "Nie" : lastUpdatedFormat.format(state.lastUpdated!)}",
                   style: const TextStyle(fontSize: 12.0),
                 ),
               ),
@@ -283,10 +285,10 @@ class _HomePageState extends State<HomePage> {
                     onHorizontalDragUpdate: (details) =>
                         _swipeDeltaX += details.delta.dx,
                     onHorizontalDragEnd: (details) {
-                      if (_swipeDeltaX < -50) {
+                      if (_swipeDeltaX < -0) {
                         // left swipe -> next page
                         nextDay();
-                      } else if (_swipeDeltaX > 50) {
+                      } else if (_swipeDeltaX > 0) {
                         // right swipe -> previous page
                         previousDay();
                       }

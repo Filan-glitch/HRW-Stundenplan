@@ -37,6 +37,8 @@ class Meal {
         return 'Farbstoffe';
       case 'WAXED':
         return 'Gewachst';
+      case 'BLACKENED':
+        return 'Geschwärzt';
       default:
         FirebaseCrashlytics.instance.recordError(
           Exception('Unknown additive: $additive'),
@@ -78,6 +80,8 @@ class Meal {
         return 'Mandeln';
       case 'PISTACHIOS':
         return 'Pistazien';
+      case 'PEANUT':
+        return 'Erdnüsse';
       default:
         FirebaseCrashlytics.instance.recordError(
           Exception('Unknown allergene: $allergene'),

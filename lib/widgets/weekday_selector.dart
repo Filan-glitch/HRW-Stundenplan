@@ -13,6 +13,7 @@ class WeekdaySelectorWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return SalomonBottomBar(
+      backgroundColor: Theme.of(context).colorScheme.background,
       currentIndex: weekday.value,
       onTap: (i) => onChanged(Weekday.getByValue(i)),
       items: [

@@ -3,7 +3,9 @@ enum Weekday {
   tuesday(1),
   wednesday(2),
   thursday(3),
-  friday(4);
+  friday(4),
+  saturday(5),
+  sunday(6);
 
   const Weekday(this.value);
   final int value;

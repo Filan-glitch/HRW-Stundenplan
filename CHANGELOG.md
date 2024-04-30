@@ -1,6 +1,8 @@
 # v2.0.0
 
 - Termin Editor
+- Notification Wochenende fix
+- Bottrop Mensa Vorschau entfernt
 
 # v1.5.5
 

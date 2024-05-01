@@ -342,6 +342,10 @@ class _EditEventPageState extends State<EditEventPage> {
                             Expanded(
                               child: TextFormField(
                                 controller: abbreviationController,
+                                enabled: widget.event == null,
+                                style: widget.event == null
+                                    ? null
+                                    : const TextStyle(color: Colors.grey),
                                 decoration: const InputDecoration(
                                   labelText: 'Abkürzung',
                                 ),

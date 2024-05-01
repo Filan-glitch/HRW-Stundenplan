@@ -3,8 +3,8 @@ import 'package:intl/intl.dart';
 import 'package:timetable/dialogs/confirm_delete_dialog.dart';
 import 'package:timetable/model/date_time_calculator.dart';
 import 'package:timetable/model/event.dart';
-import 'package:timetable/model/redux/store.dart';
 import 'package:timetable/model/redux/actions.dart' as redux;
+import 'package:timetable/model/redux/store.dart';
 import 'package:timetable/model/time.dart';
 import 'package:timetable/model/weekday.dart';
 import 'package:timetable/service/db/events.dart';
@@ -502,8 +502,10 @@ class _EditEventPageState extends State<EditEventPage> {
                         const SizedBox(
                           height: 20.0,
                         ),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                        Wrap(
+                          alignment: WrapAlignment.center,
+                          crossAxisAlignment: WrapCrossAlignment.center,
+                          spacing: 10,
                           children: [
                             ElevatedButton(
                               style: ButtonStyle(

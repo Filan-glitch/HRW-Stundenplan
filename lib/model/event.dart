@@ -114,6 +114,32 @@ class Event implements Comparable<Event> {
     };
   }
 
+  Event copyWith({
+    String? title,
+    String? abbreviation,
+    Time? start,
+    Time? end,
+    String? room,
+    Weekday? day,
+    DateTime? weekFrom,
+    EventMode? mode,
+    bool? collision,
+    bool? hidden,
+  }) {
+    return Event(
+      title: title ?? this.title,
+      abbreviation: abbreviation ?? this.abbreviation,
+      start: start ?? this.start,
+      end: end ?? this.end,
+      room: room ?? this.room,
+      day: day ?? this.day,
+      weekFrom: weekFrom ?? this.weekFrom,
+      mode: mode ?? this.mode,
+      collision: collision ?? this.collision,
+      hidden: hidden ?? this.hidden,
+    );
+  }
+
   @override
   String toString() {
     return '$title in $room von $start bis $end';

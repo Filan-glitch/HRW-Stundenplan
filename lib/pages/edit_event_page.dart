@@ -112,10 +112,12 @@ class _EditEventPageState extends State<EditEventPage> {
         mode: EventMode.customEvent,
       );
     }).forEach((event) {
+      final List<Event> events = store.state.events;
+      events.add(event);
       store.dispatch(
         redux.Action(
           redux.ActionTypes.setEvents,
-          payload: store.state.events..add(event),
+          payload: events,
         ),
       );
     });
@@ -131,16 +133,18 @@ class _EditEventPageState extends State<EditEventPage> {
     if (!store.state.events.contains(widget.event)) return;
 
     final List<Event> events = store.state.events;
-    events[events.indexOf(widget.event!)] = widget.event!
-      ..title = titleController.text
-      ..abbreviation = abbreviationController.text
-      ..start = Time(startTime.hour, startTime.minute)
-      ..end = Time(endTime.hour, endTime.minute)
-      ..room = roomController.text
-      ..day = weekday
-      ..mode = widget.event!.mode == EventMode.customEvent
+
+    events[events.indexOf(widget.event!)] = widget.event!.copyWith(
+      title: titleController.text,
+      abbreviation: abbreviationController.text,
+      start: Time(startTime.hour, startTime.minute),
+      end: Time(endTime.hour, endTime.minute),
+      room: roomController.text,
+      day: weekday,
+      mode: widget.event!.mode == EventMode.customEvent
           ? EventMode.customEvent
-          : EventMode.edited;
+          : EventMode.edited,
+    );
 
     store.dispatch(store.dispatch(
       redux.Action(
@@ -169,14 +173,16 @@ class _EditEventPageState extends State<EditEventPage> {
             ? EventMode.customEvent
             : EventMode.edited;
 
-        return event
-          ..title = titleController.text
-          ..abbreviation = abbreviationController.text
-          ..start = Time(startTime.hour, startTime.minute)
-          ..end = Time(endTime.hour, endTime.minute)
-          ..room = roomController.text
-          ..day = weekday
-          ..mode = newMode;
+        final newEvent = event.copyWith(
+          title: titleController.text,
+          abbreviation: abbreviationController.text,
+          start: Time(startTime.hour, startTime.minute),
+          end: Time(endTime.hour, endTime.minute),
+          room: roomController.text,
+          day: weekday,
+          mode: newMode,
+        );
+        return newEvent;
       } else {
         // other event -> do not update
         return event;
@@ -198,9 +204,12 @@ class _EditEventPageState extends State<EditEventPage> {
     if (widget.event!.mode != EventMode.customEvent) return;
     if (!store.state.events.contains(widget.event)) return;
 
+    final events = store.state.events;
+    events.remove(widget.event);
+
     store.dispatch(redux.Action(
       redux.ActionTypes.setEvents,
-      payload: store.state.events..remove(widget.event),
+      payload: events,
     ));
 
     writeDataToStorage();
@@ -237,8 +246,8 @@ class _EditEventPageState extends State<EditEventPage> {
     if (!store.state.events.contains(widget.event)) return;
 
     final List<Event> updatedEvents = store.state.events;
-    updatedEvents[updatedEvents.indexOf(widget.event!)] = widget.event!
-      ..hidden = true;
+    updatedEvents[updatedEvents.indexOf(widget.event!)] =
+        widget.event!.copyWith(hidden: true);
 
     store.dispatch(store.dispatch(
       redux.Action(
@@ -262,7 +271,7 @@ class _EditEventPageState extends State<EditEventPage> {
           event.start == widget.event!.start &&
           event.end == widget.event!.end &&
           event.day == widget.event!.day) {
-        return event..hidden = true;
+        return event.copyWith(hidden: true);
       } else {
         // other event -> do not update
         return event;
@@ -422,6 +431,8 @@ class _EditEventPageState extends State<EditEventPage> {
                         hint: const Text('Wochentag'),
                         value: weekday,
                         items: Weekday.values
+                            .where((e) =>
+                                e != Weekday.saturday && e != Weekday.sunday)
                             .map((e) => DropdownMenuItem(
                                   child: Text(e.text),
                                   value: e,

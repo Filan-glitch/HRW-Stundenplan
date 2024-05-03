@@ -17,7 +17,7 @@ class ConfirmRefreshDialog extends StatefulWidget {
 }
 
 class _ConfirmRefreshDialogState extends State<ConfirmRefreshDialog> {
-  bool keepEditedOnReload = false;
+  bool keepEditedOnReload = true;
 
   @override
   Widget build(BuildContext context) {
@@ -73,7 +73,9 @@ class _ConfirmRefreshDialogState extends State<ConfirmRefreshDialog> {
               ),
               value: keepEditedOnReload,
               onChanged: (value) {
-                keepEditedOnReload = value == true;
+                setState(() {
+                  keepEditedOnReload = value == true;
+                });
               },
             ),
           ],

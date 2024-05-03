@@ -9,8 +9,15 @@ import '../service/network_fetch.dart';
 import '../service/storage.dart';
 import '../widgets/dialog_wrapper.dart';
 
-class ConfirmRefreshDialog extends StatelessWidget {
+class ConfirmRefreshDialog extends StatefulWidget {
   const ConfirmRefreshDialog({super.key});
+
+  @override
+  State<ConfirmRefreshDialog> createState() => _ConfirmRefreshDialogState();
+}
+
+class _ConfirmRefreshDialogState extends State<ConfirmRefreshDialog> {
+  bool keepEditedOnReload = false;
 
   @override
   Widget build(BuildContext context) {
@@ -29,7 +36,7 @@ class ConfirmRefreshDialog extends StatelessWidget {
                   onPressed: () {
                     LoginPage.performLogin(
                       onLoginSuccess: () async => await reloadAll(
-                        state.keepEditedOnReload,
+                        keepEdited: keepEditedOnReload,
                       ),
                     );
                     Navigator.pop(context);
@@ -67,15 +74,9 @@ class ConfirmRefreshDialog extends StatelessWidget {
                   fontSize: 14,
                 ),
               ),
-              value: state.keepEditedOnReload,
+              value: keepEditedOnReload,
               onChanged: (value) {
-                store.dispatch(
-                  redux.Action(
-                    redux.ActionTypes.setKeepEditedOnReload,
-                    payload: value == false ? false : true,
-                  ),
-                );
-                writeKeepEditedOnReload();
+                keepEditedOnReload = value == true;
               },
             ),
           ],

@@ -26,7 +26,6 @@ class AppState {
   TimetableView defaultView = TimetableView.daily;
   bool notificationsEnabled = false;
   bool enableConfirmRefreshDialog = true;
-  bool keepEditedOnReload = true;
   DateTime? lastUpdated;
 
   String? account;

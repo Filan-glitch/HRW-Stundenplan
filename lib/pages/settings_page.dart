@@ -278,21 +278,6 @@ class _SettingsPageState extends State<SettingsPage> {
                         writeEnableConfirmRefreshDialog();
                       },
                     ),
-                    ListTile(
-                      leading: const Icon(Icons.edit),
-                      title: Text(
-                        "Bearbeitete Termine erhalten: ${state.keepEditedOnReload ? "Ja" : "Nein"}",
-                      ),
-                      onTap: () {
-                        store.dispatch(
-                          redux.Action(
-                            redux.ActionTypes.setKeepEditedOnReload,
-                            payload: !state.keepEditedOnReload,
-                          ),
-                        );
-                        writeKeepEditedOnReload();
-                      },
-                    ),
                     const Padding(
                       padding: EdgeInsets.symmetric(horizontal: 30.0),
                       child: Divider(
@@ -429,9 +414,7 @@ class _SettingsPageState extends State<SettingsPage> {
 
     await m.acquire();
     try {
-      await reloadAll(
-        store.state.keepEditedOnReload,
-      );
+      await reloadAll();
     } finally {
       m.release();
     }

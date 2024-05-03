@@ -23,7 +23,7 @@ import 'db/events.dart';
 import 'db/grades.dart';
 import 'storage.dart';
 
-Future<void> reloadAll(bool keepEdited) async {
+Future<void> reloadAll({bool keepEdited = true}) async {
   // clear events before reloading
   store.dispatch(Action(
     ActionTypes.setEvents,

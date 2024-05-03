@@ -21,7 +21,6 @@ enum ActionTypes {
   setAccount,
   setLastUpdated,
   setEnableConfirmRefreshDialog,
-  setKeepEditedOnReload,
   setCanteenData,
   setDownloadedUntil,
 }

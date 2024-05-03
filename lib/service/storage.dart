@@ -217,23 +217,6 @@ Future<void> loadEnableConfirmRefreshDialog() async {
   }
 }
 
-Future<void> writeKeepEditedOnReload() async {
-  final SharedPreferences prefs = await SharedPreferences.getInstance();
-  prefs.setBool('keepEditedOnReload', store.state.keepEditedOnReload);
-}
-
-Future<void> loadKeepEditedOnReload() async {
-  final SharedPreferences prefs = await SharedPreferences.getInstance();
-  if (prefs.containsKey('keepEditedOnReload')) {
-    store.dispatch(
-      Action(
-        ActionTypes.setKeepEditedOnReload,
-        payload: prefs.getBool('keepEditedOnReload'),
-      ),
-    );
-  }
-}
-
 Future<void> writeLastUpdated() async {
   final SharedPreferences prefs = await SharedPreferences.getInstance();
   if (store.state.lastUpdated == null) return;

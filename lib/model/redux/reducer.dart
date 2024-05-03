@@ -81,9 +81,6 @@ AppState appReducer(AppState state, dynamic action) {
     case ActionTypes.setEnableConfirmRefreshDialog:
       state.enableConfirmRefreshDialog = action.payload;
       break;
-    case ActionTypes.setKeepEditedOnReload:
-      state.keepEditedOnReload = action.payload;
-      break;
     case ActionTypes.setCanteenData:
       state.campuses = action.payload;
     default:

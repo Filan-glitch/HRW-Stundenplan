@@ -43,10 +43,7 @@ class SelectLockDialog extends StatelessWidget {
   }
 
   void setBiometricsMode(Biometrics type) async {
-    store.dispatch(redux.Action(
-      redux.ActionTypes.setLockState,
-      payload: false,
-    ));
+    store.dispatch(redux.setLockState(false));
 
     try {
       if (!await LocalAuthentication().canCheckBiometrics ||
@@ -67,10 +64,7 @@ class SelectLockDialog extends StatelessWidget {
 
       if (!success) return;
 
-      store.dispatch(redux.Action(
-        redux.ActionTypes.setBiometricsType,
-        payload: type,
-      ));
+      store.dispatch(redux.setBiometricsType(type));
 
       writeBiometrics();
     } catch (e) {

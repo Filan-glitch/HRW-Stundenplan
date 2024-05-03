@@ -16,12 +16,7 @@ class SelectCampusDialog extends StatelessWidget {
       children: [
         SimpleDialogOption(
           onPressed: () {
-            store.dispatch(
-              redux.Action(
-                redux.ActionTypes.setCampus,
-                payload: Campus.muelheim,
-              ),
-            );
+            store.dispatch(redux.setCampus(Campus.muelheim));
             writeCampus();
             Navigator.pop(context);
           },
@@ -29,12 +24,7 @@ class SelectCampusDialog extends StatelessWidget {
         ),
         SimpleDialogOption(
           onPressed: () {
-            store.dispatch(
-              redux.Action(
-                redux.ActionTypes.setCampus,
-                payload: Campus.bottrop,
-              ),
-            );
+            store.dispatch(redux.setCampus(Campus.bottrop));
             writeCampus();
             Navigator.pop(context);
           },

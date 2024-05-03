@@ -31,10 +31,7 @@ class BiometricsPage extends StatelessWidget {
       )
           .then((success) {
         if (success) {
-          store.dispatch(redux.Action(
-            redux.ActionTypes.setLockState,
-            payload: false,
-          ));
+          store.dispatch(redux.setLockState(false));
         }
       });
     } catch (e) {
@@ -78,7 +75,7 @@ class BiometricsPage extends StatelessWidget {
             TextButton(
               onPressed: () {
                 clearStorage();
-                store.dispatch(redux.Action(redux.ActionTypes.clear));
+                store.dispatch(redux.clear());
               },
               child: const Text('App zurücksetzen'),
             ),

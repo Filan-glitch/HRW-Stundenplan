@@ -50,10 +50,7 @@ class _HomePageState extends State<HomePage> {
       currentWeek = currentWeek.add(const Duration(days: 7));
     }
 
-    store.dispatch(redux.Action(
-      redux.ActionTypes.setCurrentWeek,
-      payload: currentWeek,
-    ));
+    store.dispatch(redux.setCurrentWeek(currentWeek));
 
     AdvancedInAppReview()
         .setMinDaysBeforeRemind(14)
@@ -102,10 +99,7 @@ class _HomePageState extends State<HomePage> {
               if (state.showChangelog)
                 IconButton(
                   onPressed: () {
-                    store.dispatch(redux.Action(
-                      redux.ActionTypes.showChangelog,
-                      payload: false,
-                    ));
+                    store.dispatch(redux.showChangelog(false));
 
                     showDialog(
                       context: context,
@@ -165,10 +159,7 @@ class _HomePageState extends State<HomePage> {
                   ),
                   title: const Text('Tagesübersicht'),
                   onTap: () {
-                    store.dispatch(redux.Action(
-                      redux.ActionTypes.setView,
-                      payload: TimetableView.daily,
-                    ));
+                    store.dispatch(redux.setView(TimetableView.daily));
                     Navigator.pop(context);
                   },
                 ),
@@ -180,10 +171,7 @@ class _HomePageState extends State<HomePage> {
                   ),
                   title: const Text('Wochenübersicht'),
                   onTap: () {
-                    store.dispatch(redux.Action(
-                      redux.ActionTypes.setView,
-                      payload: TimetableView.weekly,
-                    ));
+                    store.dispatch(redux.setView(TimetableView.weekly));
                     Navigator.pop(context);
                   },
                 ),
@@ -195,10 +183,7 @@ class _HomePageState extends State<HomePage> {
                   ),
                   title: const Text('Monatsübersicht'),
                   onTap: () {
-                    store.dispatch(redux.Action(
-                      redux.ActionTypes.setView,
-                      payload: TimetableView.monthly,
-                    ));
+                    store.dispatch(redux.setView(TimetableView.monthly));
                     Navigator.pop(context);
                   },
                 ),
@@ -257,12 +242,9 @@ class _HomePageState extends State<HomePage> {
                   child: WeekSelectorWidget(
                     firstDayOfWeek: state.currentWeek,
                     onHome: () {
-                      store.dispatch(redux.Action(
-                        redux.ActionTypes.setCurrentWeek,
-                        payload: getFirstDayOfWeek(
-                          cleanDate(DateTime.now()),
-                        ),
-                      ));
+                      store.dispatch(redux.setCurrentWeek(getFirstDayOfWeek(
+                        cleanDate(DateTime.now()),
+                      )));
 
                       setState(() {
                         _activePage = Weekday.getByValue(
@@ -271,10 +253,7 @@ class _HomePageState extends State<HomePage> {
                       });
                     },
                     onDateChanged: (week) {
-                      store.dispatch(redux.Action(
-                        redux.ActionTypes.setCurrentWeek,
-                        payload: week,
-                      ));
+                      store.dispatch(redux.setCurrentWeek(week));
                     },
                   ),
                 ),
@@ -319,11 +298,8 @@ class _HomePageState extends State<HomePage> {
   void nextDay() {
     if (store.state.currentView == TimetableView.daily) {
       if (_activePage == Weekday.friday) {
-        store.dispatch(redux.Action(
-          redux.ActionTypes.setCurrentWeek,
-          payload: store.state.currentWeek.add(
-            const Duration(days: 7),
-          ),
+        store.dispatch(redux.setCurrentWeek(
+          store.state.currentWeek.add(const Duration(days: 7)),
         ));
 
         setState(() {
@@ -335,11 +311,8 @@ class _HomePageState extends State<HomePage> {
         });
       }
     } else if (store.state.currentView == TimetableView.weekly) {
-      store.dispatch(redux.Action(
-        redux.ActionTypes.setCurrentWeek,
-        payload: store.state.currentWeek.add(
-          const Duration(days: 7),
-        ),
+      store.dispatch(redux.setCurrentWeek(
+        store.state.currentWeek.add(const Duration(days: 7)),
       ));
     }
   }
@@ -348,11 +321,8 @@ class _HomePageState extends State<HomePage> {
     if (store.state.currentView == TimetableView.daily) {
       if (_activePage == Weekday.monday &&
           store.state.currentWeek.isAfter(DateTime.now())) {
-        store.dispatch(redux.Action(
-          redux.ActionTypes.setCurrentWeek,
-          payload: store.state.currentWeek.subtract(
-            const Duration(days: 7),
-          ),
+        store.dispatch(redux.setCurrentWeek(
+          store.state.currentWeek.subtract(const Duration(days: 7)),
         ));
 
         setState(() {
@@ -364,11 +334,8 @@ class _HomePageState extends State<HomePage> {
         });
       }
     } else if (store.state.currentView == TimetableView.weekly) {
-      store.dispatch(redux.Action(
-        redux.ActionTypes.setCurrentWeek,
-        payload: store.state.currentWeek.subtract(
-          const Duration(days: 7),
-        ),
+      store.dispatch(redux.setCurrentWeek(
+        store.state.currentWeek.subtract(const Duration(days: 7)),
       ));
     }
   }

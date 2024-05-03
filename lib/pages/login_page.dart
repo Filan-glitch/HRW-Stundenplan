@@ -19,17 +19,13 @@ class LoginPage extends StatefulWidget {
   static Future<void> Function()? _onLoginSuccess;
 
   static Future<bool> hasActiveSession() async {
-    store.dispatch(redux.Action(
-      redux.ActionTypes.startTask,
-    ));
+    store.dispatch(redux.startTask());
 
     final String identityPageContent = (await http
             .get(Uri.parse('https://dsf.hs-ruhrwest.de/IdentityServer/')))
         .body;
 
-    store.dispatch(redux.Action(
-      redux.ActionTypes.stopTask,
-    ));
+    store.dispatch(redux.stopTask());
 
     return identityPageContent.contains('Logout');
   }
@@ -45,10 +41,7 @@ class LoginPage extends StatefulWidget {
 
     _onLoginSuccess = onLoginSuccess;
     _loginCompleter = Completer();
-    store.dispatch(redux.Action(
-      redux.ActionTypes.setLoginFormState,
-      payload: LoginFormState.background,
-    ));
+    store.dispatch(redux.setLoginFormState(LoginFormState.background));
 
     return _loginCompleter!.future;
   }
@@ -59,10 +52,7 @@ class LoginPage extends StatefulWidget {
 
 class _LoginPageState extends State<LoginPage> {
   void _cancelLogin() {
-    store.dispatch(redux.Action(
-      redux.ActionTypes.setLoginFormState,
-      payload: LoginFormState.notShown,
-    ));
+    store.dispatch(redux.setLoginFormState(LoginFormState.notShown));
 
     if (LoginPage._loginCompleter != null &&
         !LoginPage._loginCompleter!.isCompleted) {
@@ -124,10 +114,7 @@ class _LoginPageState extends State<LoginPage> {
 
     if (url.contains('Account/Login') &&
         store.state.loginFormState != LoginFormState.inputRequired) {
-      store.dispatch(redux.Action(
-        redux.ActionTypes.setLoginFormState,
-        payload: LoginFormState.inputRequired,
-      ));
+      store.dispatch(redux.setLoginFormState(LoginFormState.inputRequired));
     }
 
     return NavigationActionPolicy.ALLOW;
@@ -154,16 +141,10 @@ class _LoginPageState extends State<LoginPage> {
         }
       }
 
-      store.dispatch(redux.Action(
-        redux.ActionTypes.setLoginFormState,
-        payload: LoginFormState.notShown,
-      ));
+      store.dispatch(redux.setLoginFormState(LoginFormState.notShown));
 
       if (args != null && cnsc != null) {
-        store.dispatch(redux.Action(
-          redux.ActionTypes.setCredentials,
-          payload: {'cnsc': cnsc, 'args': args},
-        ));
+        store.dispatch(redux.setCredentials(args, cnsc));
 
         await LoginPage._onLoginSuccess!();
 

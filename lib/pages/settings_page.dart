@@ -170,12 +170,9 @@ class _SettingsPageState extends State<SettingsPage> {
                             unregisterBackgroundService();
                           }
 
-                          store.dispatch(
-                            redux.Action(
-                              redux.ActionTypes.setNotificationsEnabled,
-                              payload: newValue,
-                            ),
-                          );
+                          store.dispatch(redux.setNotificationsEnabled(
+                            newValue,
+                          ));
                           writeNotificationsEnabled();
                         },
                       ),
@@ -269,12 +266,9 @@ class _SettingsPageState extends State<SettingsPage> {
                         "Vor dem Aktualisieren fragen: ${state.enableConfirmRefreshDialog ? "Ja" : "Nein"}",
                       ),
                       onTap: () {
-                        store.dispatch(
-                          redux.Action(
-                            redux.ActionTypes.setEnableConfirmRefreshDialog,
-                            payload: !state.enableConfirmRefreshDialog,
-                          ),
-                        );
+                        store.dispatch(redux.setEnableConfirmRefreshDialog(
+                          !state.enableConfirmRefreshDialog,
+                        ));
                         writeEnableConfirmRefreshDialog();
                       },
                     ),
@@ -397,7 +391,7 @@ class _SettingsPageState extends State<SettingsPage> {
                       onTap: () {
                         Navigator.pop(context);
                         clearStorage();
-                        store.dispatch(redux.Action(redux.ActionTypes.clear));
+                        store.dispatch(redux.clear());
                       },
                     ),
                   ],

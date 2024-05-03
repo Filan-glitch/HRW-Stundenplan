@@ -54,24 +54,14 @@ class _PageWrapperState extends State<PageWrapper> with WidgetsBindingObserver {
     super.didChangeAppLifecycleState(state);
     if (state == AppLifecycleState.paused &&
         store.state.biometrics == Biometrics.ON) {
-      store.dispatch(
-        redux.Action(
-          redux.ActionTypes.setLockState,
-          payload: true,
-        ),
-      );
+      store.dispatch(redux.setLockState(true));
     }
   }
 
   @override
   void didChangePlatformBrightness() {
     if (store.state.activeTheme == ThemeMode.system) {
-      store.dispatch(
-        redux.Action(
-          redux.ActionTypes.setDesign,
-          payload: ThemeMode.system,
-        ),
-      );
+      store.dispatch(redux.setDesign(ThemeMode.system));
     }
     super.didChangePlatformBrightness();
   }

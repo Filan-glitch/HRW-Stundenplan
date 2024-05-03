@@ -22,10 +22,9 @@ Future<void> writeCredentials() async {
 Future<void> loadCredentials() async {
   final SharedPreferences prefs = await SharedPreferences.getInstance();
   if (prefs.containsKey('args') && prefs.containsKey('cnsc')) {
-    store.dispatch(Action(ActionTypes.setCredentials, payload: {
-      'args': prefs.getString('args'),
-      'cnsc': prefs.getString('cnsc'),
-    }));
+    store.dispatch(
+      setCredentials(prefs.getString('args')!, prefs.getString('cnsc')!),
+    );
   }
 }
 
@@ -50,12 +49,7 @@ Future<void> loadDesign() async {
     themeMode = ui.ThemeMode.light;
   }
 
-  store.dispatch(
-    Action(
-      ActionTypes.setDesign,
-      payload: themeMode,
-    ),
-  );
+  store.dispatch(setDesign(themeMode));
 }
 
 Future<void> writeCampus() async {
@@ -66,12 +60,7 @@ Future<void> writeCampus() async {
 Future<void> loadCampus() async {
   final SharedPreferences prefs = await SharedPreferences.getInstance();
   if (prefs.containsKey('campus')) {
-    store.dispatch(
-      Action(
-        ActionTypes.setCampus,
-        payload: Campus.getByValue(prefs.getString('campus')!),
-      ),
-    );
+    store.dispatch(setCampus(Campus.getByValue(prefs.getString('campus')!)));
   }
 }
 
@@ -93,12 +82,7 @@ Future<void> writeGPA() async {
 Future<void> loadGPA() async {
   final SharedPreferences prefs = await SharedPreferences.getInstance();
   if (prefs.containsKey('gpa')) {
-    store.dispatch(
-      Action(
-        ActionTypes.setGPA,
-        payload: prefs.getDouble('gpa'),
-      ),
-    );
+    store.dispatch(setGPA(prefs.getDouble('gpa')!));
   }
 }
 
@@ -115,9 +99,8 @@ Future<void> writeDownloadedRange() async {
 Future<void> loadDownloadedRange() async {
   final SharedPreferences prefs = await SharedPreferences.getInstance();
   store.dispatch(
-    Action(
-      ActionTypes.setDownloadedUntil,
-      payload: prefs.containsKey('downloadedRange')
+    setDownloadedUntil(
+      prefs.containsKey('downloadedRange')
           ? dayFormat.parse(prefs.getString('downloadedRange')!)
           : null,
     ),
@@ -133,10 +116,7 @@ Future<void> loadBiometrics() async {
   final SharedPreferences prefs = await SharedPreferences.getInstance();
   if (prefs.containsKey('biometrics')) {
     store.dispatch(
-      Action(
-        ActionTypes.setBiometricsType,
-        payload: Biometrics.values[prefs.getInt('biometrics')!],
-      ),
+      setBiometricsType(Biometrics.values[prefs.getInt('biometrics')!]),
     );
   }
 }
@@ -149,12 +129,9 @@ Future<void> writeNotificationsEnabled() async {
 Future<void> loadNotificationsEnabled() async {
   final SharedPreferences prefs = await SharedPreferences.getInstance();
   if (prefs.containsKey('notificationsEnabled')) {
-    store.dispatch(
-      Action(
-        ActionTypes.setNotificationsEnabled,
-        payload: prefs.getBool('notificationsEnabled'),
-      ),
-    );
+    store.dispatch(setNotificationsEnabled(
+      prefs.getBool('notificationsEnabled')!,
+    ));
   }
 }
 
@@ -167,17 +144,11 @@ Future<void> loadDefaultView() async {
   final SharedPreferences prefs = await SharedPreferences.getInstance();
   if (prefs.containsKey('defaultView')) {
     store.dispatch(
-      Action(
-        ActionTypes.setDefaultView,
-        payload: TimetableView.values[prefs.getInt('defaultView')!],
-      ),
+      setDefaultView(TimetableView.values[prefs.getInt('defaultView')!]),
     );
-    store.dispatch(
-      Action(
-        ActionTypes.setView,
-        payload: TimetableView.values[prefs.getInt('defaultView')!],
-      ),
-    );
+    store.dispatch(setView(
+      TimetableView.values[prefs.getInt('defaultView')!],
+    ));
   }
 }
 
@@ -191,10 +162,7 @@ Future<void> loadAccount() async {
   final SharedPreferences prefs = await SharedPreferences.getInstance();
   if (prefs.containsKey('account')) {
     store.dispatch(
-      Action(
-        ActionTypes.setAccount,
-        payload: prefs.getString('account'),
-      ),
+      setAccount(prefs.getString('account')),
     );
   }
 }
@@ -208,12 +176,9 @@ Future<void> writeEnableConfirmRefreshDialog() async {
 Future<void> loadEnableConfirmRefreshDialog() async {
   final SharedPreferences prefs = await SharedPreferences.getInstance();
   if (prefs.containsKey('enableConfirmRefreshDialog')) {
-    store.dispatch(
-      Action(
-        ActionTypes.setEnableConfirmRefreshDialog,
-        payload: prefs.getBool('enableConfirmRefreshDialog'),
-      ),
-    );
+    store.dispatch(setEnableConfirmRefreshDialog(
+      prefs.getBool('enableConfirmRefreshDialog')!,
+    ));
   }
 }
 
@@ -227,10 +192,7 @@ Future<void> loadLastUpdated() async {
   final SharedPreferences prefs = await SharedPreferences.getInstance();
   if (prefs.containsKey('lastUpdated')) {
     store.dispatch(
-      Action(
-        ActionTypes.setLastUpdated,
-        payload: dayFormat.parse(prefs.getString('lastUpdated')!),
-      ),
+      setLastUpdated(dayFormat.parse(prefs.getString('lastUpdated')!)),
     );
   }
 }

@@ -14,10 +14,7 @@ class HiddenEventsPage extends StatelessWidget {
   void showEvent(Event event) {
     final List<Event> events = store.state.events;
     events[events.indexOf(event)].hidden = false;
-    store.dispatch(redux.Action(
-      redux.ActionTypes.setEvents,
-      payload: events,
-    ));
+    store.dispatch(redux.setEvents(events));
   }
 
   @override

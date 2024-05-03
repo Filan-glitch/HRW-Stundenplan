@@ -59,10 +59,7 @@ class _ConfirmRefreshDialogState extends State<ConfirmRefreshDialog> {
               value: !state.enableConfirmRefreshDialog,
               onChanged: (value) {
                 store.dispatch(
-                  redux.Action(
-                    redux.ActionTypes.setEnableConfirmRefreshDialog,
-                    payload: value == false ? true : false,
-                  ),
+                  redux.setEnableConfirmRefreshDialog(value == false),
                 );
                 writeEnableConfirmRefreshDialog();
               },

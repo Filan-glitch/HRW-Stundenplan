@@ -25,9 +25,8 @@ import 'storage.dart';
 
 Future<void> reloadAll({bool keepEdited = true}) async {
   // clear events before reloading
-  store.dispatch(Action(
-    ActionTypes.setEvents,
-    payload: store.state.events
+  store.dispatch(setEvents(
+    store.state.events
         .where((event) =>
             event.mode == EventMode.customEvent ||
             (event.mode == EventMode.edited && keepEdited))
@@ -45,13 +44,13 @@ Future<void> reloadAll({bool keepEdited = true}) async {
     fetchAccountData()
   ]);
 
-  store.dispatch(Action(ActionTypes.startTask));
+  store.dispatch(startTask());
   await writeDataToStorage();
   await writeGradesToStorage();
   await writeGPA();
   await writeAccount();
   await loadDataFromStorage();
-  store.dispatch(Action(ActionTypes.stopTask));
+  store.dispatch(stopTask());
 }
 
 Future<void> loadWeekInterval({
@@ -92,32 +91,29 @@ Future<void> fetchTimetableData(DateTime monday, bool keepEdited) async {
     if (store.state.args == null || store.state.cnsc == null) return;
     log('fetching ${formatter.format(monday)}');
 
-    store.dispatch(Action(ActionTypes.startTask));
+    store.dispatch(startTask());
     final dom.Document body = await _fetchScheduleHTML(monday);
     events = await _parseTimetable(body, monday);
 
     if (store.state.downloadedUntil == null ||
         store.state.downloadedUntil!.isBefore(monday)) {
-      store.dispatch(Action(
-        ActionTypes.setDownloadedUntil,
-        payload: monday,
-      ));
+      store.dispatch(setDownloadedUntil(monday));
       writeDownloadedRange();
     }
 
-    store.dispatch(Action(ActionTypes.stopTask));
+    store.dispatch(stopTask());
   } on TimeoutException {
-    store.dispatch(Action(ActionTypes.stopTask));
+    store.dispatch(stopTask());
     showErrorToast('Keine Verbindung');
   } on SocketException {
-    store.dispatch(Action(ActionTypes.stopTask));
+    store.dispatch(stopTask());
     showErrorToast('Keine Verbindung');
   } catch (e, stackTrace) {
     if (kDebugMode) {
       print(e);
       print(stackTrace);
     }
-    store.dispatch(Action(ActionTypes.stopTask));
+    store.dispatch(stopTask());
 
     FirebaseCrashlytics.instance.recordError(e, stackTrace);
     showErrorToast('Es ist ein Fehler aufgetreten');
@@ -161,12 +157,7 @@ Future<void> fetchTimetableData(DateTime monday, bool keepEdited) async {
       ...eventsToAdd,
     ];
 
-    store.dispatch(
-      Action(
-        ActionTypes.setEvents,
-        payload: newEventList,
-      ),
-    );
+    store.dispatch(setEvents(newEventList));
   }
 }
 
@@ -174,34 +165,27 @@ Future<void> fetchGradeData() async {
   try {
     if (store.state.args == null || store.state.cnsc == null) return;
 
-    store.dispatch(Action(ActionTypes.startTask));
+    store.dispatch(startTask());
     final dom.Document body = await _fetchGradesHTML();
     final List<Module> modules = await _parseGrades(body);
     final double gpa = await _parseGPA(body);
 
-    store.dispatch(Action(
-      ActionTypes.setGrades,
-      payload: modules,
-    ));
+    store.dispatch(setGrades(modules));
+    store.dispatch(setGPA(gpa));
 
-    store.dispatch(Action(
-      ActionTypes.setGPA,
-      payload: gpa,
-    ));
-
-    store.dispatch(Action(ActionTypes.stopTask));
+    store.dispatch(stopTask());
   } on TimeoutException {
-    store.dispatch(Action(ActionTypes.stopTask));
+    store.dispatch(stopTask());
     showErrorToast('Keine Verbindung');
   } on SocketException {
-    store.dispatch(Action(ActionTypes.stopTask));
+    store.dispatch(stopTask());
     showErrorToast('Keine Verbindung');
   } catch (e, stackTrace) {
     if (kDebugMode) {
       print(e);
       print(stackTrace);
     }
-    store.dispatch(Action(ActionTypes.stopTask));
+    store.dispatch(stopTask());
 
     FirebaseCrashlytics.instance.recordError(e, stackTrace);
     showErrorToast('Es ist ein Fehler aufgetreten');
@@ -212,28 +196,25 @@ Future<void> fetchAccountData() async {
   try {
     if (store.state.args == null || store.state.cnsc == null) return;
 
-    store.dispatch(Action(ActionTypes.startTask));
+    store.dispatch(startTask());
     final dom.Document body = await _fetchAccountHTML();
     final String account = await _parseAccount(body);
 
-    store.dispatch(Action(
-      ActionTypes.setAccount,
-      payload: account,
-    ));
+    store.dispatch(setAccount(account));
 
-    store.dispatch(Action(ActionTypes.stopTask));
+    store.dispatch(stopTask());
   } on TimeoutException {
-    store.dispatch(Action(ActionTypes.stopTask));
+    store.dispatch(stopTask());
     showErrorToast('Keine Verbindung');
   } on SocketException {
-    store.dispatch(Action(ActionTypes.stopTask));
+    store.dispatch(stopTask());
     showErrorToast('Keine Verbindung');
   } catch (e, stackTrace) {
     if (kDebugMode) {
       print(e);
       print(stackTrace);
     }
-    store.dispatch(Action(ActionTypes.stopTask));
+    store.dispatch(stopTask());
 
     FirebaseCrashlytics.instance.recordError(e, stackTrace);
     showErrorToast('Es ist ein Fehler aufgetreten');
@@ -286,10 +267,7 @@ Future<List<Event>> _parseTimetable(
     dom.Document document, DateTime monday) async {
   final List<Event> events = [];
   if (!document.outerHtml.contains('Stundenplan')) {
-    store.dispatch(Action(
-      ActionTypes.setCredentials,
-      payload: {'cnsc': null, 'args': null},
-    ));
+    store.dispatch(setCredentials(null, null));
     showInfoToast('Bitte melden Sie sich erneut an');
     return [];
   }
@@ -362,10 +340,7 @@ Future<List<Event>> _parseTimetable(
 
 Future<List<Module>> _parseGrades(dom.Document document) async {
   if (!document.outerHtml.contains('Studienergebnisse')) {
-    store.dispatch(Action(
-      ActionTypes.setCredentials,
-      payload: {'cnsc': null, 'args': null},
-    ));
+    store.dispatch(setCredentials(null, null));
     showInfoToast('Bitte melden Sie sich erneut an');
     return [];
   }

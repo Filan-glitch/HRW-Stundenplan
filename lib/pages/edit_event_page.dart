@@ -114,12 +114,7 @@ class _EditEventPageState extends State<EditEventPage> {
     }).forEach((event) {
       final List<Event> events = store.state.events;
       events.add(event);
-      store.dispatch(
-        redux.Action(
-          redux.ActionTypes.setEvents,
-          payload: events,
-        ),
-      );
+      store.dispatch(redux.setEvents(events));
     });
 
     writeDataToStorage();
@@ -146,12 +141,7 @@ class _EditEventPageState extends State<EditEventPage> {
           : EventMode.edited,
     );
 
-    store.dispatch(store.dispatch(
-      redux.Action(
-        redux.ActionTypes.setEvents,
-        payload: events,
-      ),
-    ));
+    store.dispatch(redux.setEvents(events));
 
     writeDataToStorage();
     Navigator.pop(context);
@@ -189,10 +179,7 @@ class _EditEventPageState extends State<EditEventPage> {
       }
     }).toList();
 
-    store.dispatch(redux.Action(
-      redux.ActionTypes.setEvents,
-      payload: updatedEvents,
-    ));
+    store.dispatch(redux.setEvents(updatedEvents));
 
     writeDataToStorage();
     Navigator.pop(context);
@@ -207,10 +194,7 @@ class _EditEventPageState extends State<EditEventPage> {
     final events = store.state.events;
     events.remove(widget.event);
 
-    store.dispatch(redux.Action(
-      redux.ActionTypes.setEvents,
-      payload: events,
-    ));
+    store.dispatch(redux.setEvents(events));
 
     writeDataToStorage();
     Navigator.pop(context);
@@ -230,10 +214,7 @@ class _EditEventPageState extends State<EditEventPage> {
         )
         .toList();
 
-    store.dispatch(redux.Action(
-      redux.ActionTypes.setEvents,
-      payload: updatedEvents,
-    ));
+    store.dispatch(redux.setEvents(updatedEvents));
 
     writeDataToStorage();
     Navigator.pop(context);
@@ -249,12 +230,7 @@ class _EditEventPageState extends State<EditEventPage> {
     updatedEvents[updatedEvents.indexOf(widget.event!)] =
         widget.event!.copyWith(hidden: true);
 
-    store.dispatch(store.dispatch(
-      redux.Action(
-        redux.ActionTypes.setEvents,
-        payload: updatedEvents,
-      ),
-    ));
+    store.dispatch(redux.setEvents(updatedEvents));
 
     writeDataToStorage();
     Navigator.pop(context);
@@ -278,10 +254,7 @@ class _EditEventPageState extends State<EditEventPage> {
       }
     }).toList();
 
-    store.dispatch(redux.Action(
-      redux.ActionTypes.setEvents,
-      payload: updatedEvents,
-    ));
+    store.dispatch(redux.setEvents(updatedEvents));
 
     writeDataToStorage();
     Navigator.pop(context);

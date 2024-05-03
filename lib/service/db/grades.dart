@@ -19,10 +19,7 @@ Future<void> loadGradesFromStorage() async {
       modules.add(Module.fromDB(item));
     }
 
-    store.dispatch(Action(
-      ActionTypes.setGrades,
-      payload: modules,
-    ));
+    store.dispatch(setGrades(modules));
 
     await db.close();
   } catch (e, stackTrace) {

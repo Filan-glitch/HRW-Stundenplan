@@ -60,12 +60,7 @@ void main() {
 
     await loadBiometrics();
     if (store.state.biometrics == Biometrics.ON) {
-      store.dispatch(
-        redux.Action(
-          redux.ActionTypes.setLockState,
-          payload: true,
-        ),
-      );
+      store.dispatch(redux.setLockState(true));
     }
 
     await Workmanager().initialize(
@@ -88,7 +83,7 @@ void main() {
       loadEnableConfirmRefreshDialog(),
       loadDownloadedRange(),
     ]).then((value) {
-      store.dispatch(redux.Action(redux.ActionTypes.setupCompleted));
+      store.dispatch(redux.setupCompleted());
 
       if (store.state.notificationsEnabled) registerBackgroundService();
     });

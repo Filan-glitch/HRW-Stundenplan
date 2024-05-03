@@ -39,7 +39,7 @@ class LoadingPage extends StatelessWidget {
             TextButton(
               onPressed: () {
                 clearStorage();
-                store.dispatch(redux.Action(redux.ActionTypes.clear));
+                store.dispatch(redux.clear());
               },
               child: const Text('App zurücksetzen'),
             ),

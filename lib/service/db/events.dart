@@ -42,10 +42,7 @@ Future<void> loadDataFromStorage() async {
       }
     }
 
-    store.dispatch(Action(
-      ActionTypes.setEvents,
-      payload: events,
-    ));
+    store.dispatch(setEvents(events));
 
     await db.close();
   } catch (e, stackTrace) {
@@ -82,10 +79,7 @@ Future<void> writeDataToStorage() async {
       print(e);
     }
 
-    store.dispatch(Action(
-      ActionTypes.setLastUpdated,
-      payload: DateTime.now(),
-    ));
+    store.dispatch(setLastUpdated(DateTime.now()));
     writeLastUpdated();
 
     await db.close();

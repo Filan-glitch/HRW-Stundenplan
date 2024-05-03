@@ -122,22 +122,15 @@ class MonthOverviewWidget extends StatelessWidget {
                                   child: GestureDetector(
                                     onTap: () {
                                       // update current week in store
-                                      store.dispatch(
-                                        redux.Action(
-                                          redux.ActionTypes.setCurrentWeek,
-                                          payload: week,
-                                        ),
-                                      );
+                                      store
+                                          .dispatch(redux.setCurrentWeek(week));
 
                                       // update selected day by callback
                                       onSelectedDayChanged(i);
 
                                       // update to day view
                                       store.dispatch(
-                                        redux.Action(
-                                          redux.ActionTypes.setView,
-                                          payload: TimetableView.daily,
-                                        ),
+                                        redux.setView(TimetableView.daily),
                                       );
                                     },
                                     child: SingleChildScrollView(

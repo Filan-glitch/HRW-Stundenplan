@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:local_auth/local_auth.dart';
 import 'package:timetable/core/toast.dart';
+import 'package:timetable/service/storage.dart';
 
 import '../model/redux/actions.dart' as redux;
 import '../model/redux/store.dart';
@@ -57,22 +58,30 @@ class BiometricsPage extends StatelessWidget {
               ),
             ),
             Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 25.0),
-                child: TextButton(
-                  onPressed: _startAuthentication,
-                  style: ButtonStyle(
-                    backgroundColor: MaterialStateProperty.all(
-                      Theme.of(context).colorScheme.primary,
-                    ),
+              padding: const EdgeInsets.symmetric(horizontal: 25.0),
+              child: TextButton(
+                onPressed: _startAuthentication,
+                style: ButtonStyle(
+                  backgroundColor: MaterialStateProperty.all(
+                    Theme.of(context).colorScheme.primary,
                   ),
-                  child: const Text(
-                    'App entsperren',
-                    style: TextStyle(
-                      fontSize: 20.0,
-                      color: Colors.white,
-                    ),
+                ),
+                child: const Text(
+                  'App entsperren',
+                  style: TextStyle(
+                    fontSize: 20.0,
+                    color: Colors.white,
                   ),
-                ))
+                ),
+              ),
+            ),
+            TextButton(
+              onPressed: () {
+                clearStorage();
+                store.dispatch(redux.Action(redux.ActionTypes.clear));
+              },
+              child: const Text('App zurücksetzen'),
+            ),
           ],
         ),
       ),

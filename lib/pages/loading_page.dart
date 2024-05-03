@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:timetable/model/redux/store.dart';
+import '../model/redux/actions.dart' as redux;
+import 'package:timetable/service/storage.dart';
 
 class LoadingPage extends StatelessWidget {
   const LoadingPage({super.key});
@@ -11,7 +14,7 @@ class LoadingPage extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           children: [
             Padding(
-              padding: const EdgeInsets.only(top: 50.0),
+              padding: const EdgeInsets.only(top: 100.0),
               child: SizedBox(
                 height: 150.0,
                 width: 150.0,
@@ -32,7 +35,14 @@ class LoadingPage extends StatelessWidget {
                   fontSize: 30.0,
                 ),
               ),
-            )
+            ),
+            TextButton(
+              onPressed: () {
+                clearStorage();
+                store.dispatch(redux.Action(redux.ActionTypes.clear));
+              },
+              child: const Text('App zurücksetzen'),
+            ),
           ],
         ),
       ),

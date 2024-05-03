@@ -8,8 +8,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_redux/flutter_redux.dart';
-import 'package:oktoast/oktoast.dart';
 import 'package:timetable/core/migration/migrate.dart';
+import 'package:timetable/core/toast.dart';
 import 'package:workmanager/workmanager.dart';
 
 import 'dialogs/crashlytics_dialog.dart';
@@ -39,7 +39,7 @@ void main() {
     if (!kDebugMode) {
       FlutterError.onError = (errorDetails) {
         try {
-          showToast('Unbekannter Fehler');
+          showErrorToast('Unbekannter Fehler');
         } catch (e) {
           log(e.toString());
         }
@@ -47,7 +47,7 @@ void main() {
       };
       PlatformDispatcher.instance.onError = (error, stack) {
         try {
-          showToast('Unbekannter Fehler');
+          showErrorToast('Unbekannter Fehler');
         } catch (e) {
           log(e.toString());
         }

@@ -7,7 +7,7 @@ import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:flutter_redux/flutter_redux.dart';
 import 'package:local_auth/local_auth.dart';
 import 'package:mutex/mutex.dart';
-import 'package:oktoast/oktoast.dart';
+import 'package:timetable/core/toast.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:yaml/yaml.dart';
 
@@ -164,10 +164,8 @@ class _SettingsPageState extends State<SettingsPage> {
                                     AndroidFlutterLocalNotificationsPlugin>()
                                 ?.requestNotificationsPermission();
 
-                            showToast(
-                              'Aufgrund von Batterie-Optimierung werden Benachrichtigungen ggf. nicht immer korrekt angezeigt.',
-                              duration: const Duration(seconds: 5),
-                            );
+                            showInfoToast(
+                                'Aufgrund von Batterie-Optimierung werden Benachrichtigungen ggf. nicht immer korrekt angezeigt.');
                           } else {
                             unregisterBackgroundService();
                           }

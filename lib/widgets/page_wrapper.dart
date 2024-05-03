@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_redux/flutter_redux.dart';
-import 'package:oktoast/oktoast.dart';
 
 import '../model/biometrics.dart';
 import '../model/login_state.dart';
@@ -79,8 +78,6 @@ class _PageWrapperState extends State<PageWrapper> with WidgetsBindingObserver {
 
   @override
   Widget build(BuildContext context) {
-    // final Widget _body = widget.body;
-    final Widget _body = OKToast(child: widget.body);
     Widget mainContent;
     if (widget.simpleDesign) {
       mainContent = Scaffold(
@@ -92,7 +89,7 @@ class _PageWrapperState extends State<PageWrapper> with WidgetsBindingObserver {
           padding: EdgeInsets.only(
             bottom: MediaQuery.of(context).viewPadding.bottom,
           ),
-          child: _body,
+          child: widget.body,
         ),
       );
     } else {
@@ -174,7 +171,7 @@ class _PageWrapperState extends State<PageWrapper> with WidgetsBindingObserver {
                             topRight: Radius.circular(30.0),
                           ),
                         ),
-                        child: _body,
+                        child: widget.body,
                       ),
                     ),
                   ],

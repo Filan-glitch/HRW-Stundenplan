@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:local_auth/local_auth.dart';
-import 'package:oktoast/oktoast.dart';
+import 'package:timetable/core/toast.dart';
 
 import '../model/biometrics.dart';
 import '../model/redux/actions.dart' as redux;
@@ -74,10 +74,7 @@ class SelectLockDialog extends StatelessWidget {
 
       writeBiometrics();
     } catch (e) {
-      showToast(
-        'Biometrische Authentifizierung fehlgeschlagen',
-        position: ToastPosition.bottom,
-      );
+      showErrorToast('Biometrische Authentifizierung fehlgeschlagen');
     }
   }
 }

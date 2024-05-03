@@ -1,7 +1,6 @@
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:oktoast/oktoast.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:yaml/yaml.dart';
 
@@ -23,208 +22,204 @@ class _WelcomePageState extends State<WelcomePage> {
 
   @override
   Widget build(BuildContext context) {
-    return OKToast(
-      child: Scaffold(
-        body: Column(
-          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-          children: [
-            const Column(
-              children: [
-                Text('Willkommen!', style: TextStyle(fontSize: 30.0)),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Text('bei der ', style: TextStyle(fontSize: 20.0)),
-                    Text('inoffiziellen',
-                        style: TextStyle(
-                            fontSize: 20.0,
-                            fontWeight: FontWeight.bold,
-                            fontStyle: FontStyle.italic)),
-                  ],
+    return Scaffold(
+      body: Column(
+        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+        children: [
+          const Column(
+            children: [
+              Text('Willkommen!', style: TextStyle(fontSize: 30.0)),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Text('bei der ', style: TextStyle(fontSize: 20.0)),
+                  Text('inoffiziellen',
+                      style: TextStyle(
+                          fontSize: 20.0,
+                          fontWeight: FontWeight.bold,
+                          fontStyle: FontStyle.italic)),
+                ],
+              ),
+              Text(
+                'CampusNet',
+                style: TextStyle(
+                  fontSize: 32.0,
                 ),
-                Text(
-                  'CampusNet',
-                  style: TextStyle(
-                    fontSize: 32.0,
-                  ),
-                ),
-                Text('Stundenplan App', style: TextStyle(fontSize: 22.0)),
-                Text('des Institut Informatik',
-                    style: TextStyle(fontSize: 17.0)),
-              ],
-            ),
-            Column(
-              children: [
-                Padding(
-                  padding: const EdgeInsets.only(bottom: 20.0),
-                  child: ElevatedButton(
-                    style: ButtonStyle(
-                      backgroundColor:
-                          MaterialStateProperty.resolveWith<Color?>(
-                        (Set<MaterialState> states) {
-                          if (states.contains(MaterialState.disabled))
-                            return Colors.grey;
-                          return null;
-                        },
-                      ),
-                      enableFeedback: (_isChecked) ? true : false,
-                      shape: MaterialStateProperty.all<RoundedRectangleBorder>(
-                        RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(10.0),
-                        ),
+              ),
+              Text('Stundenplan App', style: TextStyle(fontSize: 22.0)),
+              Text('des Institut Informatik', style: TextStyle(fontSize: 17.0)),
+            ],
+          ),
+          Column(
+            children: [
+              Padding(
+                padding: const EdgeInsets.only(bottom: 20.0),
+                child: ElevatedButton(
+                  style: ButtonStyle(
+                    backgroundColor: MaterialStateProperty.resolveWith<Color?>(
+                      (Set<MaterialState> states) {
+                        if (states.contains(MaterialState.disabled))
+                          return Colors.grey;
+                        return null;
+                      },
+                    ),
+                    enableFeedback: (_isChecked) ? true : false,
+                    shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+                      RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(10.0),
                       ),
                     ),
-                    onPressed: (_isChecked)
-                        ? () async {
-                            LoginPage.performLogin(onLoginSuccess: () async {
-                              await loadWeekInterval();
-                              await fetchGradeData().then((_) {
-                                writeGradesToStorage();
-                                writeGPA();
-                              });
-                              await fetchAccountData().then((_) {
-                                writeAccount();
-                              });
+                  ),
+                  onPressed: (_isChecked)
+                      ? () async {
+                          LoginPage.performLogin(onLoginSuccess: () async {
+                            await loadWeekInterval();
+                            await fetchGradeData().then((_) {
+                              writeGradesToStorage();
+                              writeGPA();
                             });
-                          }
-                        : null,
-                    child: const Row(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        Icon(Icons.arrow_forward),
-                        Padding(
-                          padding: EdgeInsets.all(
-                            10.0,
-                          ),
-                          child: Text('CampusNet Login'),
-                        ),
-                      ],
-                    ),
-                  ),
-                ),
-                SizedBox(
-                  width: MediaQuery.of(context).size.width * 0.9,
-                  child: Row(
+                            await fetchAccountData().then((_) {
+                              writeAccount();
+                            });
+                          });
+                        }
+                      : null,
+                  child: const Row(
+                    mainAxisSize: MainAxisSize.min,
                     children: [
-                      Checkbox(
-                          value: _isChecked,
-                          onChanged: (bool? value) {
-                            setState(() {
-                              _isChecked = value!;
-                            });
-                          }),
-                      SizedBox(
-                        width: MediaQuery.of(context).size.width * 0.75,
-                        child: RichText(
-                          text: TextSpan(children: [
-                            TextSpan(
-                                style: TextStyle(
-                                  color: Theme.of(context)
-                                      .dividerColor
-                                      .withOpacity(0.7),
-                                ),
-                                text: 'Ich akzeptiere die '),
-                            TextSpan(
-                              style: TextStyle(
-                                color: Theme.of(context).dividerColor,
-                                decoration: TextDecoration.underline,
-                              ),
-                              text: 'Nutzungsbedingungen',
-                              recognizer: TapGestureRecognizer()
-                                ..onTap = () {
-                                  launchUrl(
-                                    Uri.parse(
-                                      TERMS_URL,
-                                    ),
-                                    mode: LaunchMode.externalApplication,
-                                  );
-                                },
-                            ),
-                            TextSpan(
-                              style: TextStyle(
-                                color: Theme.of(context)
-                                    .dividerColor
-                                    .withOpacity(0.7),
-                              ),
-                              text: ' und ',
-                            ),
-                            TextSpan(
-                              style: TextStyle(
-                                color: Theme.of(context).dividerColor,
-                                decoration: TextDecoration.underline,
-                              ),
-                              text: 'Datenschutzrichtlinie',
-                              recognizer: TapGestureRecognizer()
-                                ..onTap = () {
-                                  launchUrl(
-                                    Uri.parse(
-                                      PRIVACY_URL,
-                                    ),
-                                    mode: LaunchMode.externalApplication,
-                                  );
-                                },
-                            ),
-                            TextSpan(
-                              style: TextStyle(
-                                color: Theme.of(context)
-                                    .dividerColor
-                                    .withOpacity(0.7),
-                              ),
-                              text:
-                                  ' und nehme eindeutig zur Kenntnis, dass alle Angaben ohne Gewähr sind und der ',
-                            ),
-                            TextSpan(
-                              style: TextStyle(
-                                color: Theme.of(context).dividerColor,
-                                decoration: TextDecoration.underline,
-                              ),
-                              text: 'Haftungsausschluss',
-                              recognizer: TapGestureRecognizer()
-                                ..onTap = () {
-                                  launchUrl(
-                                    Uri.parse(
-                                      DISCLAIMER_URL,
-                                    ),
-                                    mode: LaunchMode.externalApplication,
-                                  );
-                                },
-                            ),
-                            TextSpan(
-                              style: TextStyle(
-                                color: Theme.of(context)
-                                    .dividerColor
-                                    .withOpacity(0.7),
-                              ),
-                              text: ' gilt.',
-                            ),
-                          ]),
+                      Icon(Icons.arrow_forward),
+                      Padding(
+                        padding: EdgeInsets.all(
+                          10.0,
                         ),
+                        child: Text('CampusNet Login'),
                       ),
                     ],
                   ),
                 ),
-              ],
-            ),
-            FutureBuilder(
-              future: rootBundle.loadString('pubspec.yaml'),
-              builder: (context, snapshot) {
-                if (snapshot.hasData) {
-                  return Text(
-                    'Version: ${loadYaml(
-                      snapshot.data.toString(),
-                    )["version"].split("+").first}',
-                    style: TextStyle(
-                      fontSize: 15.0,
-                      color: Theme.of(context).dividerColor.withOpacity(0.7),
+              ),
+              SizedBox(
+                width: MediaQuery.of(context).size.width * 0.9,
+                child: Row(
+                  children: [
+                    Checkbox(
+                        value: _isChecked,
+                        onChanged: (bool? value) {
+                          setState(() {
+                            _isChecked = value!;
+                          });
+                        }),
+                    SizedBox(
+                      width: MediaQuery.of(context).size.width * 0.75,
+                      child: RichText(
+                        text: TextSpan(children: [
+                          TextSpan(
+                              style: TextStyle(
+                                color: Theme.of(context)
+                                    .dividerColor
+                                    .withOpacity(0.7),
+                              ),
+                              text: 'Ich akzeptiere die '),
+                          TextSpan(
+                            style: TextStyle(
+                              color: Theme.of(context).dividerColor,
+                              decoration: TextDecoration.underline,
+                            ),
+                            text: 'Nutzungsbedingungen',
+                            recognizer: TapGestureRecognizer()
+                              ..onTap = () {
+                                launchUrl(
+                                  Uri.parse(
+                                    TERMS_URL,
+                                  ),
+                                  mode: LaunchMode.externalApplication,
+                                );
+                              },
+                          ),
+                          TextSpan(
+                            style: TextStyle(
+                              color: Theme.of(context)
+                                  .dividerColor
+                                  .withOpacity(0.7),
+                            ),
+                            text: ' und ',
+                          ),
+                          TextSpan(
+                            style: TextStyle(
+                              color: Theme.of(context).dividerColor,
+                              decoration: TextDecoration.underline,
+                            ),
+                            text: 'Datenschutzrichtlinie',
+                            recognizer: TapGestureRecognizer()
+                              ..onTap = () {
+                                launchUrl(
+                                  Uri.parse(
+                                    PRIVACY_URL,
+                                  ),
+                                  mode: LaunchMode.externalApplication,
+                                );
+                              },
+                          ),
+                          TextSpan(
+                            style: TextStyle(
+                              color: Theme.of(context)
+                                  .dividerColor
+                                  .withOpacity(0.7),
+                            ),
+                            text:
+                                ' und nehme eindeutig zur Kenntnis, dass alle Angaben ohne Gewähr sind und der ',
+                          ),
+                          TextSpan(
+                            style: TextStyle(
+                              color: Theme.of(context).dividerColor,
+                              decoration: TextDecoration.underline,
+                            ),
+                            text: 'Haftungsausschluss',
+                            recognizer: TapGestureRecognizer()
+                              ..onTap = () {
+                                launchUrl(
+                                  Uri.parse(
+                                    DISCLAIMER_URL,
+                                  ),
+                                  mode: LaunchMode.externalApplication,
+                                );
+                              },
+                          ),
+                          TextSpan(
+                            style: TextStyle(
+                              color: Theme.of(context)
+                                  .dividerColor
+                                  .withOpacity(0.7),
+                            ),
+                            text: ' gilt.',
+                          ),
+                        ]),
+                      ),
                     ),
-                    textAlign: TextAlign.center,
-                  );
-                }
-                return Container();
-              },
-            ),
-          ],
-        ),
+                  ],
+                ),
+              ),
+            ],
+          ),
+          FutureBuilder(
+            future: rootBundle.loadString('pubspec.yaml'),
+            builder: (context, snapshot) {
+              if (snapshot.hasData) {
+                return Text(
+                  'Version: ${loadYaml(
+                    snapshot.data.toString(),
+                  )["version"].split("+").first}',
+                  style: TextStyle(
+                    fontSize: 15.0,
+                    color: Theme.of(context).dividerColor.withOpacity(0.7),
+                  ),
+                  textAlign: TextAlign.center,
+                );
+              }
+              return Container();
+            },
+          ),
+        ],
       ),
     );
   }

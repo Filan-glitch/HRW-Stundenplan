@@ -1,7 +1,7 @@
 import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 import 'package:flutter/foundation.dart';
-import 'package:oktoast/oktoast.dart';
 import 'package:sqflite/sqflite.dart';
+import 'package:timetable/core/toast.dart';
 
 import '../../model/date_time_calculator.dart';
 import '../../model/event.dart';
@@ -49,7 +49,7 @@ Future<void> loadDataFromStorage() async {
 
     await db.close();
   } catch (e, stackTrace) {
-    showToast('Es ist ein Fehler aufgetreten');
+    showErrorToast('Es ist ein Fehler aufgetreten');
     if (kDebugMode) {
       print(e);
       print(stackTrace);
@@ -90,12 +90,12 @@ Future<void> writeDataToStorage() async {
 
     await db.close();
   } catch (e, stackTrace) {
-    showToast('Es ist ein Fehler aufgetreten');
+    FirebaseCrashlytics.instance.recordError(e, stackTrace);
+    showErrorToast('Es ist ein Fehler aufgetreten');
     if (kDebugMode) {
       print(e);
       print(stackTrace);
     }
-    FirebaseCrashlytics.instance.recordError(e, stackTrace);
   }
 }
 

@@ -9,7 +9,7 @@ import 'package:html/dom.dart' as dom;
 import 'package:html/parser.dart' as html;
 import 'package:http/http.dart' as http;
 import 'package:intl/intl.dart';
-import 'package:oktoast/oktoast.dart';
+import 'package:timetable/core/toast.dart';
 
 import '../model/constants.dart';
 import '../model/date_time_calculator.dart';
@@ -107,13 +107,12 @@ Future<void> fetchTimetableData(DateTime monday, bool keepEdited) async {
 
     store.dispatch(Action(ActionTypes.stopTask));
   } on TimeoutException {
-    showToast('Keine Verbindung');
     store.dispatch(Action(ActionTypes.stopTask));
+    showErrorToast('Keine Verbindung');
   } on SocketException {
-    showToast('Keine Verbindung');
     store.dispatch(Action(ActionTypes.stopTask));
+    showErrorToast('Keine Verbindung');
   } catch (e, stackTrace) {
-    showToast('Es ist ein Fehler aufgetreten');
     if (kDebugMode) {
       print(e);
       print(stackTrace);
@@ -121,6 +120,7 @@ Future<void> fetchTimetableData(DateTime monday, bool keepEdited) async {
     store.dispatch(Action(ActionTypes.stopTask));
 
     FirebaseCrashlytics.instance.recordError(e, stackTrace);
+    showErrorToast('Es ist ein Fehler aufgetreten');
   } finally {
     final List<Event> eventsToAdd;
 
@@ -191,13 +191,12 @@ Future<void> fetchGradeData() async {
 
     store.dispatch(Action(ActionTypes.stopTask));
   } on TimeoutException {
-    showToast('Keine Verbindung');
     store.dispatch(Action(ActionTypes.stopTask));
+    showErrorToast('Keine Verbindung');
   } on SocketException {
-    showToast('Keine Verbindung');
     store.dispatch(Action(ActionTypes.stopTask));
+    showErrorToast('Keine Verbindung');
   } catch (e, stackTrace) {
-    showToast('Es ist ein Fehler aufgetreten');
     if (kDebugMode) {
       print(e);
       print(stackTrace);
@@ -205,6 +204,7 @@ Future<void> fetchGradeData() async {
     store.dispatch(Action(ActionTypes.stopTask));
 
     FirebaseCrashlytics.instance.recordError(e, stackTrace);
+    showErrorToast('Es ist ein Fehler aufgetreten');
   }
 }
 
@@ -223,13 +223,12 @@ Future<void> fetchAccountData() async {
 
     store.dispatch(Action(ActionTypes.stopTask));
   } on TimeoutException {
-    showToast('Keine Verbindung');
     store.dispatch(Action(ActionTypes.stopTask));
+    showErrorToast('Keine Verbindung');
   } on SocketException {
-    showToast('Keine Verbindung');
     store.dispatch(Action(ActionTypes.stopTask));
+    showErrorToast('Keine Verbindung');
   } catch (e, stackTrace) {
-    showToast('Es ist ein Fehler aufgetreten');
     if (kDebugMode) {
       print(e);
       print(stackTrace);
@@ -237,6 +236,7 @@ Future<void> fetchAccountData() async {
     store.dispatch(Action(ActionTypes.stopTask));
 
     FirebaseCrashlytics.instance.recordError(e, stackTrace);
+    showErrorToast('Es ist ein Fehler aufgetreten');
   }
 }
 
@@ -286,11 +286,11 @@ Future<List<Event>> _parseTimetable(
     dom.Document document, DateTime monday) async {
   final List<Event> events = [];
   if (!document.outerHtml.contains('Stundenplan')) {
-    showToast('Bitte melden Sie sich erneut an');
     store.dispatch(Action(
       ActionTypes.setCredentials,
       payload: {'cnsc': null, 'args': null},
     ));
+    showInfoToast('Bitte melden Sie sich erneut an');
     return [];
   }
 
@@ -362,11 +362,11 @@ Future<List<Event>> _parseTimetable(
 
 Future<List<Module>> _parseGrades(dom.Document document) async {
   if (!document.outerHtml.contains('Studienergebnisse')) {
-    showToast('Bitte melden Sie sich erneut an');
     store.dispatch(Action(
       ActionTypes.setCredentials,
       payload: {'cnsc': null, 'args': null},
     ));
+    showInfoToast('Bitte melden Sie sich erneut an');
     return [];
   }
   final List<Module> modules = [];

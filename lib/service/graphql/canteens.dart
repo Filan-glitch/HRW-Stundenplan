@@ -1,7 +1,7 @@
 import 'dart:convert';
 
 import 'package:http/http.dart' as http;
-import 'package:oktoast/oktoast.dart';
+import 'package:timetable/core/toast.dart';
 import 'package:timetable/model/graphql/canteens/campus.dart';
 import 'package:timetable/model/redux/actions.dart';
 import 'package:timetable/model/redux/store.dart';
@@ -39,14 +39,14 @@ Future<void> getCanteenData() async {
     );
   } catch (e) {
     store.dispatch(Action(ActionTypes.stopTask));
-    showToast('Der Speiseplan konnten nicht geladen werden');
+    showErrorToast('Der Speiseplan konnten nicht geladen werden');
     store.dispatch(Action(ActionTypes.setCanteenData, payload: <Campus>[]));
     return;
   }
 
   store.dispatch(Action(ActionTypes.stopTask));
   if (response.statusCode != 200) {
-    showToast('Der Speiseplan konnten nicht geladen werden');
+    showErrorToast('Der Speiseplan konnten nicht geladen werden');
     store.dispatch(Action(ActionTypes.setCanteenData, payload: <Campus>[]));
   }
 

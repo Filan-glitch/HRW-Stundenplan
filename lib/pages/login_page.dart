@@ -4,7 +4,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_inappwebview/flutter_inappwebview.dart';
 import 'package:http/http.dart' as http;
-import 'package:oktoast/oktoast.dart';
+import 'package:timetable/core/toast.dart';
 
 import '../model/constants.dart';
 import '../model/login_state.dart';
@@ -74,42 +74,40 @@ class _LoginPageState extends State<LoginPage> {
 
   @override
   Widget build(BuildContext context) {
-    return OKToast(
-      child: Scaffold(
-        appBar: AppBar(
-          title: const Text('CampusNet Login'),
-        ),
-        body: PopScope(
-          canPop: false,
-          onPopInvoked: (bool didPop) async {
-            _cancelLogin();
-          },
-          child: InAppWebView(
-            key: _webViewKey,
-            initialUrlRequest: URLRequest(url: WebUri(LOGIN_URL)),
-            shouldOverrideUrlLoading: _onNavigationRequest,
-            initialSettings: InAppWebViewSettings(
-              useShouldOverrideUrlLoading: true,
-              isInspectable: kDebugMode,
-              forceDark: ForceDark.ON,
-              algorithmicDarkeningAllowed: true,
-              mediaType: 'text/html',
-            ),
-            onWebViewCreated: (controller) {
-              controller.addJavaScriptHandler(
-                handlerName: 'cancel',
-                callback: (args) {
-                  _cancelLogin();
-                },
-              );
-            },
-            onLoadStop: (controller, url) {
-              if (!url.toString().contains('IdentityServer/Account/Login')) {
-                return;
-              }
-              _injectCancelJS(controller);
-            },
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text('CampusNet Login'),
+      ),
+      body: PopScope(
+        canPop: false,
+        onPopInvoked: (bool didPop) async {
+          _cancelLogin();
+        },
+        child: InAppWebView(
+          key: _webViewKey,
+          initialUrlRequest: URLRequest(url: WebUri(LOGIN_URL)),
+          shouldOverrideUrlLoading: _onNavigationRequest,
+          initialSettings: InAppWebViewSettings(
+            useShouldOverrideUrlLoading: true,
+            isInspectable: kDebugMode,
+            forceDark: ForceDark.ON,
+            algorithmicDarkeningAllowed: true,
+            mediaType: 'text/html',
           ),
+          onWebViewCreated: (controller) {
+            controller.addJavaScriptHandler(
+              handlerName: 'cancel',
+              callback: (args) {
+                _cancelLogin();
+              },
+            );
+          },
+          onLoadStop: (controller, url) {
+            if (!url.toString().contains('IdentityServer/Account/Login')) {
+              return;
+            }
+            _injectCancelJS(controller);
+          },
         ),
       ),
     );
@@ -178,7 +176,7 @@ class _LoginPageState extends State<LoginPage> {
         if (!LoginPage._loginCompleter!.isCompleted) {
           LoginPage._loginCompleter!.complete(false);
         }
-        showToast('Es ist ein Fehler aufgetreten');
+        showErrorToast('Es ist ein Fehler aufgetreten');
       }
     });
   }

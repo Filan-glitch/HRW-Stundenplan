@@ -71,12 +71,12 @@ class _ListItemState extends State<ListItem> {
           Widget? timeIndicatorWidget;
           if (now.isBefore(start) && start.difference(now).inMinutes <= 90) {
             timeIndicatorWidget = Text(
-              'Beginnt in ${start.difference(now).inMinutes} Minuten',
+              'Beginnt in ${start.difference(now).inMinutes + 1} Minuten',
             );
           } else if (now.isBefore(end) && now.isAfter(start) ||
               now.isAtSameMomentAs(start)) {
             timeIndicatorWidget = Text(
-              'Läuft noch ${end.difference(now).inMinutes} Minuten',
+              'Läuft noch ${end.difference(now).inMinutes + 1} Minuten',
             );
           }
 

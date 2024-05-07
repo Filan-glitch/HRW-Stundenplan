@@ -73,33 +73,44 @@ class _LoginPageState extends State<LoginPage> {
         onPopInvoked: (bool didPop) async {
           _cancelLogin();
         },
-        child: InAppWebView(
-          key: _webViewKey,
-          initialUrlRequest: URLRequest(url: WebUri(LOGIN_URL)),
-          shouldOverrideUrlLoading: _onNavigationRequest,
-          initialSettings: InAppWebViewSettings(
-            useShouldOverrideUrlLoading: true,
-            isInspectable: kDebugMode,
-            forceDark: ForceDark.ON,
-            algorithmicDarkeningAllowed: true,
-            mediaType: 'text/html',
-          ),
-          onWebViewCreated: (controller) {
-            controller.addJavaScriptHandler(
-              handlerName: 'cancel',
-              callback: (args) {
-                _cancelLogin();
+          child: Stack(children: [
+            InAppWebView(
+              key: _webViewKey,
+              initialUrlRequest: URLRequest(url: WebUri(LOGIN_URL)),
+              shouldOverrideUrlLoading: _onNavigationRequest,
+              initialSettings: InAppWebViewSettings(
+                useShouldOverrideUrlLoading: true,
+                isInspectable: kDebugMode,
+                forceDark: ForceDark.ON,
+                algorithmicDarkeningAllowed: true,
+                mediaType: 'text/html',
+              ),
+              onWebViewCreated: (controller) {
+                controller.addJavaScriptHandler(
+                  handlerName: 'cancel',
+                  callback: (args) {
+                    _cancelLogin();
+                  },
+                );
               },
-            );
-          },
-          onLoadStop: (controller, url) {
-            if (!url.toString().contains('IdentityServer/Account/Login')) {
-              return;
-            }
-            _injectCancelJS(controller);
-          },
-        ),
-      ),
+              onLoadStop: (controller, url) {
+                if (!url.toString().contains('IdentityServer/Account/Login')) {
+                  return;
+                }
+                _injectCancelJS(controller);
+              },
+            ),
+            // Falls wir mal ein Gastzugang anbieten wollen
+            // Positioned(
+            //   bottom: 50,
+            //   left: 50,
+            //   right: 50,
+            //   child: ElevatedButton(
+            //     onPressed: _guestLogin,
+            //     child: const Text('Gastzugang verwenden'),
+            //   ),
+            // ),
+          ])),
     );
   }
 

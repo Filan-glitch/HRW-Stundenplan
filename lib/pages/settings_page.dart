@@ -6,7 +6,6 @@ import 'package:flutter/services.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:flutter_redux/flutter_redux.dart';
 import 'package:local_auth/local_auth.dart';
-import 'package:mutex/mutex.dart';
 import 'package:timetable/core/toast.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:yaml/yaml.dart';
@@ -22,10 +21,8 @@ import '../model/redux/actions.dart' as redux;
 import '../model/redux/app_state.dart';
 import '../model/redux/store.dart';
 import '../service/background.dart';
-import '../service/network_fetch.dart';
 import '../service/storage.dart';
 import '../widgets/page_wrapper.dart';
-import 'login_page.dart';
 
 class SettingsPage extends StatefulWidget {
   const SettingsPage({super.key});
@@ -35,9 +32,6 @@ class SettingsPage extends StatefulWidget {
 }
 
 class _SettingsPageState extends State<SettingsPage> {
-  final m = Mutex();
-  bool _isLoading = false;
-
   @override
   Widget build(BuildContext context) {
     return StoreConnector<AppState, AppState>(
@@ -96,15 +90,6 @@ class _SettingsPageState extends State<SettingsPage> {
                         style: const TextStyle(fontSize: 15),
                       ),
                     ),
-                    ListTile(
-                        leading: const Icon(
-                          Icons.sync_outlined,
-                        ),
-                        title: const Text('Daten aktualisieren'),
-                        onTap: () {
-                          _isLoading = false;
-                          LoginPage.performLogin(onLoginSuccess: _loadData);
-                        }),
                     const Padding(
                       padding: EdgeInsets.symmetric(horizontal: 30.0),
                       child: Divider(
@@ -400,17 +385,5 @@ class _SettingsPageState extends State<SettingsPage> {
             ),
           );
         });
-  }
-
-  Future<void> _loadData() async {
-    if (_isLoading) return;
-    _isLoading = true;
-
-    await m.acquire();
-    try {
-      await reloadAll();
-    } finally {
-      m.release();
-    }
   }
 }

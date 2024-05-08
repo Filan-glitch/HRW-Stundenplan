@@ -67,13 +67,15 @@ class _LoginPageState extends State<LoginPage> {
     return Scaffold(
       appBar: AppBar(
         title: const Text('CampusNet Login'),
+        backgroundColor: Theme.of(context).colorScheme.primary,
       ),
       body: PopScope(
         canPop: false,
         onPopInvoked: (bool didPop) async {
           _cancelLogin();
         },
-          child: Stack(children: [
+        child: Stack(
+          children: [
             InAppWebView(
               key: _webViewKey,
               initialUrlRequest: URLRequest(url: WebUri(LOGIN_URL)),
@@ -110,7 +112,9 @@ class _LoginPageState extends State<LoginPage> {
             //     child: const Text('Gastzugang verwenden'),
             //   ),
             // ),
-          ])),
+          ],
+        ),
+      ),
     );
   }
 

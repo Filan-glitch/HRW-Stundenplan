@@ -74,7 +74,9 @@ class _PageWrapperState extends State<PageWrapper> with WidgetsBindingObserver {
         appBar: AppBar(
           title: Text(widget.title),
           actions: widget.actions,
+          backgroundColor: Theme.of(context).colorScheme.primary,
         ),
+        backgroundColor: Theme.of(context).colorScheme.background,
         body: Padding(
           padding: EdgeInsets.only(
             bottom: MediaQuery.of(context).viewPadding.bottom,

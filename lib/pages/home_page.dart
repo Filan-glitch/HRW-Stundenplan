@@ -124,7 +124,7 @@ class _HomePageState extends State<HomePage> {
                     ),
                   );
                 },
-                icon: const Icon(Icons.add),
+                icon: const Icon(Icons.add, color: Colors.white),
               ),
             ],
             menuActions: [

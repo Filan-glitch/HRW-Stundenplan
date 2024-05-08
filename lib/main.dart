@@ -8,9 +8,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_redux/flutter_redux.dart';
-import 'package:local_auth/local_auth.dart';
-import 'package:oktoast/oktoast.dart';
 import 'package:timetable/core/migration/migrate.dart';
+import 'package:timetable/core/toast.dart';
 import 'package:workmanager/workmanager.dart';
 
 import 'dialogs/crashlytics_dialog.dart';
@@ -40,7 +39,7 @@ void main() {
     if (!kDebugMode) {
       FlutterError.onError = (errorDetails) {
         try {
-          showToast('Unbekannter Fehler');
+          showErrorToast('Unbekannter Fehler');
         } catch (e) {
           log(e.toString());
         }
@@ -48,7 +47,7 @@ void main() {
       };
       PlatformDispatcher.instance.onError = (error, stack) {
         try {
-          showToast('Unbekannter Fehler');
+          showErrorToast('Unbekannter Fehler');
         } catch (e) {
           log(e.toString());
         }
@@ -61,12 +60,7 @@ void main() {
 
     await loadBiometrics();
     if (store.state.biometrics == Biometrics.ON) {
-      store.dispatch(
-        redux.Action(
-          redux.ActionTypes.setLockState,
-          payload: true,
-        ),
-      );
+      store.dispatch(redux.setLockState(true));
     }
 
     await Workmanager().initialize(
@@ -87,8 +81,9 @@ void main() {
       loadAccount(),
       loadLastUpdated(),
       loadEnableConfirmRefreshDialog(),
+      loadDownloadedRange(),
     ]).then((value) {
-      store.dispatch(redux.Action(redux.ActionTypes.setupCompleted));
+      store.dispatch(redux.setupCompleted());
 
       if (store.state.notificationsEnabled) registerBackgroundService();
     });
@@ -145,28 +140,6 @@ class MyApp extends StatelessWidget {
             DeviceOrientation.portraitUp,
             DeviceOrientation.portraitDown,
           ]);
-
-          if (state.appLocked && state.biometrics == Biometrics.ON) {
-            Future.wait([LocalAuthentication().stopAuthentication()]);
-            LocalAuthentication()
-                .authenticate(
-              localizedReason: 'Bitte App entsperren',
-              options: const AuthenticationOptions(
-                stickyAuth: true,
-                sensitiveTransaction: false,
-                biometricOnly: true,
-                useErrorDialogs: false,
-              ),
-            )
-                .then((success) {
-              if (success) {
-                store.dispatch(redux.Action(
-                  redux.ActionTypes.setLockState,
-                  payload: false,
-                ));
-              }
-            });
-          }
 
           return MaterialApp(
             title: 'Stundenplan',

@@ -15,12 +15,7 @@ class SelectDesignDialog extends StatelessWidget {
       children: [
         SimpleDialogOption(
           onPressed: () {
-            store.dispatch(
-              redux.Action(
-                redux.ActionTypes.setDesign,
-                payload: ThemeMode.light,
-              ),
-            );
+            store.dispatch(redux.setDesign(ThemeMode.light));
             writeDesign();
             Navigator.pop(context);
           },
@@ -28,12 +23,7 @@ class SelectDesignDialog extends StatelessWidget {
         ),
         SimpleDialogOption(
           onPressed: () {
-            store.dispatch(
-              redux.Action(
-                redux.ActionTypes.setDesign,
-                payload: ThemeMode.dark,
-              ),
-            );
+            store.dispatch(redux.setDesign(ThemeMode.dark));
             writeDesign();
             Navigator.pop(context);
           },
@@ -41,12 +31,7 @@ class SelectDesignDialog extends StatelessWidget {
         ),
         SimpleDialogOption(
           onPressed: () {
-            store.dispatch(
-              redux.Action(
-                redux.ActionTypes.setDesign,
-                payload: ThemeMode.system,
-              ),
-            );
+            store.dispatch(redux.setDesign(ThemeMode.system));
             writeDesign();
             Navigator.pop(context);
           },

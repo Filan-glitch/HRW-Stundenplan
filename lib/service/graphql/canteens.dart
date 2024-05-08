@@ -1,16 +1,16 @@
 import 'dart:convert';
 
 import 'package:http/http.dart' as http;
-import 'package:oktoast/oktoast.dart';
+import 'package:timetable/core/toast.dart';
 import 'package:timetable/model/graphql/canteens/campus.dart';
-import 'package:timetable/model/redux/actions.dart';
+import 'package:timetable/model/redux/actions.dart' as redux;
 import 'package:timetable/model/redux/store.dart';
 
 Future<void> getCanteenData() async {
   // TODO: maybe add local caching later?
-  late final http.Response response;
+  final http.Response response;
   try {
-    store.dispatch(Action(ActionTypes.startTask));
+    store.dispatch(redux.startTask());
 
     response = await http.post(
       Uri.parse('https://campusapp.hs-ruhrwest.de'),
@@ -38,15 +38,16 @@ Future<void> getCanteenData() async {
       ),
     );
   } catch (e) {
-    store.dispatch(Action(ActionTypes.stopTask));
-    showToast('Der Speiseplan konnten nicht geladen werden');
-    store.dispatch(Action(ActionTypes.setCanteenData, payload: <Campus>[]));
+    store.dispatch(redux.stopTask());
+    showErrorToast('Der Speiseplan konnten nicht geladen werden');
+    store.dispatch(redux.setCanteenData([]));
+    return;
   }
 
-  store.dispatch(Action(ActionTypes.stopTask));
+  store.dispatch(redux.stopTask());
   if (response.statusCode != 200) {
-    showToast('Der Speiseplan konnten nicht geladen werden');
-    store.dispatch(Action(ActionTypes.setCanteenData, payload: <Campus>[]));
+    showErrorToast('Der Speiseplan konnten nicht geladen werden');
+    store.dispatch(redux.setCanteenData([]));
   }
 
   final Map<String, dynamic> json = jsonDecode(response.body);
@@ -57,7 +58,7 @@ Future<void> getCanteenData() async {
       campuses.add(Campus(v));
     });
 
-    store.dispatch(Action(ActionTypes.setCanteenData, payload: campuses));
+    store.dispatch(redux.setCanteenData(campuses));
   }
 }
 

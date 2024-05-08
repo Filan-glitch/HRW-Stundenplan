@@ -1,3 +1,9 @@
+# v2.0.0
+
+- Termin Editor
+- Bottrop Mensa Vorschau entfernt
+- Bug fixes in Logik & UI
+
 # v1.5.5
 
 - Verbesserte Mensa Ansicht

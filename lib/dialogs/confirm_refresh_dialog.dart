@@ -9,36 +9,47 @@ import '../service/network_fetch.dart';
 import '../service/storage.dart';
 import '../widgets/dialog_wrapper.dart';
 
-class ConfirmRefreshDialog extends StatelessWidget {
+class ConfirmRefreshDialog extends StatefulWidget {
   const ConfirmRefreshDialog({super.key});
 
   @override
+  State<ConfirmRefreshDialog> createState() => _ConfirmRefreshDialogState();
+}
+
+class _ConfirmRefreshDialogState extends State<ConfirmRefreshDialog> {
+  bool keepEditedOnReload = true;
+
+  @override
   Widget build(BuildContext context) {
-    return DialogWrapper(
-      title: 'Daten aktualisieren',
-      children: [
-        const Text(
-          'Sollen die Daten aktualisiert werden?',
-        ),
-        Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+    return StoreConnector<AppState, AppState>(
+      builder: (context, state) {
+        return DialogWrapper(
+          title: 'Daten aktualisieren',
           children: [
-            TextButton(
-              onPressed: () {
-                LoginPage.performLogin(onLoginSuccess: reloadAll);
-                Navigator.pop(context);
-              },
-              child: const Text('Ja'),
+            const Text(
+              'Sollen die Daten aktualisiert werden?',
             ),
-            TextButton(
-              onPressed: () => Navigator.pop(context),
-              child: const Text('Nein'),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                TextButton(
+                  onPressed: () {
+                    LoginPage.performLogin(
+                      onLoginSuccess: () async => await reloadAll(
+                        keepEdited: keepEditedOnReload,
+                      ),
+                    );
+                    Navigator.pop(context);
+                  },
+                  child: const Text('Ja'),
+                ),
+                TextButton(
+                  onPressed: () => Navigator.pop(context),
+                  child: const Text('Nein'),
+                ),
+              ],
             ),
-          ],
-        ),
-        StoreConnector<AppState, AppState>(
-          builder: (context, state) {
-            return CheckboxListTile(
+            CheckboxListTile(
               title: const Text(
                 'Nicht erneut fragen',
                 style: TextStyle(
@@ -48,18 +59,29 @@ class ConfirmRefreshDialog extends StatelessWidget {
               value: !state.enableConfirmRefreshDialog,
               onChanged: (value) {
                 store.dispatch(
-                  redux.Action(
-                    redux.ActionTypes.setEnableConfirmRefreshDialog,
-                    payload: value == false ? true : false,
-                  ),
+                  redux.setEnableConfirmRefreshDialog(value == false),
                 );
                 writeEnableConfirmRefreshDialog();
               },
-            );
-          },
-          converter: (store) => store.state,
-        ),
-      ],
+            ),
+            CheckboxListTile(
+              title: const Text(
+                'Bearbeitete Termine erhalten',
+                style: TextStyle(
+                  fontSize: 14,
+                ),
+              ),
+              value: keepEditedOnReload,
+              onChanged: (value) {
+                setState(() {
+                  keepEditedOnReload = value == true;
+                });
+              },
+            ),
+          ],
+        );
+      },
+      converter: (store) => store.state,
     );
   }
 }

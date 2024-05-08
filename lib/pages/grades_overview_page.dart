@@ -25,21 +25,13 @@ class _GradesOverviewPageState extends State<GradesOverviewPage> {
     super.initState();
 
     if (store.state.biometrics == Biometrics.ONLY_EXAM_RESULTS) {
-      store.dispatch(
-        redux.Action(
-          redux.ActionTypes.setLockState,
-          payload: true,
-        ),
-      );
+      store.dispatch(redux.setLockState(true));
 
       LocalAuthentication()
           .authenticate(localizedReason: 'Bitte App entsperren')
           .then((success) {
         if (success) {
-          store.dispatch(redux.Action(
-            redux.ActionTypes.setLockState,
-            payload: false,
-          ));
+          store.dispatch(redux.setLockState(false));
         }
       });
     }
@@ -50,12 +42,7 @@ class _GradesOverviewPageState extends State<GradesOverviewPage> {
     super.dispose();
 
     if (store.state.biometrics == Biometrics.ONLY_EXAM_RESULTS) {
-      store.dispatch(
-        redux.Action(
-          redux.ActionTypes.setLockState,
-          payload: false,
-        ),
-      );
+      store.dispatch(redux.setLockState(false));
     }
   }
 
@@ -75,7 +62,9 @@ class _GradesOverviewPageState extends State<GradesOverviewPage> {
                     builder: (context) => const ConfirmRefreshDialog(),
                   );
                 } else {
-                  LoginPage.performLogin(onLoginSuccess: reloadAll);
+                  LoginPage.performLogin(
+                    onLoginSuccess: () async => await reloadAll(),
+                  );
                 }
               },
               child: ListView.builder(

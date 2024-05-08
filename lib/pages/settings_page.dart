@@ -5,10 +5,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:flutter_redux/flutter_redux.dart';
-import 'package:intl/intl.dart';
 import 'package:local_auth/local_auth.dart';
-import 'package:mutex/mutex.dart';
-import 'package:oktoast/oktoast.dart';
+import 'package:timetable/core/toast.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:yaml/yaml.dart';
 
@@ -23,12 +21,8 @@ import '../model/redux/actions.dart' as redux;
 import '../model/redux/app_state.dart';
 import '../model/redux/store.dart';
 import '../service/background.dart';
-import '../service/db/events.dart';
-import '../service/db/grades.dart';
-import '../service/network_fetch.dart';
 import '../service/storage.dart';
 import '../widgets/page_wrapper.dart';
-import 'login_page.dart';
 
 class SettingsPage extends StatefulWidget {
   const SettingsPage({super.key});
@@ -38,9 +32,6 @@ class SettingsPage extends StatefulWidget {
 }
 
 class _SettingsPageState extends State<SettingsPage> {
-  final m = Mutex();
-  bool _isLoading = false;
-
   @override
   Widget build(BuildContext context) {
     return StoreConnector<AppState, AppState>(
@@ -99,15 +90,6 @@ class _SettingsPageState extends State<SettingsPage> {
                         style: const TextStyle(fontSize: 15),
                       ),
                     ),
-                    ListTile(
-                        leading: const Icon(
-                          Icons.sync_outlined,
-                        ),
-                        title: const Text('Daten aktualisieren'),
-                        onTap: () {
-                          _isLoading = false;
-                          LoginPage.performLogin(onLoginSuccess: _loadData);
-                        }),
                     const Padding(
                       padding: EdgeInsets.symmetric(horizontal: 30.0),
                       child: Divider(
@@ -167,20 +149,15 @@ class _SettingsPageState extends State<SettingsPage> {
                                     AndroidFlutterLocalNotificationsPlugin>()
                                 ?.requestNotificationsPermission();
 
-                            showToast(
-                              'Aufgrund von Batterie-Optimierung werden Benachrichtigungen ggf. nicht immer korrekt angezeigt.',
-                              duration: const Duration(seconds: 5),
-                            );
+                            showInfoToast(
+                                'Aufgrund von Batterie-Optimierung werden Benachrichtigungen ggf. nicht immer korrekt angezeigt.');
                           } else {
                             unregisterBackgroundService();
                           }
 
-                          store.dispatch(
-                            redux.Action(
-                              redux.ActionTypes.setNotificationsEnabled,
-                              payload: newValue,
-                            ),
-                          );
+                          store.dispatch(redux.setNotificationsEnabled(
+                            newValue,
+                          ));
                           writeNotificationsEnabled();
                         },
                       ),
@@ -274,12 +251,9 @@ class _SettingsPageState extends State<SettingsPage> {
                         "Vor dem Aktualisieren fragen: ${state.enableConfirmRefreshDialog ? "Ja" : "Nein"}",
                       ),
                       onTap: () {
-                        store.dispatch(
-                          redux.Action(
-                            redux.ActionTypes.setEnableConfirmRefreshDialog,
-                            payload: !state.enableConfirmRefreshDialog,
-                          ),
-                        );
+                        store.dispatch(redux.setEnableConfirmRefreshDialog(
+                          !state.enableConfirmRefreshDialog,
+                        ));
                         writeEnableConfirmRefreshDialog();
                       },
                     ),
@@ -402,7 +376,7 @@ class _SettingsPageState extends State<SettingsPage> {
                       onTap: () {
                         Navigator.pop(context);
                         clearStorage();
-                        store.dispatch(redux.Action(redux.ActionTypes.clear));
+                        store.dispatch(redux.clear());
                       },
                     ),
                   ],
@@ -411,29 +385,5 @@ class _SettingsPageState extends State<SettingsPage> {
             ),
           );
         });
-  }
-
-  Future<void> _loadData() async {
-    if (_isLoading) return;
-    _isLoading = true;
-    final DateFormat formatter = DateFormat('dd/MM/yyyy');
-
-    await m.acquire();
-    try {
-      final List<Future> futures = store.state.events.keys
-          .map((week) => fetchTimetableData(formatter.parse(week)))
-          .toList();
-      futures.add(fetchGradeData());
-      futures.add(fetchAccountData());
-      await Future.wait(futures);
-
-      await writeDataToStorage();
-      await writeGradesToStorage();
-      await writeGPA();
-      await writeAccount();
-      await loadDataFromStorage();
-    } finally {
-      m.release();
-    }
   }
 }

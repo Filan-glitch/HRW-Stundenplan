@@ -136,12 +136,7 @@ class _MensaPageState extends State<MensaPage> {
                       ),
                     ),
                 onChanged: (value) {
-                  store.dispatch(
-                    redux.Action(
-                      redux.ActionTypes.setCampus,
-                      payload: value,
-                    ),
-                  );
+                  store.dispatch(redux.setCampus(value));
 
                   writeCampus();
                 },

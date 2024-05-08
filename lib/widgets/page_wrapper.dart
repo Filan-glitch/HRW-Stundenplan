@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_redux/flutter_redux.dart';
-import 'package:oktoast/oktoast.dart';
 
 import '../model/biometrics.dart';
 import '../model/login_state.dart';
@@ -55,24 +54,14 @@ class _PageWrapperState extends State<PageWrapper> with WidgetsBindingObserver {
     super.didChangeAppLifecycleState(state);
     if (state == AppLifecycleState.paused &&
         store.state.biometrics == Biometrics.ON) {
-      store.dispatch(
-        redux.Action(
-          redux.ActionTypes.setLockState,
-          payload: true,
-        ),
-      );
+      store.dispatch(redux.setLockState(true));
     }
   }
 
   @override
   void didChangePlatformBrightness() {
     if (store.state.activeTheme == ThemeMode.system) {
-      store.dispatch(
-        redux.Action(
-          redux.ActionTypes.setDesign,
-          payload: ThemeMode.system,
-        ),
-      );
+      store.dispatch(redux.setDesign(ThemeMode.system));
     }
     super.didChangePlatformBrightness();
   }
@@ -85,7 +74,9 @@ class _PageWrapperState extends State<PageWrapper> with WidgetsBindingObserver {
         appBar: AppBar(
           title: Text(widget.title),
           actions: widget.actions,
+          backgroundColor: Theme.of(context).colorScheme.primary,
         ),
+        backgroundColor: Theme.of(context).colorScheme.background,
         body: Padding(
           padding: EdgeInsets.only(
             bottom: MediaQuery.of(context).viewPadding.bottom,
@@ -185,24 +176,22 @@ class _PageWrapperState extends State<PageWrapper> with WidgetsBindingObserver {
     return StoreConnector<AppState, AppState>(
       converter: (store) => store.state,
       builder: (context, state) {
-        return OKToast(
-          child: Stack(
-            children: [
-              if (state.args == null || state.cnsc == null)
-                const WelcomePage()
-              else
-                mainContent,
-              if (state.appLocked && state.biometrics != Biometrics.OFF)
-                const BiometricsPage(),
-              if (state.loginFormState != LoginFormState.notShown)
-                const LoginPage(),
-              if (state.loading ||
-                  !state.dataLoaded ||
-                  state.loginFormState == LoginFormState.background &&
-                      state.loginFormState != LoginFormState.inputRequired)
-                const LoadingPage(),
-            ],
-          ),
+        return Stack(
+          children: [
+            if (state.args == null || state.cnsc == null)
+              const WelcomePage()
+            else
+              mainContent,
+            if (state.appLocked && state.biometrics != Biometrics.OFF)
+              BiometricsPage(),
+            if (state.loginFormState != LoginFormState.notShown)
+              const LoginPage(),
+            if (state.loading ||
+                !state.dataLoaded ||
+                state.loginFormState == LoginFormState.background &&
+                    state.loginFormState != LoginFormState.inputRequired)
+              const LoadingPage(),
+          ],
         );
       },
     );

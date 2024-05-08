@@ -12,9 +12,10 @@ Future<void> shouldShowChangelogIcon() async {
   final String appVersion = loadYaml(pubspec)['version'].split('+')[0];
 
   final SharedPreferences prefs = await SharedPreferences.getInstance();
-  store.dispatch(Action(
-    ActionTypes.showChangelog,
-    payload: !prefs.containsKey('latestChangelogShownVersion') ||
-        prefs.getString('latestChangelogShownVersion') != appVersion,
-  ));
+  store.dispatch(
+    showChangelog(
+      !prefs.containsKey('latestChangelogShownVersion') ||
+          prefs.getString('latestChangelogShownVersion') != appVersion,
+    ),
+  );
 }

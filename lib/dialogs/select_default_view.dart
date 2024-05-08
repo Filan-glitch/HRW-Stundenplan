@@ -16,12 +16,7 @@ class SelectDefaultViewDialog extends StatelessWidget {
       children: TimetableView.values.map((e) {
         return SimpleDialogOption(
           onPressed: () {
-            store.dispatch(
-              redux.Action(
-                redux.ActionTypes.setDefaultView,
-                payload: e,
-              ),
-            );
+            store.dispatch(redux.setDefaultView(e));
             writeDefaultView();
             Navigator.pop(context);
           },

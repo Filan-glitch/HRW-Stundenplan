@@ -4,7 +4,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_inappwebview/flutter_inappwebview.dart';
 import 'package:http/http.dart' as http;
-import 'package:oktoast/oktoast.dart';
+import 'package:timetable/core/toast.dart';
 
 import '../model/constants.dart';
 import '../model/login_state.dart';
@@ -19,17 +19,13 @@ class LoginPage extends StatefulWidget {
   static Future<void> Function()? _onLoginSuccess;
 
   static Future<bool> hasActiveSession() async {
-    store.dispatch(redux.Action(
-      redux.ActionTypes.startTask,
-    ));
+    store.dispatch(redux.startTask());
 
     final String identityPageContent = (await http
             .get(Uri.parse('https://dsf.hs-ruhrwest.de/IdentityServer/')))
         .body;
 
-    store.dispatch(redux.Action(
-      redux.ActionTypes.stopTask,
-    ));
+    store.dispatch(redux.stopTask());
 
     return identityPageContent.contains('Logout');
   }
@@ -45,10 +41,7 @@ class LoginPage extends StatefulWidget {
 
     _onLoginSuccess = onLoginSuccess;
     _loginCompleter = Completer();
-    store.dispatch(redux.Action(
-      redux.ActionTypes.setLoginFormState,
-      payload: LoginFormState.background,
-    ));
+    store.dispatch(redux.setLoginFormState(LoginFormState.background));
 
     return _loginCompleter!.future;
   }
@@ -59,10 +52,7 @@ class LoginPage extends StatefulWidget {
 
 class _LoginPageState extends State<LoginPage> {
   void _cancelLogin() {
-    store.dispatch(redux.Action(
-      redux.ActionTypes.setLoginFormState,
-      payload: LoginFormState.notShown,
-    ));
+    store.dispatch(redux.setLoginFormState(LoginFormState.notShown));
 
     if (LoginPage._loginCompleter != null &&
         !LoginPage._loginCompleter!.isCompleted) {
@@ -77,37 +67,52 @@ class _LoginPageState extends State<LoginPage> {
     return Scaffold(
       appBar: AppBar(
         title: const Text('CampusNet Login'),
+        backgroundColor: Theme.of(context).colorScheme.primary,
       ),
       body: PopScope(
         canPop: false,
         onPopInvoked: (bool didPop) async {
           _cancelLogin();
         },
-        child: InAppWebView(
-          key: _webViewKey,
-          initialUrlRequest: URLRequest(url: WebUri(LOGIN_URL)),
-          shouldOverrideUrlLoading: _onNavigationRequest,
-          initialSettings: InAppWebViewSettings(
-            useShouldOverrideUrlLoading: true,
-            isInspectable: kDebugMode,
-            forceDark: ForceDark.ON,
-            algorithmicDarkeningAllowed: true,
-            mediaType: 'text/html',
-          ),
-          onWebViewCreated: (controller) {
-            controller.addJavaScriptHandler(
-              handlerName: 'cancel',
-              callback: (args) {
-                _cancelLogin();
+        child: Stack(
+          children: [
+            InAppWebView(
+              key: _webViewKey,
+              initialUrlRequest: URLRequest(url: WebUri(LOGIN_URL)),
+              shouldOverrideUrlLoading: _onNavigationRequest,
+              initialSettings: InAppWebViewSettings(
+                useShouldOverrideUrlLoading: true,
+                isInspectable: kDebugMode,
+                forceDark: ForceDark.ON,
+                algorithmicDarkeningAllowed: true,
+                mediaType: 'text/html',
+              ),
+              onWebViewCreated: (controller) {
+                controller.addJavaScriptHandler(
+                  handlerName: 'cancel',
+                  callback: (args) {
+                    _cancelLogin();
+                  },
+                );
               },
-            );
-          },
-          onLoadStop: (controller, url) {
-            if (!url.toString().contains('IdentityServer/Account/Login')) {
-              return;
-            }
-            _injectCancelJS(controller);
-          },
+              onLoadStop: (controller, url) {
+                if (!url.toString().contains('IdentityServer/Account/Login')) {
+                  return;
+                }
+                _injectCancelJS(controller);
+              },
+            ),
+            // Falls wir mal ein Gastzugang anbieten wollen
+            // Positioned(
+            //   bottom: 50,
+            //   left: 50,
+            //   right: 50,
+            //   child: ElevatedButton(
+            //     onPressed: _guestLogin,
+            //     child: const Text('Gastzugang verwenden'),
+            //   ),
+            // ),
+          ],
         ),
       ),
     );
@@ -124,10 +129,7 @@ class _LoginPageState extends State<LoginPage> {
 
     if (url.contains('Account/Login') &&
         store.state.loginFormState != LoginFormState.inputRequired) {
-      store.dispatch(redux.Action(
-        redux.ActionTypes.setLoginFormState,
-        payload: LoginFormState.inputRequired,
-      ));
+      store.dispatch(redux.setLoginFormState(LoginFormState.inputRequired));
     }
 
     return NavigationActionPolicy.ALLOW;
@@ -154,16 +156,10 @@ class _LoginPageState extends State<LoginPage> {
         }
       }
 
-      store.dispatch(redux.Action(
-        redux.ActionTypes.setLoginFormState,
-        payload: LoginFormState.notShown,
-      ));
+      store.dispatch(redux.setLoginFormState(LoginFormState.notShown));
 
       if (args != null && cnsc != null) {
-        store.dispatch(redux.Action(
-          redux.ActionTypes.setCredentials,
-          payload: {'cnsc': cnsc, 'args': args},
-        ));
+        store.dispatch(redux.setCredentials(args, cnsc));
 
         await LoginPage._onLoginSuccess!();
 
@@ -176,7 +172,7 @@ class _LoginPageState extends State<LoginPage> {
         if (!LoginPage._loginCompleter!.isCompleted) {
           LoginPage._loginCompleter!.complete(false);
         }
-        showToast('Es ist ein Fehler aufgetreten');
+        showErrorToast('Es ist ein Fehler aufgetreten');
       }
     });
   }

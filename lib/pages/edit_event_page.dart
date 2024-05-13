@@ -11,9 +11,10 @@ import 'package:timetable/service/db/events.dart';
 import 'package:timetable/widgets/page_wrapper.dart';
 
 class EditEventPage extends StatefulWidget {
-  const EditEventPage({this.event, super.key});
+  const EditEventPage({this.event, this.initialWeekday, super.key});
 
   final Event? event;
+  final Weekday? initialWeekday;
 
   @override
   State<EditEventPage> createState() => _EditEventPageState();
@@ -63,7 +64,7 @@ class _EditEventPageState extends State<EditEventPage> {
             minute: widget.event!.end.minute,
           );
 
-    weekday = widget.event?.day ?? Weekday.monday;
+    weekday = widget.event?.day ?? widget.initialWeekday ?? Weekday.monday;
 
     firstDate = cleanDate(DateTime.now());
     lastDate = firstDate.add(const Duration(days: 30));
@@ -543,11 +544,14 @@ class _EditEventPageState extends State<EditEventPage> {
                                     RoundedRectangleBorder(
                                       borderRadius: BorderRadius.circular(50),
                                       side: const BorderSide(
-                                          color: Colors.red, width: 2),
+                                        color: Colors.red,
+                                        width: 2,
+                                      ),
                                     ),
                                   ),
                                   backgroundColor: MaterialStateProperty.all(
-                                      Colors.transparent),
+                                    Colors.red,
+                                  ),
                                 ),
                                 child: Text(
                                   _shouldUpdateSingleEvent
@@ -572,11 +576,14 @@ class _EditEventPageState extends State<EditEventPage> {
                                     RoundedRectangleBorder(
                                       borderRadius: BorderRadius.circular(50),
                                       side: const BorderSide(
-                                          color: Colors.red, width: 2),
+                                        color: Colors.red,
+                                        width: 2,
+                                      ),
                                     ),
                                   ),
                                   backgroundColor: MaterialStateProperty.all(
-                                      Colors.transparent),
+                                    Colors.red,
+                                  ),
                                 ),
                                 child: Text(
                                   _shouldUpdateSingleEvent

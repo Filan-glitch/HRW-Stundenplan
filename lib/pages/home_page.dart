@@ -120,7 +120,10 @@ class _HomePageState extends State<HomePage> {
                   Navigator.push(
                     context,
                     MaterialPageRoute(
-                      builder: (context) => const EditEventPage(event: null),
+                      builder: (context) => EditEventPage(
+                        event: null,
+                        initialWeekday: _activePage,
+                      ),
                     ),
                   );
                 },

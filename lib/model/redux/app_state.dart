@@ -13,8 +13,8 @@ class AppState {
   ThemeMode activeTheme = ThemeMode.system;
   bool dataLoaded = false;
   int runningTasks = 0;
-
   bool get loading => runningTasks > 0;
+
   bool showChangelog = false;
   LoginFormState loginFormState = LoginFormState.notShown;
   bool appLocked = false;

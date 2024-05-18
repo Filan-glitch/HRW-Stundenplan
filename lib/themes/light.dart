@@ -8,7 +8,7 @@ ThemeData lightTheme = ThemeData.light(
   cardColor: const Color(0xffcacbcc),
   dividerColor: Colors.black,
   colorScheme: const ColorScheme.light(
-    background: Colors.white,
+    surface: Colors.white,
     primary: Color(0xff009fe3),
   ),
   textTheme: GoogleFonts.montserratTextTheme().apply(
@@ -17,20 +17,20 @@ ThemeData lightTheme = ThemeData.light(
   ),
   elevatedButtonTheme: ElevatedButtonThemeData(
     style: ButtonStyle(
-      textStyle: MaterialStateProperty.all<TextStyle>(
+      textStyle: WidgetStateProperty.all<TextStyle>(
         const TextStyle(fontSize: 20.0),
       ),
-      backgroundColor: MaterialStateProperty.all<Color>(
+      backgroundColor: WidgetStateProperty.all<Color>(
         const Color(0xff009fe3),
       ),
-      foregroundColor: MaterialStateProperty.all<Color>(
+      foregroundColor: WidgetStateProperty.all<Color>(
         Colors.white,
       ),
     ),
   ),
   textButtonTheme: TextButtonThemeData(
     style: ButtonStyle(
-      foregroundColor: MaterialStateProperty.all<Color>(
+      foregroundColor: WidgetStateProperty.all<Color>(
         Colors.black,
       ),
     ),

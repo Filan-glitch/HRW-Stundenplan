@@ -46,7 +46,7 @@ class MealDetailsPage extends StatelessWidget {
                         MediaQuery.of(context).size.width,
                     padding: const EdgeInsets.all(30),
                     decoration: BoxDecoration(
-                      color: Theme.of(context).colorScheme.background,
+                      color: Theme.of(context).colorScheme.surface,
                       borderRadius: const BorderRadius.only(
                         topLeft: Radius.circular(50),
                         topRight: Radius.circular(50),

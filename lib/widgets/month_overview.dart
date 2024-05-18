@@ -116,7 +116,7 @@ class MonthOverviewWidget extends StatelessWidget {
                                   ),
                                   color: Color.lerp(
                                     Theme.of(context).colorScheme.primary,
-                                    Theme.of(context).colorScheme.background,
+                                    Theme.of(context).colorScheme.surface,
                                     isSelectedWeek ? 0.9 : 1,
                                   ),
                                   child: GestureDetector(

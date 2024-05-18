@@ -369,7 +369,7 @@ class _SettingsPageState extends State<SettingsPage> {
       // request permission
       final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
           FlutterLocalNotificationsPlugin();
-      bool? granted = await flutterLocalNotificationsPlugin
+      final bool? granted = await flutterLocalNotificationsPlugin
           .resolvePlatformSpecificImplementation<
               AndroidFlutterLocalNotificationsPlugin>()
           ?.requestNotificationsPermission();

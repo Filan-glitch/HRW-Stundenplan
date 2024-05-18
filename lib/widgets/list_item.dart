@@ -98,7 +98,7 @@ class _ListItemState extends State<ListItem> {
                 decoration: BoxDecoration(
                   color: Color.lerp(
                     Theme.of(context).colorScheme.primary,
-                    Theme.of(context).colorScheme.background,
+                    Theme.of(context).colorScheme.surface,
                     widget.event.state == Mode.active && isCurrentWeek
                         ? 0.9
                         : 1.0,

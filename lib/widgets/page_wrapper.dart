@@ -75,7 +75,7 @@ class _PageWrapperState extends State<PageWrapper> with WidgetsBindingObserver {
           title: Text(widget.title),
           actions: widget.actions,
         ),
-        backgroundColor: Theme.of(context).colorScheme.background,
+        backgroundColor: Theme.of(context).colorScheme.surface,
         body: Padding(
           padding: EdgeInsets.only(
             bottom: MediaQuery.of(context).viewPadding.bottom,
@@ -156,7 +156,7 @@ class _PageWrapperState extends State<PageWrapper> with WidgetsBindingObserver {
                           bottom: MediaQuery.of(context).viewPadding.bottom,
                         ),
                         decoration: BoxDecoration(
-                          color: Theme.of(context).colorScheme.background,
+                          color: Theme.of(context).colorScheme.surface,
                           borderRadius: const BorderRadius.only(
                             topLeft: Radius.circular(30.0),
                             topRight: Radius.circular(30.0),

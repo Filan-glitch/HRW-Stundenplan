@@ -79,7 +79,11 @@ class _EditEventPageState extends State<EditEventPage> {
           date = date.add(const Duration(days: 7)))
         if (date.weekday - 1 == weekday.value) date
     ]..removeWhere(
-        (element) => element.isBefore(firstDate) || element.isAfter(lastDate));
+        (element) =>
+            element.isBefore(firstDate) ||
+            element.isAfter(lastDate) ||
+            element.isBefore(getFirstDayOfWeek(DateTime.now())),
+      );
   }
 
   bool _timeValidator() {
@@ -96,26 +100,27 @@ class _EditEventPageState extends State<EditEventPage> {
   }
 
   Future<void> createNewEvents() async {
-  if (widget.event != null || !isFormValid() || getDatesOfNewEvent().isEmpty) return;
+    if (widget.event != null || !isFormValid() || getDatesOfNewEvent().isEmpty)
+      return;
 
-  final List<Event> events = store.state.events;
-  getDatesOfNewEvent().forEach((date) {
-    events.add(Event(
-      title: titleController.text,
-      abbreviation: abbreviationController.text,
-      start: Time(startTime.hour, startTime.minute),
-      end: Time(endTime.hour, endTime.minute),
-      room: roomController.text,
-      day: weekday,
-      weekFrom: date,
-      mode: EventMode.customEvent,
-    ));
-  });
+    final List<Event> events = store.state.events;
+    getDatesOfNewEvent().forEach((date) {
+      events.add(Event(
+        title: titleController.text,
+        abbreviation: abbreviationController.text,
+        start: Time(startTime.hour, startTime.minute),
+        end: Time(endTime.hour, endTime.minute),
+        room: roomController.text,
+        day: weekday,
+        weekFrom: getFirstDayOfWeek(date),
+        mode: EventMode.customEvent,
+      ));
+    });
 
-  store.dispatch(redux.setEvents(events));
-  await writeDataToStorage();
-  Navigator.pop(context);
-}
+    store.dispatch(redux.setEvents(events));
+    await writeDataToStorage();
+    Navigator.pop(context);
+  }
 
   void updateSingleEvent() {
     if (widget.event == null) return;

@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_inappwebview/flutter_inappwebview.dart';
 import 'package:http/http.dart' as http;
 import 'package:timetable/core/toast.dart';
+import 'package:timetable/themes/light.dart';
 
 import '../model/constants.dart';
 import '../model/login_state.dart';
@@ -67,7 +68,7 @@ class _LoginPageState extends State<LoginPage> {
     return Scaffold(
       appBar: AppBar(
         title: const Text('CampusNet Login'),
-        backgroundColor: Theme.of(context).colorScheme.primary,
+        backgroundColor: lightTheme.colorScheme.primary,
       ),
       body: PopScope(
         canPop: false,
@@ -99,7 +100,6 @@ class _LoginPageState extends State<LoginPage> {
                 if (!url.toString().contains('IdentityServer/Account/Login')) {
                   return;
                 }
-                _injectCancelJS(controller);
               },
             ),
             // Falls wir mal ein Gastzugang anbieten wollen
@@ -175,12 +175,5 @@ class _LoginPageState extends State<LoginPage> {
         showErrorToast('Es ist ein Fehler aufgetreten');
       }
     });
-  }
-
-  void _injectCancelJS(InAppWebViewController controller) {
-    controller.evaluateJavascript(
-      source:
-          """document.querySelector('button[value=cancel]').onclick = () => window.flutter_inappwebview.callHandler('cancel');""",
-    );
   }
 }

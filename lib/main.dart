@@ -139,6 +139,10 @@ class MyApp extends StatelessWidget {
           SystemChrome.setPreferredOrientations([
             DeviceOrientation.portraitUp,
             DeviceOrientation.portraitDown,
+            if (MediaQuery.of(context).size.width > 600) ...[
+              DeviceOrientation.landscapeLeft,
+              DeviceOrientation.landscapeRight,
+            ]
           ]);
 
           return MaterialApp(

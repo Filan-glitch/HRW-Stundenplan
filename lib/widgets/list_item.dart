@@ -12,9 +12,10 @@ import '../model/mode.dart';
 import '../model/redux/app_state.dart';
 
 class ListItem extends StatefulWidget {
-  const ListItem({required this.event, super.key});
+  const ListItem({required this.event, this.maxWidth, super.key});
 
   final Event event;
+  final double? maxWidth;
 
   @override
   State<ListItem> createState() => _ListItemState();
@@ -121,7 +122,8 @@ class _ListItemState extends State<ListItem> {
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     SizedBox(
-                      width: MediaQuery.of(context).size.width *
+                      width: (widget.maxWidth ??
+                              MediaQuery.of(context).size.width) *
                           ((widget.event.collision == true) ? 0.7 : 0.80),
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,

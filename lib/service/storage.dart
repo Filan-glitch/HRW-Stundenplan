@@ -97,14 +97,18 @@ Future<void> writeDownloadedRange() async {
 }
 
 Future<void> loadDownloadedRange() async {
-  final SharedPreferences prefs = await SharedPreferences.getInstance();
-  store.dispatch(
-    setDownloadedUntil(
-      prefs.containsKey('downloadedRange')
-          ? dayFormat.parse(prefs.getString('downloadedRange')!)
-          : null,
-    ),
-  );
+  try {
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
+    store.dispatch(
+      setDownloadedUntil(
+        prefs.containsKey('downloadedRange')
+            ? dayFormat.parse(prefs.getString('downloadedRange')!)
+            : null,
+      ),
+    );
+  } on FormatException {
+    store.dispatch(setLastUpdated(null));
+  }
 }
 
 Future<void> writeBiometrics() async {
@@ -189,11 +193,15 @@ Future<void> writeLastUpdated() async {
 }
 
 Future<void> loadLastUpdated() async {
-  final SharedPreferences prefs = await SharedPreferences.getInstance();
-  if (prefs.containsKey('lastUpdated')) {
-    store.dispatch(
-      setLastUpdated(dayFormat.parse(prefs.getString('lastUpdated')!)),
-    );
+  try {
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
+    if (prefs.containsKey('lastUpdated')) {
+      store.dispatch(
+        setLastUpdated(dayFormat.parse(prefs.getString('lastUpdated')!)),
+      );
+    }
+  } on FormatException {
+    store.dispatch(setLastUpdated(null));
   }
 }
 

@@ -245,15 +245,22 @@ class _HomePageState extends State<HomePage> {
                   child: WeekSelectorWidget(
                     firstDayOfWeek: state.currentWeek,
                     onHome: () {
-                      store.dispatch(redux.setCurrentWeek(getFirstDayOfWeek(
-                        cleanDate(DateTime.now()),
-                      )));
+                      DateTime currentWeek = getFirstDayOfWeek(DateTime.now());
+                      Weekday currentDay = Weekday.getByValue(
+                        DateTime.now().weekday - 1,
+                      );
+
+                      if (currentDay == Weekday.saturday ||
+                          currentDay == Weekday.sunday) {
+                        currentDay = Weekday.monday;
+                        currentWeek = currentWeek.add(const Duration(days: 7));
+                      }
 
                       setState(() {
-                        _activePage = Weekday.getByValue(
-                          DateTime.now().weekday - 1,
-                        );
+                        _activePage = currentDay;
                       });
+
+                      store.dispatch(redux.setCurrentWeek(currentWeek));
                     },
                     onDateChanged: (week) {
                       store.dispatch(redux.setCurrentWeek(week));

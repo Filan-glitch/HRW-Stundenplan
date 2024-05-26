@@ -5,10 +5,13 @@ import 'package:timetable/core/toast.dart';
 import 'package:timetable/model/graphql/canteens/campus.dart';
 import 'package:timetable/model/redux/actions.dart' as redux;
 import 'package:timetable/model/redux/store.dart';
+import 'package:timetable/service/storage.dart';
 
 Future<void> getCanteenData() async {
-  // TODO: maybe add local caching later?
+  final String? cacheContent = await readMensaCache();
   final http.Response response;
+  String responseBody = '';
+  bool useCache = false;
   try {
     store.dispatch(redux.startTask());
 
@@ -37,20 +40,39 @@ Future<void> getCanteenData() async {
         },
       ),
     );
+
+    if (response.statusCode != 200) {
+      store.dispatch(redux.stopTask());
+      if (cacheContent != null) {
+        responseBody = cacheContent;
+        useCache = true;
+      } else {
+        showErrorToast('Der Speiseplan konnten nicht geladen werden');
+        store.dispatch(redux.setCanteenData([]));
+        return;
+      }
+    } else {
+      responseBody = response.body;
+    }
   } catch (e) {
     store.dispatch(redux.stopTask());
-    showErrorToast('Der Speiseplan konnten nicht geladen werden');
-    store.dispatch(redux.setCanteenData([]));
-    return;
+    if (cacheContent != null) {
+      responseBody = cacheContent;
+      useCache = true;
+    } else {
+      showErrorToast('Der Speiseplan konnten nicht geladen werden');
+      store.dispatch(redux.setCanteenData([]));
+      return;
+    }
+  }
+
+  if (!useCache) {
+    await writeMensaCache(responseBody);
   }
 
   store.dispatch(redux.stopTask());
-  if (response.statusCode != 200) {
-    showErrorToast('Der Speiseplan konnten nicht geladen werden');
-    store.dispatch(redux.setCanteenData([]));
-  }
 
-  final Map<String, dynamic> json = jsonDecode(response.body);
+  final Map<String, dynamic> json = jsonDecode(responseBody);
 
   if (json['data'] != null && json['data']['campuses'] != null) {
     final List<Campus> campuses = [];

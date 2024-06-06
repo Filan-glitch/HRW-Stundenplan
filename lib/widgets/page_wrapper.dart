@@ -199,12 +199,18 @@ class _PageWrapperState extends State<PageWrapper> with WidgetsBindingObserver {
   void _showActionMenu(BuildContext context) {
     showModalBottomSheet(
       isScrollControlled: true,
+      useRootNavigator: true,
       context: context,
-      constraints: const BoxConstraints(maxWidth: 400.0),
-      builder: (context) => ActionMenu(
-        children: [
-          ...widget.menuActions,
-        ],
+      constraints: const BoxConstraints(
+        maxWidth: 400.0,
+      ),
+      builder: (context) => Padding(
+        padding: EdgeInsets.only(bottom: MediaQuery.of(context).padding.bottom),
+        child: ActionMenu(
+          children: [
+            ...widget.menuActions,
+          ],
+        ),
       ),
       barrierColor: Colors.transparent,
       shape: const RoundedRectangleBorder(

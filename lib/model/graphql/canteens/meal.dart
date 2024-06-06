@@ -39,6 +39,8 @@ class Meal {
         return 'Gewachst';
       case 'BLACKENED':
         return 'Geschwärzt';
+      case 'FLAVOR_ENHANCER':
+        return 'Geschmacksverstärker';
       default:
         FirebaseCrashlytics.instance.recordError(
           Exception('Unknown additive: $additive'),

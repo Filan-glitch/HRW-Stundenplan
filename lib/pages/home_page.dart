@@ -67,7 +67,7 @@ class _HomePageState extends State<HomePage> {
         converter: (store) => store.state,
         builder: (context, state) {
           Widget content = Container();
-          double width = MediaQuery.of(context).size.width;
+          final double width = MediaQuery.of(context).size.width;
           if (state.currentView == TimetableView.daily && width <= 600) {
             content = TimetableWidget(
               weekday: _activePage,

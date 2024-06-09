@@ -302,7 +302,9 @@ class _HomePageState extends State<HomePage> {
                           );
                         } else {
                           LoginPage.performLogin(
-                            onLoginSuccess: () async => await reloadAll(),
+                            onLoginSuccess: () async => await reloadAll(
+                              keepEdited: true,
+                            ),
                           );
                         }
                       },

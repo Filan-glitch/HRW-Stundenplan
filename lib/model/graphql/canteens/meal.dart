@@ -84,6 +84,8 @@ class Meal {
         return 'Erdnüsse';
       case 'CASHEWS':
         return 'Cashewnüsse';
+      case 'SPELT':
+        return 'Dinkel';
       default:
         FirebaseCrashlytics.instance.recordError(
           Exception('Unknown allergene: $allergene'),

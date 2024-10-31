@@ -1,9 +1,12 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart' as ui;
 import 'package:flutter_inappwebview/flutter_inappwebview.dart';
 import 'package:path/path.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:sqflite/sqflite.dart';
 import 'package:timetable/model/event.dart';
+import 'package:path_provider/path_provider.dart';
 
 import '../model/biometrics.dart';
 import '../model/campus.dart';
@@ -97,14 +100,18 @@ Future<void> writeDownloadedRange() async {
 }
 
 Future<void> loadDownloadedRange() async {
-  final SharedPreferences prefs = await SharedPreferences.getInstance();
-  store.dispatch(
-    setDownloadedUntil(
-      prefs.containsKey('downloadedRange')
-          ? dayFormat.parse(prefs.getString('downloadedRange')!)
-          : null,
-    ),
-  );
+  try {
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
+    store.dispatch(
+      setDownloadedUntil(
+        prefs.containsKey('downloadedRange')
+            ? dayFormat.parse(prefs.getString('downloadedRange')!)
+            : null,
+      ),
+    );
+  } on FormatException {
+    store.dispatch(setLastUpdated(null));
+  }
 }
 
 Future<void> writeBiometrics() async {
@@ -189,18 +196,54 @@ Future<void> writeLastUpdated() async {
 }
 
 Future<void> loadLastUpdated() async {
-  final SharedPreferences prefs = await SharedPreferences.getInstance();
-  if (prefs.containsKey('lastUpdated')) {
-    store.dispatch(
-      setLastUpdated(dayFormat.parse(prefs.getString('lastUpdated')!)),
-    );
+  try {
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
+    if (prefs.containsKey('lastUpdated')) {
+      store.dispatch(
+        setLastUpdated(dayFormat.parse(prefs.getString('lastUpdated')!)),
+      );
+    }
+  } on FormatException {
+    store.dispatch(setLastUpdated(null));
   }
+}
+
+Future<String?> readMensaCache() async {
+  final String path = join(
+    (await getApplicationCacheDirectory()).path,
+    'mensa.cache',
+  );
+  final File cacheFile = File(path);
+  if (await cacheFile.exists()) {
+    return cacheFile.readAsString();
+  }
+  return null;
+}
+
+Future<void> writeMensaCache(String cache) async {
+  final String path = join(
+    (await getApplicationCacheDirectory()).path,
+    'mensa.cache',
+  );
+  final File cacheFile = File(path);
+  await cacheFile.writeAsString(cache);
 }
 
 Future<void> clearStorage() async {
   final SharedPreferences prefs = await SharedPreferences.getInstance();
   prefs.clear();
+
   final String path = join(await getDatabasesPath(), 'timetable.db');
   await deleteDatabase(path);
+
+  final String mensaCachePath = join(
+    (await getApplicationCacheDirectory()).path,
+    'mensa.cache',
+  );
+  final File cacheFile = File(mensaCachePath);
+  if (await cacheFile.exists()) {
+    await cacheFile.delete();
+  }
+
   CookieManager.instance().deleteAllCookies();
 }

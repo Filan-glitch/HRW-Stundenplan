@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_redux/flutter_redux.dart';
 import 'package:intl/intl.dart';
 import 'package:timetable/pages/edit_event_page.dart';
+import 'package:timetable/widgets/timetable_landscape.dart';
 
 import '../dialogs/changelog_dialog.dart';
 import '../dialogs/confirm_refresh_dialog.dart';
@@ -15,7 +16,7 @@ import '../model/weekday.dart';
 import '../service/network_fetch.dart';
 import '../widgets/month_overview.dart';
 import '../widgets/page_wrapper.dart';
-import '../widgets/timetable.dart';
+import '../widgets/timetable_portrait.dart';
 import '../widgets/week_overview.dart';
 import '../widgets/week_selector.dart';
 import '../widgets/weekday_selector.dart';
@@ -66,14 +67,21 @@ class _HomePageState extends State<HomePage> {
         converter: (store) => store.state,
         builder: (context, state) {
           Widget content = Container();
-
-          if (state.currentView == TimetableView.daily) {
+          final double width = MediaQuery.of(context).size.width;
+          if (state.currentView == TimetableView.daily && width <= 600) {
             content = TimetableWidget(
               weekday: _activePage,
             );
-          } else if (state.currentView == TimetableView.weekly) {
+          } else if (state.currentView == TimetableView.weekly &&
+              width <= 600) {
             content = WeekOverview(
               firstDayOfWeek: state.currentWeek,
+            );
+          } else if ((state.currentView == TimetableView.daily ||
+                  state.currentView == TimetableView.weekly) &&
+              width > 600) {
+            content = TimetableLandscape(
+              weekday: _activePage,
             );
           } else if (state.currentView == TimetableView.monthly) {
             content = MonthOverviewWidget(
@@ -87,14 +95,15 @@ class _HomePageState extends State<HomePage> {
 
           final DateFormat lastUpdatedFormat = DateFormat('dd.MM.yyyy');
           return PageWrapper(
-            bottomNavigationBar: state.currentView == TimetableView.daily
-                ? WeekdaySelectorWidget(
-                    weekday: _activePage,
-                    onChanged: (weekday) => setState(() {
-                      _activePage = weekday;
-                    }),
-                  )
-                : null,
+            bottomNavigationBar:
+                state.currentView == TimetableView.daily && width <= 600
+                    ? WeekdaySelectorWidget(
+                        weekday: _activePage,
+                        onChanged: (weekday) => setState(() {
+                          _activePage = weekday;
+                        }),
+                      )
+                    : null,
             actions: [
               if (state.showChangelog)
                 IconButton(
@@ -120,11 +129,14 @@ class _HomePageState extends State<HomePage> {
                   Navigator.push(
                     context,
                     MaterialPageRoute(
-                      builder: (context) => const EditEventPage(event: null),
+                      builder: (context) => EditEventPage(
+                        event: null,
+                        initialWeekday: _activePage,
+                      ),
                     ),
                   );
                 },
-                icon: const Icon(Icons.add),
+                icon: const Icon(Icons.add, color: Colors.white),
               ),
             ],
             menuActions: [
@@ -151,7 +163,7 @@ class _HomePageState extends State<HomePage> {
                   );
                 },
               ),
-              if (state.currentView != TimetableView.daily)
+              if (state.currentView != TimetableView.daily && width <= 600)
                 ListTile(
                   leading: Icon(
                     Icons.calendar_view_day,
@@ -163,7 +175,8 @@ class _HomePageState extends State<HomePage> {
                     Navigator.pop(context);
                   },
                 ),
-              if (state.currentView != TimetableView.weekly)
+              if (width < 600 && state.currentView != TimetableView.weekly ||
+                  width >= 600 && state.currentView == TimetableView.monthly)
                 ListTile(
                   leading: Icon(
                     Icons.view_week,
@@ -242,15 +255,22 @@ class _HomePageState extends State<HomePage> {
                   child: WeekSelectorWidget(
                     firstDayOfWeek: state.currentWeek,
                     onHome: () {
-                      store.dispatch(redux.setCurrentWeek(getFirstDayOfWeek(
-                        cleanDate(DateTime.now()),
-                      )));
+                      DateTime currentWeek = getFirstDayOfWeek(DateTime.now());
+                      Weekday currentDay = Weekday.getByValue(
+                        DateTime.now().weekday - 1,
+                      );
+
+                      if (currentDay == Weekday.saturday ||
+                          currentDay == Weekday.sunday) {
+                        currentDay = Weekday.monday;
+                        currentWeek = currentWeek.add(const Duration(days: 7));
+                      }
 
                       setState(() {
-                        _activePage = Weekday.getByValue(
-                          DateTime.now().weekday - 1,
-                        );
+                        _activePage = currentDay;
                       });
+
+                      store.dispatch(redux.setCurrentWeek(currentWeek));
                     },
                     onDateChanged: (week) {
                       store.dispatch(redux.setCurrentWeek(week));
@@ -282,7 +302,9 @@ class _HomePageState extends State<HomePage> {
                           );
                         } else {
                           LoginPage.performLogin(
-                            onLoginSuccess: () async => await reloadAll(),
+                            onLoginSuccess: () async => await reloadAll(
+                              keepEdited: true,
+                            ),
                           );
                         }
                       },

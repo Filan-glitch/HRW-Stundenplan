@@ -1,3 +1,8 @@
+# v2.0.1
+- Tablet-Modus
+- Offline-Ansicht für Mensa
+- Bug fixes
+
 # v2.0.0
 
 - Termin Editor

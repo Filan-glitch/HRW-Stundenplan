@@ -39,6 +39,8 @@ class Meal {
         return 'Gewachst';
       case 'BLACKENED':
         return 'Geschwärzt';
+      case 'FLAVOR_ENHANCER':
+        return 'Geschmacksverstärker';
       case 'SULPHURATED':
         return 'Schwefel';
       default:
@@ -86,6 +88,8 @@ class Meal {
         return 'Erdnüsse';
       case 'CASHEWS':
         return 'Cashewnüsse';
+      case 'RYE':
+        return 'Roggen';
       case 'SPELT':
         return 'Dinkel';
       default:

@@ -1,3 +1,5 @@
+import 'package:timetable/model/date_time_calculator.dart';
+
 import 'menu.dart';
 import 'openinghours.dart';
 
@@ -17,7 +19,12 @@ class Canteen {
       json['menus'].forEach((v) {
         menus!.add(Menu(v));
       });
-      menus!.sort((a, b) => a.isoDate!.compareTo(b.isoDate!));
+      menus!
+          .where(
+            (element) => !element.isoDate!.isBefore(cleanDate(DateTime.now())),
+          )
+          .toList()
+          .sort((a, b) => a.isoDate!.compareTo(b.isoDate!));
     }
     if (json['building'] != null) {
       building = json['building']['name'];

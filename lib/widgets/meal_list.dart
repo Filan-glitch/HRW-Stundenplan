@@ -11,9 +11,15 @@ class MealListWidget extends StatelessWidget {
   MealListWidget(this.menu, {super.key});
 
   final Menu menu;
-  final int numPerRow = 2;
   final ScrollController _mainDishHorizontalScrollController =
       ScrollController();
+
+  int _getItemsPerRow(BuildContext context) {
+    final double width = MediaQuery.of(context).size.width;
+    if (width < 600) return 2;
+    if (width < 900) return 3;
+    return 4;
+  }
 
   Widget _buildMuelheimMainDishes(BuildContext context) {
     return // Main dishes
@@ -46,9 +52,10 @@ class MealListWidget extends StatelessWidget {
   }
 
   Widget _buildBottropMainDishes(BuildContext context) {
-    final int mainDishRows = (menu.mainDishes!.length / numPerRow).ceil();
+    final int mainDishRows =
+        (menu.mainDishes!.length / _getItemsPerRow(context)).ceil();
     final double mainDishItemWidth =
-        MediaQuery.of(context).size.width / numPerRow - 30;
+        MediaQuery.of(context).size.width / _getItemsPerRow(context) - 30;
 
     return Column(
       children: [
@@ -57,20 +64,21 @@ class MealListWidget extends StatelessWidget {
             child: Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                for (int j = 0; j < numPerRow; j++)
+                for (int j = 0; j < _getItemsPerRow(context); j++)
                   Builder(
                     builder: (context) {
-                      if (i * numPerRow + j >= menu.mainDishes!.length)
-                        return Container();
+                      if (i * _getItemsPerRow(context) + j >=
+                          menu.mainDishes!.length) return Container();
 
                       return SideDishWidget(
                         width: mainDishItemWidth *
                             (j == 0 &&
-                                    (i * numPerRow + j + 1 >=
+                                    (i * _getItemsPerRow(context) + j + 1 >=
                                         menu.mainDishes!.length)
                                 ? 2
                                 : 1),
-                        meal: menu.mainDishes![i * numPerRow + j],
+                        meal:
+                            menu.mainDishes![i * _getItemsPerRow(context) + j],
                       );
                     },
                   )
@@ -82,9 +90,10 @@ class MealListWidget extends StatelessWidget {
   }
 
   Widget _buildSideDishes(BuildContext context) {
-    final int sideDishRows = (menu.sideDishes!.length / numPerRow).ceil();
+    final int sideDishRows =
+        (menu.sideDishes!.length / _getItemsPerRow(context)).ceil();
     final double sideDishItemWidth =
-        MediaQuery.of(context).size.width / numPerRow - 30;
+        MediaQuery.of(context).size.width / _getItemsPerRow(context) - 30;
 
     return Column(
       children: [
@@ -98,20 +107,21 @@ class MealListWidget extends StatelessWidget {
             child: Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                for (int j = 0; j < numPerRow; j++)
+                for (int j = 0; j < _getItemsPerRow(context); j++)
                   Builder(
                     builder: (context) {
-                      if (i * numPerRow + j >= menu.sideDishes!.length)
-                        return Container();
+                      if (i * _getItemsPerRow(context) + j >=
+                          menu.sideDishes!.length) return Container();
 
                       return SideDishWidget(
                         width: sideDishItemWidth *
                             (j == 0 &&
-                                    (i * numPerRow + j + 1 >=
+                                    (i * _getItemsPerRow(context) + j + 1 >=
                                         menu.sideDishes!.length)
                                 ? 2
                                 : 1),
-                        meal: menu.sideDishes![i * numPerRow + j],
+                        meal:
+                            menu.sideDishes![i * _getItemsPerRow(context) + j],
                       );
                     },
                   )

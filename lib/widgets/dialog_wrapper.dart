@@ -19,8 +19,8 @@ class DialogWrapper extends StatelessWidget {
     return BackdropFilter(
       filter: ImageFilter.blur(sigmaX: 5, sigmaY: 5),
       child: SimpleDialog(
-        surfaceTintColor: Theme.of(context).colorScheme.background,
-        backgroundColor: Theme.of(context).colorScheme.background,
+        surfaceTintColor: Theme.of(context).colorScheme.surface,
+        backgroundColor: Theme.of(context).colorScheme.surface,
         shadowColor: const Color.fromARGB(255, 97, 97, 97),
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(15.0),

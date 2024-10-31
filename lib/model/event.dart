@@ -111,6 +111,7 @@ class Event implements Comparable<Event> {
       'End': '${end.hour}:${end.minute}',
       'WeekFrom': weekFrom == null ? null : dayFormat.format(weekFrom!),
       'MODE': mode.dbValue,
+      'HIDE_FLAG': hidden ? 1 : 0,
     };
   }
 

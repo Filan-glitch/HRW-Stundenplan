@@ -28,7 +28,7 @@ class ActionMenu extends StatelessWidget {
               blurRadius: 10,
             ),
           ],
-          color: Theme.of(context).colorScheme.background,
+          color: Theme.of(context).colorScheme.surface,
         ),
         child: Padding(
           padding: const EdgeInsets.only(

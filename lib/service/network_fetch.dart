@@ -68,15 +68,6 @@ Future<void> loadWeekInterval({
     for (int i = 0; i < numWeeks; i++) start.add(Duration(days: i * 7))
   ];
 
-  // remove all events that are in the interval
-  // final List<Event> eventsToKeep = store.state.events
-  //     .where((element) => element.weekFrom != null)
-  //     .where((element) => (element.weekFrom!.isBefore(weeks.first) ||
-  //         element.weekFrom!.isAfter(weeks.last)))
-  //     .toList();
-
-  // store.dispatch(Action(ActionTypes.setEvents, payload: eventsToKeep));
-
   return Future.wait(
     weeks.map((week) => fetchTimetableData(week, keepEdited)),
   ).then((_) {
@@ -230,7 +221,11 @@ Future<dom.Document> _fetchScheduleHTML(
       Uri.parse(
         "$BASE_URL?APPNAME=CampusNet&PRGNAME=SCHEDULER&ARGUMENTS=$args,-N000403,-A${monday.day.toString().padLeft(2, "0")}/${monday.month.toString().padLeft(2, "0")}/${monday.year},-A,-N1,-N0,-N1",
       ),
-      headers: {'Cookie': 'cnsc=${store.state.cnsc}'});
+      headers: {
+        'Cookie': 'cnsc=${store.state.cnsc}'
+      }).timeout(const Duration(seconds: 10), onTimeout: () {
+    throw TimeoutException('The connection has timed out.');
+  });
 
   return html.parse(utf8.decode(registrations.bodyBytes));
 }
@@ -243,7 +238,11 @@ Future<dom.Document> _fetchGradesHTML() async {
       Uri.parse(
         '$BASE_URL?APPNAME=CampusNet&PRGNAME=STUDENT_RESULT&ARGUMENTS=$args,-N000407,-N0,-N000000000000000,-N000000000000000,-N000000000000000,-N0,-N000000000000000',
       ),
-      headers: {'Cookie': 'cnsc=$cnsc'});
+      headers: {
+        'Cookie': 'cnsc=$cnsc'
+      }).timeout(const Duration(seconds: 10), onTimeout: () {
+    throw TimeoutException('The connection has timed out.');
+  });
 
   final temp = _cleanString(utf8.decode(registrations.bodyBytes));
   return html.parse(temp);
@@ -257,7 +256,11 @@ Future<dom.Document> _fetchAccountHTML() async {
       Uri.parse(
         '$BASE_URL?APPNAME=CampusNet&PRGNAME=PERSADDRESS&ARGUMENTS=$args,-N000426,',
       ),
-      headers: {'Cookie': 'cnsc=$cnsc'});
+      headers: {
+        'Cookie': 'cnsc=$cnsc'
+      }).timeout(const Duration(seconds: 10), onTimeout: () {
+    throw TimeoutException('The connection has timed out.');
+  });
 
   final temp = _cleanString(utf8.decode(registrations.bodyBytes));
   return html.parse(temp);

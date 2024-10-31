@@ -1,3 +1,5 @@
+import 'package:timetable/model/date_time_calculator.dart';
+
 import 'meal.dart';
 
 class Menu {
@@ -10,7 +12,7 @@ class Menu {
     id = json['id'];
 
     if (json['isoDate'] != null) {
-      isoDate = DateTime.parse(json['isoDate']);
+      isoDate = cleanDate(DateTime.parse(json['isoDate']));
     }
 
     if (json['maindishes'] != null) {

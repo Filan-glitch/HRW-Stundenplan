@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:timetable/model/redux/store.dart';
-import '../model/redux/actions.dart' as redux;
+import 'package:timetable/pages/welcome_page.dart';
 import 'package:timetable/service/storage.dart';
+
+import '../model/redux/actions.dart' as redux;
 
 class LoadingPage extends StatelessWidget {
   const LoadingPage({super.key});
@@ -9,7 +11,7 @@ class LoadingPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Theme.of(context).colorScheme.background,
+      backgroundColor: Theme.of(context).colorScheme.surface,
       body: Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -41,6 +43,14 @@ class LoadingPage extends StatelessWidget {
               onPressed: () {
                 clearStorage();
                 store.dispatch(redux.clear());
+                // clear all pages and push to welcome screen
+                Navigator.of(context).pushAndRemoveUntil(
+                  MaterialPageRoute(
+                    builder: (context) => const WelcomePage(),
+                    maintainState: false,
+                  ),
+                  (route) => false,
+                );
               },
               child: const Text('App zurücksetzen'),
             ),

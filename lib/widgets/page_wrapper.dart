@@ -74,9 +74,8 @@ class _PageWrapperState extends State<PageWrapper> with WidgetsBindingObserver {
         appBar: AppBar(
           title: Text(widget.title),
           actions: widget.actions,
-          backgroundColor: Theme.of(context).colorScheme.primary,
         ),
-        backgroundColor: Theme.of(context).colorScheme.background,
+        backgroundColor: Theme.of(context).colorScheme.surface,
         body: Padding(
           padding: EdgeInsets.only(
             bottom: MediaQuery.of(context).viewPadding.bottom,
@@ -157,7 +156,7 @@ class _PageWrapperState extends State<PageWrapper> with WidgetsBindingObserver {
                           bottom: MediaQuery.of(context).viewPadding.bottom,
                         ),
                         decoration: BoxDecoration(
-                          color: Theme.of(context).colorScheme.background,
+                          color: Theme.of(context).colorScheme.surface,
                           borderRadius: const BorderRadius.only(
                             topLeft: Radius.circular(30.0),
                             topRight: Radius.circular(30.0),
@@ -200,12 +199,18 @@ class _PageWrapperState extends State<PageWrapper> with WidgetsBindingObserver {
   void _showActionMenu(BuildContext context) {
     showModalBottomSheet(
       isScrollControlled: true,
+      useRootNavigator: true,
       context: context,
-      constraints: const BoxConstraints(maxWidth: 400.0),
-      builder: (context) => ActionMenu(
-        children: [
-          ...widget.menuActions,
-        ],
+      constraints: const BoxConstraints(
+        maxWidth: 400.0,
+      ),
+      builder: (context) => Padding(
+        padding: EdgeInsets.only(bottom: MediaQuery.of(context).padding.bottom),
+        child: ActionMenu(
+          children: [
+            ...widget.menuActions,
+          ],
+        ),
       ),
       barrierColor: Colors.transparent,
       shape: const RoundedRectangleBorder(

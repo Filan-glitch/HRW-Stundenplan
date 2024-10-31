@@ -134,32 +134,7 @@ class _SettingsPageState extends State<SettingsPage> {
                         title: state.notificationsEnabled
                             ? const Text('Benachrichtigungen: aktiviert')
                             : const Text('Benachrichtigungen: deaktiviert'),
-                        onTap: () {
-                          final bool newValue = !state.notificationsEnabled;
-
-                          if (newValue) {
-                            registerBackgroundService();
-
-                            // request permission
-                            final FlutterLocalNotificationsPlugin
-                                flutterLocalNotificationsPlugin =
-                                FlutterLocalNotificationsPlugin();
-                            flutterLocalNotificationsPlugin
-                                .resolvePlatformSpecificImplementation<
-                                    AndroidFlutterLocalNotificationsPlugin>()
-                                ?.requestNotificationsPermission();
-
-                            showInfoToast(
-                                'Aufgrund von Batterie-Optimierung werden Benachrichtigungen ggf. nicht immer korrekt angezeigt.');
-                          } else {
-                            unregisterBackgroundService();
-                          }
-
-                          store.dispatch(redux.setNotificationsEnabled(
-                            newValue,
-                          ));
-                          writeNotificationsEnabled();
-                        },
+                        onTap: enableNotifications,
                       ),
                     if (Platform.isAndroid)
                       FutureBuilder(
@@ -385,5 +360,35 @@ class _SettingsPageState extends State<SettingsPage> {
             ),
           );
         });
+  }
+
+  void enableNotifications() async {
+    bool newValue = !store.state.notificationsEnabled;
+
+    if (newValue) {
+      // request permission
+      final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
+          FlutterLocalNotificationsPlugin();
+      final bool? granted = await flutterLocalNotificationsPlugin
+          .resolvePlatformSpecificImplementation<
+              AndroidFlutterLocalNotificationsPlugin>()
+          ?.requestNotificationsPermission();
+
+      if (granted == true) {
+        registerBackgroundService();
+        showInfoToast(
+            'Aufgrund von Batterie-Optimierung werden Benachrichtigungen ggf. nicht immer korrekt angezeigt.');
+      } else {
+        newValue = false;
+        showInfoToast('Bitte erlaube Benachrichtigungen in den Einstellungen.');
+      }
+    } else {
+      unregisterBackgroundService();
+    }
+
+    store.dispatch(redux.setNotificationsEnabled(
+      newValue,
+    ));
+    writeNotificationsEnabled();
   }
 }

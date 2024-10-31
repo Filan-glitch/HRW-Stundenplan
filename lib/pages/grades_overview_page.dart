@@ -63,7 +63,9 @@ class _GradesOverviewPageState extends State<GradesOverviewPage> {
                   );
                 } else {
                   LoginPage.performLogin(
-                    onLoginSuccess: () async => await reloadAll(),
+                    onLoginSuccess: () async => await reloadAll(
+                      keepEdited: true,
+                    ),
                   );
                 }
               },

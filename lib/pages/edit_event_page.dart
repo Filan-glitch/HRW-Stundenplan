@@ -11,9 +11,10 @@ import 'package:timetable/service/db/events.dart';
 import 'package:timetable/widgets/page_wrapper.dart';
 
 class EditEventPage extends StatefulWidget {
-  const EditEventPage({this.event, super.key});
+  const EditEventPage({this.event, this.initialWeekday, super.key});
 
   final Event? event;
+  final Weekday? initialWeekday;
 
   @override
   State<EditEventPage> createState() => _EditEventPageState();
@@ -63,7 +64,7 @@ class _EditEventPageState extends State<EditEventPage> {
             minute: widget.event!.end.minute,
           );
 
-    weekday = widget.event?.day ?? Weekday.monday;
+    weekday = widget.event?.day ?? widget.initialWeekday ?? Weekday.monday;
 
     firstDate = cleanDate(DateTime.now());
     lastDate = firstDate.add(const Duration(days: 30));
@@ -78,7 +79,11 @@ class _EditEventPageState extends State<EditEventPage> {
           date = date.add(const Duration(days: 7)))
         if (date.weekday - 1 == weekday.value) date
     ]..removeWhere(
-        (element) => element.isBefore(firstDate) || element.isAfter(lastDate));
+        (element) =>
+            element.isBefore(firstDate) ||
+            element.isAfter(lastDate) ||
+            element.isBefore(getFirstDayOfWeek(DateTime.now())),
+      );
   }
 
   bool _timeValidator() {
@@ -94,30 +99,26 @@ class _EditEventPageState extends State<EditEventPage> {
     return _formKey.currentState!.validate() && _timeValidator();
   }
 
-  void createNewEvents() {
-    if (widget.event != null) return;
-    if (!isFormValid()) return;
-    final List<DateTime> dates = getDatesOfNewEvent();
-    if (dates.isEmpty) return;
+  Future<void> createNewEvents() async {
+    if (widget.event != null || !isFormValid() || getDatesOfNewEvent().isEmpty)
+      return;
 
-    dates.map((date) {
-      return Event(
+    final List<Event> events = store.state.events;
+    getDatesOfNewEvent().forEach((date) {
+      events.add(Event(
         title: titleController.text,
         abbreviation: abbreviationController.text,
         start: Time(startTime.hour, startTime.minute),
         end: Time(endTime.hour, endTime.minute),
         room: roomController.text,
         day: weekday,
-        weekFrom: date,
+        weekFrom: getFirstDayOfWeek(date),
         mode: EventMode.customEvent,
-      );
-    }).forEach((event) {
-      final List<Event> events = store.state.events;
-      events.add(event);
-      store.dispatch(redux.setEvents(events));
+      ));
     });
 
-    writeDataToStorage();
+    store.dispatch(redux.setEvents(events));
+    await writeDataToStorage();
     Navigator.pop(context);
   }
 
@@ -497,7 +498,7 @@ class _EditEventPageState extends State<EditEventPage> {
                           children: [
                             ElevatedButton(
                               style: ButtonStyle(
-                                padding: MaterialStateProperty.all(
+                                padding: WidgetStateProperty.all(
                                   const EdgeInsets.symmetric(
                                     horizontal: 20,
                                     vertical: 5,
@@ -533,21 +534,24 @@ class _EditEventPageState extends State<EditEventPage> {
                                   });
                                 },
                                 style: ButtonStyle(
-                                  padding: MaterialStateProperty.all(
+                                  padding: WidgetStateProperty.all(
                                     const EdgeInsets.symmetric(
                                       horizontal: 20,
                                       vertical: 5,
                                     ),
                                   ),
-                                  shape: MaterialStateProperty.all(
+                                  shape: WidgetStateProperty.all(
                                     RoundedRectangleBorder(
                                       borderRadius: BorderRadius.circular(50),
                                       side: const BorderSide(
-                                          color: Colors.red, width: 2),
+                                        color: Colors.red,
+                                        width: 2,
+                                      ),
                                     ),
                                   ),
-                                  backgroundColor: MaterialStateProperty.all(
-                                      Colors.transparent),
+                                  backgroundColor: WidgetStateProperty.all(
+                                    Colors.red,
+                                  ),
                                 ),
                                 child: Text(
                                   _shouldUpdateSingleEvent
@@ -562,21 +566,24 @@ class _EditEventPageState extends State<EditEventPage> {
                                     ? hideSingleEvent
                                     : hideAllEvent,
                                 style: ButtonStyle(
-                                  padding: MaterialStateProperty.all(
+                                  padding: WidgetStateProperty.all(
                                     const EdgeInsets.symmetric(
                                       horizontal: 20,
                                       vertical: 5,
                                     ),
                                   ),
-                                  shape: MaterialStateProperty.all(
+                                  shape: WidgetStateProperty.all(
                                     RoundedRectangleBorder(
                                       borderRadius: BorderRadius.circular(50),
                                       side: const BorderSide(
-                                          color: Colors.red, width: 2),
+                                        color: Colors.red,
+                                        width: 2,
+                                      ),
                                     ),
                                   ),
-                                  backgroundColor: MaterialStateProperty.all(
-                                      Colors.transparent),
+                                  backgroundColor: WidgetStateProperty.all(
+                                    Colors.red,
+                                  ),
                                 ),
                                 child: Text(
                                   _shouldUpdateSingleEvent
@@ -620,7 +627,7 @@ class _EditEventPageState extends State<EditEventPage> {
                 bottom: 0,
                 child: Container(
                   width: MediaQuery.of(context).size.width,
-                  color: Theme.of(context).colorScheme.background,
+                  color: Theme.of(context).colorScheme.surface,
                   child: Padding(
                     padding: const EdgeInsets.symmetric(
                       horizontal: 16.0,
@@ -628,16 +635,16 @@ class _EditEventPageState extends State<EditEventPage> {
                     ),
                     child: SegmentedButton(
                       style: ButtonStyle(
-                        backgroundColor: MaterialStateProperty.resolveWith(
+                        backgroundColor: WidgetStateProperty.resolveWith(
                           (states) {
-                            return states.contains(MaterialState.selected)
+                            return states.contains(WidgetState.selected)
                                 ? const Color(0xFF009fe3)
                                 : Colors.transparent;
                           },
                         ),
-                        foregroundColor: MaterialStateProperty.resolveWith(
+                        foregroundColor: WidgetStateProperty.resolveWith(
                           (states) {
-                            return states.contains(MaterialState.selected) ||
+                            return states.contains(WidgetState.selected) ||
                                     Theme.of(context).brightness ==
                                         Brightness.dark
                                 ? Colors.white
@@ -645,7 +652,7 @@ class _EditEventPageState extends State<EditEventPage> {
                           },
                         ),
                         // disable border
-                        side: MaterialStateProperty.all(
+                        side: WidgetStateProperty.all(
                           BorderSide(
                               color: Colors.grey.withOpacity(0.2), width: 2),
                         ),

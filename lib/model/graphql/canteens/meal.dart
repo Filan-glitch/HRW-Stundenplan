@@ -41,6 +41,8 @@ class Meal {
         return 'Geschwärzt';
       case 'FLAVOR_ENHANCER':
         return 'Geschmacksverstärker';
+      case 'SULPHURATED':
+        return 'Schwefel';
       default:
         FirebaseCrashlytics.instance.recordError(
           Exception('Unknown additive: $additive'),
@@ -88,6 +90,8 @@ class Meal {
         return 'Cashewnüsse';
       case 'RYE':
         return 'Roggen';
+      case 'SPELT':
+        return 'Dinkel';
       default:
         FirebaseCrashlytics.instance.recordError(
           Exception('Unknown allergene: $allergene'),

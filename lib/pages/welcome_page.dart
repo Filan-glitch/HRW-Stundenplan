@@ -118,7 +118,7 @@ class _WelcomePageState extends State<WelcomePage> {
                               style: TextStyle(
                                 color: Theme.of(context)
                                     .dividerColor
-                                    .withOpacity(0.7),
+                                    .withAlpha(178),
                               ),
                               text: 'Ich akzeptiere die '),
                           TextSpan(
@@ -141,7 +141,7 @@ class _WelcomePageState extends State<WelcomePage> {
                             style: TextStyle(
                               color: Theme.of(context)
                                   .dividerColor
-                                  .withOpacity(0.7),
+                                  .withAlpha(178),
                             ),
                             text: ' und ',
                           ),
@@ -165,7 +165,7 @@ class _WelcomePageState extends State<WelcomePage> {
                             style: TextStyle(
                               color: Theme.of(context)
                                   .dividerColor
-                                  .withOpacity(0.7),
+                                  .withAlpha(178),
                             ),
                             text:
                                 ' und nehme eindeutig zur Kenntnis, dass alle Angaben ohne Gewähr sind und der ',
@@ -190,7 +190,7 @@ class _WelcomePageState extends State<WelcomePage> {
                             style: TextStyle(
                               color: Theme.of(context)
                                   .dividerColor
-                                  .withOpacity(0.7),
+                                  .withAlpha(178),
                             ),
                             text: ' gilt.',
                           ),
@@ -212,7 +212,7 @@ class _WelcomePageState extends State<WelcomePage> {
                   )["version"].split("+").first}',
                   style: TextStyle(
                     fontSize: 15.0,
-                    color: Theme.of(context).dividerColor.withOpacity(0.7),
+                    color: Theme.of(context).dividerColor.withAlpha(178),
                   ),
                   textAlign: TextAlign.center,
                 );

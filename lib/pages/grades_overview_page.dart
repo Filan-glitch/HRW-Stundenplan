@@ -1,11 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_redux/flutter_redux.dart';
-import 'package:local_auth/local_auth.dart';
-
 import '../dialogs/confirm_refresh_dialog.dart';
-import '../model/biometrics.dart';
 import '../model/module.dart';
-import '../model/redux/actions.dart' as redux;
 import '../model/redux/app_state.dart';
 import '../model/redux/store.dart';
 import '../service/network_fetch.dart';
@@ -20,32 +16,6 @@ class GradesOverviewPage extends StatefulWidget {
 }
 
 class _GradesOverviewPageState extends State<GradesOverviewPage> {
-  @override
-  void initState() {
-    super.initState();
-
-    if (store.state.biometrics == Biometrics.ONLY_EXAM_RESULTS) {
-      store.dispatch(redux.setLockState(true));
-
-      LocalAuthentication()
-          .authenticate(localizedReason: 'Bitte App entsperren')
-          .then((success) {
-        if (success) {
-          store.dispatch(redux.setLockState(false));
-        }
-      });
-    }
-  }
-
-  @override
-  void dispose() {
-    super.dispose();
-
-    if (store.state.biometrics == Biometrics.ONLY_EXAM_RESULTS) {
-      store.dispatch(redux.setLockState(false));
-    }
-  }
-
   @override
   Widget build(BuildContext context) {
     return PageWrapper(

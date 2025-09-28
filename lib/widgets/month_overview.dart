@@ -153,7 +153,7 @@ class MonthOverviewWidget extends StatelessWidget {
                                                 size: 30.0,
                                                 color: Theme.of(context)
                                                     .dividerColor
-                                                    .withOpacity(0.5),
+                                                    .withAlpha(127),
                                               ),
                                             ),
                                         ],

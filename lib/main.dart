@@ -10,17 +10,14 @@ import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_redux/flutter_redux.dart';
 import 'package:timetable/core/migration/migrate.dart';
 import 'package:timetable/core/toast.dart';
-import 'package:workmanager/workmanager.dart';
 
 import 'dialogs/crashlytics_dialog.dart';
 import 'firebase_options.dart';
-import 'model/biometrics.dart';
 import 'model/redux/actions.dart' as redux;
 import 'model/redux/app_state.dart';
 import 'model/redux/store.dart';
 import 'pages/home_page.dart';
 import 'pages/loading_page.dart';
-import 'service/background.dart';
 import 'service/db/events.dart';
 import 'service/db/grades.dart';
 import 'service/storage.dart';
@@ -58,16 +55,6 @@ void main() {
 
     await performMigration();
 
-    await loadBiometrics();
-    if (store.state.biometrics == Biometrics.ON) {
-      store.dispatch(redux.setLockState(true));
-    }
-
-    await Workmanager().initialize(
-      callbackDispatcher,
-      isInDebugMode: kDebugMode,
-    );
-
     Future.wait([
       loadCredentials(),
       loadDataFromStorage().then((_) async {
@@ -75,7 +62,6 @@ void main() {
       }),
       loadGPA(),
       loadDesign(),
-      loadCampus(),
       loadNotificationsEnabled(),
       loadDefaultView(),
       loadAccount(),
@@ -84,8 +70,6 @@ void main() {
       loadDownloadedRange(),
     ]).then((value) {
       store.dispatch(redux.setupCompleted());
-
-      if (store.state.notificationsEnabled) registerBackgroundService();
     });
     shouldShowChangelogIcon();
   });
@@ -149,7 +133,7 @@ class MyApp extends StatelessWidget {
             title: 'Stundenplan',
             theme: lightTheme,
             darkTheme: darkTheme,
-            themeMode: state.activeTheme,
+            themeMode: ThemeMode.system,
             supportedLocales: const [Locale('de', 'DE')],
             navigatorKey: navigatorKey,
             localizationsDelegates: const [

@@ -1,26 +1,16 @@
-import 'dart:io';
-
-import 'package:disable_battery_optimization/disable_battery_optimization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:flutter_redux/flutter_redux.dart';
-import 'package:local_auth/local_auth.dart';
-import 'package:timetable/core/toast.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:yaml/yaml.dart';
 
 import '../dialogs/changelog_dialog.dart';
 import '../dialogs/crashlytics_dialog.dart';
 import '../dialogs/select_default_view.dart';
-import '../dialogs/select_design_dialog.dart';
-import '../dialogs/select_lock_dialog.dart';
-import '../model/biometrics.dart';
 import '../model/constants.dart';
 import '../model/redux/actions.dart' as redux;
 import '../model/redux/app_state.dart';
 import '../model/redux/store.dart';
-import '../service/background.dart';
 import '../service/storage.dart';
 import '../widgets/page_wrapper.dart';
 
@@ -97,24 +87,6 @@ class _SettingsPageState extends State<SettingsPage> {
                       ),
                     ),
                     ListTile(
-                      leading: Icon(
-                        state.effectiveTheme == ThemeMode.dark
-                            ? Icons.lightbulb_outline
-                            : Icons.lightbulb,
-                      ),
-                      title: state.activeTheme == ThemeMode.system
-                          ? const Text('Design: System')
-                          : state.effectiveTheme == ThemeMode.dark
-                              ? const Text('Design: Dunkel')
-                              : const Text('Design: Hell'),
-                      onTap: () {
-                        showDialog(
-                          context: context,
-                          builder: (context) => const SelectDesignDialog(),
-                        );
-                      },
-                    ),
-                    ListTile(
                       leading: const Icon(Icons.view_comfortable_rounded),
                       title: Text(
                         'Startansicht: ${state.defaultView.text}',
@@ -124,88 +96,6 @@ class _SettingsPageState extends State<SettingsPage> {
                           context: context,
                           builder: (context) => const SelectDefaultViewDialog(),
                         );
-                      },
-                    ),
-                    if (Platform.isAndroid)
-                      ListTile(
-                        leading: const Icon(
-                          Icons.notifications_active,
-                        ),
-                        title: state.notificationsEnabled
-                            ? const Text('Benachrichtigungen: aktiviert')
-                            : const Text('Benachrichtigungen: deaktiviert'),
-                        onTap: enableNotifications,
-                      ),
-                    if (Platform.isAndroid)
-                      FutureBuilder(
-                        future: DisableBatteryOptimization
-                            .isBatteryOptimizationDisabled,
-                        builder: (context, snapshot) {
-                          if (snapshot.data == false) {
-                            return ListTile(
-                              leading: const Icon(Icons.battery_alert),
-                              title:
-                                  const Text('Akku-Optimierung deaktivieren'),
-                              onTap: () {
-                                DisableBatteryOptimization
-                                    .showDisableBatteryOptimizationSettings();
-                              },
-                            );
-                          } else {
-                            return Container();
-                          }
-                        },
-                      ),
-                    FutureBuilder(
-                      future: Future.wait([
-                        LocalAuthentication().canCheckBiometrics,
-                        LocalAuthentication().isDeviceSupported(),
-                        LocalAuthentication().getAvailableBiometrics(),
-                      ]),
-                      builder: (BuildContext context,
-                          AsyncSnapshot<dynamic> snapshot) {
-                        if (snapshot.connectionState == ConnectionState.done) {
-                          if (snapshot.hasError) {
-                            return Text('Fehler: ${snapshot.error}');
-                          } else {
-                            final bool canCheckBiometrics = snapshot.data[0];
-                            final bool isDeviceSupported = snapshot.data[1];
-                            final List<BiometricType> availableBiometrics =
-                                snapshot.data[2];
-                            if (canCheckBiometrics &&
-                                isDeviceSupported &&
-                                availableBiometrics.isNotEmpty) {
-                              return ListTile(
-                                leading: const Icon(Icons.security),
-                                title: Row(
-                                  children: [
-                                    const Text(
-                                      'Biometrie: ',
-                                    ),
-                                    if (state.biometrics == Biometrics.OFF)
-                                      const Text('Nicht aktiv'),
-                                    if (state.biometrics == Biometrics.ON)
-                                      const Text('Aktiv'),
-                                    if (state.biometrics ==
-                                        Biometrics.ONLY_EXAM_RESULTS)
-                                      const Text('Nur Prüfungsergebnisse'),
-                                  ],
-                                ),
-                                onTap: () {
-                                  showDialog(
-                                    context: context,
-                                    builder: (context) =>
-                                        const SelectLockDialog(),
-                                  );
-                                },
-                              );
-                            } else {
-                              return Container();
-                            }
-                          }
-                        } else {
-                          return const CircularProgressIndicator();
-                        }
                       },
                     ),
                     ListTile(
@@ -346,7 +236,7 @@ class _SettingsPageState extends State<SettingsPage> {
                     ),
                     ListTile(
                       leading: Icon(Icons.logout,
-                          color: Colors.red.withOpacity(0.7)),
+                          color: Colors.red.withAlpha(178)),
                       title: const Text('Abmelden'),
                       onTap: () {
                         Navigator.pop(context);
@@ -360,35 +250,5 @@ class _SettingsPageState extends State<SettingsPage> {
             ),
           );
         });
-  }
-
-  void enableNotifications() async {
-    bool newValue = !store.state.notificationsEnabled;
-
-    if (newValue) {
-      // request permission
-      final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
-          FlutterLocalNotificationsPlugin();
-      final bool? granted = await flutterLocalNotificationsPlugin
-          .resolvePlatformSpecificImplementation<
-              AndroidFlutterLocalNotificationsPlugin>()
-          ?.requestNotificationsPermission();
-
-      if (granted == true) {
-        registerBackgroundService();
-        showInfoToast(
-            'Aufgrund von Batterie-Optimierung werden Benachrichtigungen ggf. nicht immer korrekt angezeigt.');
-      } else {
-        newValue = false;
-        showInfoToast('Bitte erlaube Benachrichtigungen in den Einstellungen.');
-      }
-    } else {
-      unregisterBackgroundService();
-    }
-
-    store.dispatch(redux.setNotificationsEnabled(
-      newValue,
-    ));
-    writeNotificationsEnabled();
   }
 }

@@ -1,12 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_redux/flutter_redux.dart';
 
-import '../model/biometrics.dart';
 import '../model/login_state.dart';
 import '../model/redux/actions.dart' as redux;
 import '../model/redux/app_state.dart';
 import '../model/redux/store.dart';
-import '../pages/biometrics_page.dart';
 import '../pages/loading_page.dart';
 import '../pages/login_page.dart';
 import '../pages/welcome_page.dart';
@@ -47,15 +45,6 @@ class _PageWrapperState extends State<PageWrapper> with WidgetsBindingObserver {
   void dispose() {
     WidgetsBinding.instance.removeObserver(this);
     super.dispose();
-  }
-
-  @override
-  void didChangeAppLifecycleState(AppLifecycleState state) {
-    super.didChangeAppLifecycleState(state);
-    if (state == AppLifecycleState.paused &&
-        store.state.biometrics == Biometrics.ON) {
-      store.dispatch(redux.setLockState(true));
-    }
   }
 
   @override
@@ -181,8 +170,6 @@ class _PageWrapperState extends State<PageWrapper> with WidgetsBindingObserver {
               const WelcomePage()
             else
               mainContent,
-            if (state.appLocked && state.biometrics != Biometrics.OFF)
-              BiometricsPage(),
             if (state.loginFormState != LoginFormState.notShown)
               const LoginPage(),
             if (state.loading ||

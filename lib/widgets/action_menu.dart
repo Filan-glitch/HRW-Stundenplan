@@ -24,7 +24,7 @@ class ActionMenu extends StatelessWidget {
           ),
           boxShadow: [
             BoxShadow(
-              color: Colors.black.withOpacity(0.3),
+              color: Colors.black.withAlpha(77),
               blurRadius: 10,
             ),
           ],

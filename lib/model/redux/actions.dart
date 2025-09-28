@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart' as ui;
 import 'package:flutter/material.dart';
-import 'package:timetable/model/biometrics.dart';
-import 'package:timetable/model/campus.dart';
 import 'package:timetable/model/date_time_calculator.dart';
 import 'package:timetable/model/event.dart';
 import 'package:timetable/model/login_state.dart';
@@ -9,7 +7,6 @@ import 'package:timetable/model/module.dart';
 import 'package:timetable/model/redux/app_state.dart';
 import 'package:timetable/model/redux/store.dart';
 import 'package:timetable/model/timetable_view.dart';
-import '../graphql/canteens/campus.dart' as canteens;
 
 AppState setEvents(List<Event> events) {
   return store.state..events = events;
@@ -17,10 +14,6 @@ AppState setEvents(List<Event> events) {
 
 AppState setGrades(List<Module> modules) {
   return store.state..modules = modules;
-}
-
-AppState setCampus(Campus campus) {
-  return store.state..selectedCampus = campus;
 }
 
 AppState clear() {
@@ -33,11 +26,8 @@ AppState clear() {
     ..downloadedUntil = null
     ..modules = []
     ..gpa = 0
-    ..selectedCampus = Campus.muelheim
-    ..biometrics = Biometrics.OFF
     ..currentView = TimetableView.daily
     ..defaultView = TimetableView.daily
-    ..appLocked = false
     ..account = null;
 }
 
@@ -79,14 +69,6 @@ AppState setGPA(double gpa) {
   return store.state..gpa = gpa;
 }
 
-AppState setLockState(bool isLocked) {
-  return store.state..appLocked = isLocked;
-}
-
-AppState setBiometricsType(Biometrics type) {
-  return store.state..biometrics = type;
-}
-
 AppState setNotificationsEnabled(bool enabled) {
   return store.state..notificationsEnabled = enabled;
 }
@@ -109,10 +91,6 @@ AppState setLastUpdated(DateTime? lastUpdated) {
 
 AppState setEnableConfirmRefreshDialog(bool enabled) {
   return store.state..enableConfirmRefreshDialog = enabled;
-}
-
-AppState setCanteenData(List<canteens.Campus> canteens) {
-  return store.state..campuses = canteens;
 }
 
 AppState setDownloadedUntil(DateTime? date) {

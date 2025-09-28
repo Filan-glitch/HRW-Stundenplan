@@ -71,7 +71,7 @@ class _LoginPageState extends State<LoginPage> {
       ),
       body: PopScope(
         canPop: false,
-        onPopInvoked: (bool didPop) async {
+        onPopInvokedWithResult: (bool didPop, dynamic result) async {
           _cancelLogin();
         },
         child: Stack(

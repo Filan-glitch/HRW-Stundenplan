@@ -2,7 +2,7 @@
   "project_info": {
     "project_number": "177253641824",
     "project_id": "stundenplan-cd6c9",
-    "storage_bucket": "stundenplan-cd6c9.appspot.com"
+    "storage_bucket": "stundenplan-cd6c9.firebasestorage.app"
   },
   "client": [
     {

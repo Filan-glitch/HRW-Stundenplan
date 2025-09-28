@@ -1,13 +1,10 @@
 import 'package:flutter/material.dart';
 
-import '../biometrics.dart';
-import '../campus.dart';
 import '../date_time_calculator.dart';
 import '../event.dart';
 import '../login_state.dart';
 import '../module.dart';
 import '../timetable_view.dart';
-import '../graphql/canteens/campus.dart' as canteens;
 
 class AppState {
   ThemeMode activeTheme = ThemeMode.system;
@@ -17,11 +14,8 @@ class AppState {
 
   bool showChangelog = false;
   LoginFormState loginFormState = LoginFormState.notShown;
-  bool appLocked = false;
   late DateTime currentWeek;
 
-  Campus selectedCampus = Campus.muelheim;
-  Biometrics biometrics = Biometrics.OFF;
   TimetableView currentView = TimetableView.daily;
   TimetableView defaultView = TimetableView.daily;
   bool notificationsEnabled = false;
@@ -35,8 +29,6 @@ class AppState {
 
   List<Module> modules = [];
   double gpa = 0;
-
-  List<canteens.Campus> campuses = [];
 
   ThemeMode get effectiveTheme {
     if (activeTheme == ThemeMode.system) {

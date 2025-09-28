@@ -1,4 +1,3 @@
-import 'package:advanced_in_app_review/advanced_in_app_review.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_redux/flutter_redux.dart';
 import 'package:intl/intl.dart';
@@ -23,7 +22,6 @@ import '../widgets/weekday_selector.dart';
 import 'grades_overview_page.dart';
 import 'hidden_events_page.dart';
 import 'login_page.dart';
-import 'mensa_page.dart';
 import 'settings_page.dart';
 
 class HomePage extends StatefulWidget {
@@ -52,13 +50,6 @@ class _HomePageState extends State<HomePage> {
     }
 
     store.dispatch(redux.setCurrentWeek(currentWeek));
-
-    AdvancedInAppReview()
-        .setMinDaysBeforeRemind(14)
-        .setMinDaysAfterInstall(2)
-        .setMinLaunchTimes(5)
-        .setMinSecondsBeforeShowDialog(4)
-        .monitor();
   }
 
   @override
@@ -116,7 +107,7 @@ class _HomePageState extends State<HomePage> {
                     );
                   },
                   icon: Badge(
-                    backgroundColor: Colors.red.withOpacity(0.9),
+                    backgroundColor: Colors.red.withAlpha(231),
                     label: const Text('1'),
                     child: const Icon(
                       Icons.update,
@@ -200,23 +191,6 @@ class _HomePageState extends State<HomePage> {
                     Navigator.pop(context);
                   },
                 ),
-              ListTile(
-                leading: Icon(
-                  Icons.fastfood,
-                  color: Theme.of(context).colorScheme.primary,
-                ),
-                title: const Text('Speiseplan'),
-                onTap: () {
-                  Navigator.pop(context);
-
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => const MensaPage(),
-                    ),
-                  );
-                },
-              ),
               ListTile(
                   leading: Icon(
                     Icons.assessment,

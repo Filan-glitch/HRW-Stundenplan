@@ -407,7 +407,7 @@ class _EditEventPageState extends State<EditEventPage> {
                         ),
                         isExpanded: true,
                         hint: const Text('Wochentag'),
-                        value: weekday,
+                        initialValue: weekday,
                         items: Weekday.values
                             .where((e) =>
                                 e != Weekday.saturday && e != Weekday.sunday)
@@ -654,7 +654,7 @@ class _EditEventPageState extends State<EditEventPage> {
                         // disable border
                         side: WidgetStateProperty.all(
                           BorderSide(
-                              color: Colors.grey.withOpacity(0.2), width: 2),
+                              color: Colors.grey.withAlpha(51), width: 2),
                         ),
                       ),
                       showSelectedIcon: false,

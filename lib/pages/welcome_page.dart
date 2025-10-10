@@ -49,6 +49,7 @@ class _WelcomePageState extends State<WelcomePage> {
               ),
               Text('Stundenplan App', style: TextStyle(fontSize: 22.0)),
               Text('des Institut Informatik', style: TextStyle(fontSize: 17.0)),
+              Text('(veraltet)', style: TextStyle(fontSize: 12.0)),
             ],
           ),
           Column(

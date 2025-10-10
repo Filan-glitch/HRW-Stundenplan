@@ -1,3 +1,9 @@
+# v2.1.0
+- Mensa entfernt
+- Notifications entfernt
+- Biometrie entfernt
+- Login Probleme entfernt
+
 # v2.0.1
 - Tablet-Modus
 - Offline-Ansicht für Mensa

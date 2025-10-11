@@ -53,7 +53,7 @@ class WeekOverview extends StatelessWidget {
               physics: const ScrollPhysics(),
               child: Column(
                 children: [
-                  for (Weekday day in Weekday.values.where((element) => element != Weekday.saturday && element != Weekday.sunday))
+                  for (Weekday day in Weekday.values.where((element) => element != Weekday.sunday))
                     Builder(
                       builder: (context) {
                         final List<Event> events = eventsInWeek

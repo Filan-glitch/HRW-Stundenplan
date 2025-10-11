@@ -11,4 +11,3 @@ const String CAMPUS_URL = 'https://campusnet.hs-ruhrwest.de';
 const String TERMS_URL = 'https://filan-glitch.github.io/HRW-Stundenplan/terms';
 const String IMPRINT_URL = 'https://filan-glitch.github.io/HRW-Stundenplan/impress';
 const String DISCLAIMER_URL = 'https://filan-glitch.github.io/HRW-Stundenplan/disclaimer';
-

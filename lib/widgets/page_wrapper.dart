@@ -166,16 +166,16 @@ class _PageWrapperState extends State<PageWrapper> with WidgetsBindingObserver {
       builder: (context, state) {
         return Stack(
           children: [
-            if (state.args == null || state.cnsc == null)
+            if (!state.isGuest && (state.args == null || state.cnsc == null))
               const WelcomePage()
             else
               mainContent,
-            if (state.loginFormState != LoginFormState.notShown)
+            if (!state.isGuest && state.loginFormState != LoginFormState.notShown)
               const LoginPage(),
-            if (state.loading ||
+            if (!state.isGuest && (state.loading ||
                 !state.dataLoaded ||
                 state.loginFormState == LoginFormState.background &&
-                    state.loginFormState != LoginFormState.inputRequired)
+                    state.loginFormState != LoginFormState.inputRequired))
               const LoadingPage(),
           ],
         );

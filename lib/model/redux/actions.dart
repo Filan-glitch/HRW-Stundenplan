@@ -26,6 +26,7 @@ AppState clear() {
     ..downloadedUntil = null
     ..modules = []
     ..gpa = 0
+    ..isGuest = false
     ..currentView = TimetableView.daily
     ..defaultView = TimetableView.daily
     ..account = null;
@@ -95,4 +96,8 @@ AppState setEnableConfirmRefreshDialog(bool enabled) {
 
 AppState setDownloadedUntil(DateTime? date) {
   return store.state..downloadedUntil = date;
+}
+
+AppState setIsGuest(bool isGuest) {
+  return store.state..isGuest = isGuest;
 }

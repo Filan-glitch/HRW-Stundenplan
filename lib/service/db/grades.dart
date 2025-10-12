@@ -33,27 +33,56 @@ Future<void> loadGradesFromStorage() async {
   }
 }
 
-Future<void> writeGradesToStorage() async {
+Future<void> writeGradesToStorage({bool isGuest = false}) async {
   try {
     final Database db = await openDB();
-
     await db.delete('Grades', where: null);
-
-    for (Module module in store.state.modules) {
-      await db.insert(
-        'Grades',
-        module.toDB(),
-        conflictAlgorithm: ConflictAlgorithm.replace,
-      );
+    if (isGuest) {
+      // Beispielmodule für Gastmodus, korrektes DB-Format
+      final guestModules = [
+        Module(
+          identifier: 'GUEST-01',
+          title: 'Beispielmodul 1',
+          grade: 1.7,
+          creditsAll: 6,
+          creditsCharged: 6,
+          status: Status.passed,
+        ),
+        Module(
+          identifier: 'GUEST-02',
+          title: 'Beispielmodul 2',
+          grade: 5.0,
+          creditsAll: 3,
+          creditsCharged: 0,
+          status: Status.failed,
+        ),
+      ];
+      final batch = db.batch();
+      for (var module in guestModules) {
+        batch.insert(
+          'Grades',
+          module.toDB(),
+          conflictAlgorithm: ConflictAlgorithm.replace,
+        );
+      }
+      await batch.commit(noResult: true);
+    } else {
+      final batch = db.batch();
+      for (Module module in store.state.modules) {
+        batch.insert(
+          'Grades',
+          module.toDB(),
+          conflictAlgorithm: ConflictAlgorithm.replace,
+        );
+      }
+      await batch.commit(noResult: true);
     }
-
     await db.close();
   } catch (e, stackTrace) {
     if (kDebugMode) {
       print(e);
       print(stackTrace);
     }
-
     FirebaseCrashlytics.instance.recordError(e, stackTrace);
     showErrorToast('Es ist ein Fehler aufgetreten');
   }

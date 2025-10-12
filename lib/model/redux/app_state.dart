@@ -23,6 +23,7 @@ class AppState {
   DateTime? lastUpdated;
 
   String? account;
+  bool isGuest = false;
   String? cnsc, args;
   List<Event> events = [];
   DateTime? downloadedUntil;

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_redux/flutter_redux.dart';
 import 'package:intl/intl.dart';
 import 'package:timetable/pages/edit_event_page.dart';
+import 'package:timetable/widgets/dialog_wrapper.dart' show DialogWrapper;
 import 'package:timetable/widgets/timetable_landscape.dart';
 
 import '../dialogs/changelog_dialog.dart';
@@ -115,6 +116,21 @@ class _HomePageState extends State<HomePage> {
                     ),
                   ),
                 ),
+              IconButton(
+                  onPressed: () {
+                    showDialog(
+                        context: context,
+                        builder: (context) => const DialogWrapper(
+                          title: 'Wichtige Information',
+                          children: [
+                            Text('Die App wird von den Entwicklern nicht mehr aktiv weiterentwickelt. Wenn du Flutter kannst und Interesse an der Wartung der App hast, melde dich bitte.\n\n'
+                                'E-Mail Adresse: finn.dilan@gmail.com'),
+                          ],
+                        )
+                    );
+                  },
+                  icon: const Icon(Icons.info, color: Colors.red,)
+              ),
               IconButton(
                 onPressed: () {
                   Navigator.push(

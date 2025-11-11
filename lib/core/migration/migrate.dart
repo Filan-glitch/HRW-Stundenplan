@@ -17,6 +17,7 @@ final List<Future<void> Function()?> _migrations = [
   null, // migration to version code 10 from previous
   null, // migration to version code 11 from previous
   null, // migration to version code 12 from previous
+  null, // migration to version code 13 from previous
 ];
 
 Future<void> performMigration() async {

@@ -59,8 +59,12 @@ Future<bool> didShowCrashlyticsDialog() async {
   return prefs.containsKey('crashlyticsDialogShown');
 }
 
-Future<void> writeGPA() async {
+Future<void> writeGPA({bool isGuest = false}) async {
   final SharedPreferences prefs = await SharedPreferences.getInstance();
+  if (isGuest) {
+    prefs.setDouble('gpa', 2.0);
+    return;
+  }
   prefs.setDouble('gpa', store.state.gpa);
 }
 
@@ -127,9 +131,13 @@ Future<void> loadDefaultView() async {
   }
 }
 
-Future<void> writeAccount() async {
-  if (store.state.account == null) return;
+Future<void> writeAccount({bool isGuest = false}) async {
   final SharedPreferences prefs = await SharedPreferences.getInstance();
+  if (isGuest) {
+    prefs.setString('account', 'Gastnutzer');
+    return;
+  }
+  if (store.state.account == null) return;
   prefs.setString('account', store.state.account!);
 }
 

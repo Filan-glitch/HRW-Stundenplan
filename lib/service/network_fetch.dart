@@ -183,8 +183,12 @@ Future<void> fetchGradeData() async {
   }
 }
 
-Future<void> fetchAccountData() async {
+Future<void> fetchAccountData({bool isGuest = false}) async {
   try {
+    if (isGuest) {
+      store.dispatch(setAccount('Gastnutzer'));
+      return;
+    }
     if (store.state.args == null || store.state.cnsc == null) return;
 
     store.dispatch(startTask());
@@ -201,12 +205,11 @@ Future<void> fetchAccountData() async {
     store.dispatch(stopTask());
     showErrorToast('Keine Verbindung');
   } catch (e, stackTrace) {
+    store.dispatch(stopTask());
     if (kDebugMode) {
       print(e);
       print(stackTrace);
     }
-    store.dispatch(stopTask());
-
     FirebaseCrashlytics.instance.recordError(e, stackTrace);
     showErrorToast('Es ist ein Fehler aufgetreten');
   }

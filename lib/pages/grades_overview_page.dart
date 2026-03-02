@@ -99,8 +99,8 @@ class _GradesOverviewPageState extends State<GradesOverviewPage> {
                           ),
                         if (module.status == Status.failed)
                           const Text(
-                            'Status: Durchgefallen',
-                            style: TextStyle(color: Colors.red),
+                            'Status: Unvollständig',
+                            style: TextStyle(color: Colors.orange),
                           ),
                         if (module.status == Status.open)
                           const Text(

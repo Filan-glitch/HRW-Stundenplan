@@ -19,13 +19,17 @@ AppState setGrades(List<Module> modules) {
 AppState clear() {
   return store.state
     ..activeTheme = ui.ThemeMode.system
+    ..dataLoaded = false
     ..runningTasks = 0
+    ..showChangelog = false
+    ..loginFormState = LoginFormState.notShown
     ..cnsc = null
     ..args = null
     ..events = []
     ..downloadedUntil = null
     ..modules = []
     ..gpa = 0
+    ..isGuest = false
     ..currentView = TimetableView.daily
     ..defaultView = TimetableView.daily
     ..account = null;
@@ -95,4 +99,8 @@ AppState setEnableConfirmRefreshDialog(bool enabled) {
 
 AppState setDownloadedUntil(DateTime? date) {
   return store.state..downloadedUntil = date;
+}
+
+AppState setIsGuest(bool isGuest) {
+  return store.state..isGuest = isGuest;
 }
